@@ -1,0 +1,123 @@
+<svg width="800" height="600" viewBox="0 0 800 600" fill="none" xmlns="http://www.w3.org/2000/svg">
+  <!-- Large slow-moving circles -->
+  <circle cx="150" cy="150" r="100" fill="url(#gradient1)" opacity="0.15">
+    <animate attributeName="cy" values="150;170;150" dur="20s" repeatCount="indefinite" />
+    <animate attributeName="cx" values="150;170;150" dur="23s" repeatCount="indefinite" />
+  </circle>
+  
+  <circle cx="650" cy="450" r="120" fill="url(#gradient2)" opacity="0.12">
+    <animate attributeName="cy" values="450;420;450" dur="25s" repeatCount="indefinite" />
+    <animate attributeName="cx" values="650;630;650" dur="22s" repeatCount="indefinite" />
+  </circle>
+  
+  <circle cx="400" cy="300" r="180" fill="url(#gradient3)" opacity="0.08">
+    <animate attributeName="r" values="180;200;180" dur="30s" repeatCount="indefinite" />
+  </circle>
+  
+  <!-- Medium circles -->
+  <circle cx="250" cy="400" r="50" fill="url(#gradient4)" opacity="0.15">
+    <animate attributeName="cy" values="400;380;400" dur="15s" repeatCount="indefinite" />
+    <animate attributeName="cx" values="250;270;250" dur="13s" repeatCount="indefinite" />
+  </circle>
+  
+  <circle cx="600" cy="150" r="70" fill="url(#gradient5)" opacity="0.12">
+    <animate attributeName="cy" values="150;180;150" dur="18s" repeatCount="indefinite" />
+    <animate attributeName="cx" values="600;580;600" dur="16s" repeatCount="indefinite" />
+  </circle>
+  
+  <!-- Small floating circles -->
+  <circle cx="150" cy="500" r="15" fill="#FFFFFF" opacity="0.2">
+    <animate attributeName="cy" values="500;480;500" dur="10s" repeatCount="indefinite" />
+  </circle>
+  
+  <circle cx="700" cy="300" r="12" fill="#FFFFFF" opacity="0.25">
+    <animate attributeName="cy" values="300;320;300" dur="8s" repeatCount="indefinite" />
+  </circle>
+  
+  <circle cx="350" cy="100" r="10" fill="#FFFFFF" opacity="0.3">
+    <animate attributeName="cy" values="100;120;100" dur="12s" repeatCount="indefinite" />
+  </circle>
+  
+  <circle cx="500" cy="550" r="8" fill="#FFFFFF" opacity="0.3">
+    <animate attributeName="cy" values="550;530;550" dur="9s" repeatCount="indefinite" />
+  </circle>
+  
+  <circle cx="50" cy="250" r="5" fill="#FFFFFF" opacity="0.35">
+    <animate attributeName="cy" values="250;270;250" dur="7s" repeatCount="indefinite" />
+  </circle>
+  
+  <circle cx="750" cy="550" r="6" fill="#FFFFFF" opacity="0.3">
+    <animate attributeName="cy" values="550;530;550" dur="11s" repeatCount="indefinite" />
+  </circle>
+  
+  <!-- Tiny floating dots -->
+  <g opacity="0.4">
+    <circle cx="100" cy="100" r="2" fill="#FFFFFF">
+      <animate attributeName="cy" values="100;110;100" dur="5s" repeatCount="indefinite" />
+    </circle>
+    
+    <circle cx="300" cy="200" r="2" fill="#FFFFFF">
+      <animate attributeName="cy" values="200;210;200" dur="4s" repeatCount="indefinite" />
+    </circle>
+    
+    <circle cx="500" cy="150" r="2" fill="#FFFFFF">
+      <animate attributeName="cy" values="150;160;150" dur="6s" repeatCount="indefinite" />
+    </circle>
+    
+    <circle cx="650" cy="250" r="2" fill="#FFFFFF">
+      <animate attributeName="cy" values="250;260;250" dur="5.5s" repeatCount="indefinite" />
+    </circle>
+    
+    <circle cx="200" cy="350" r="2" fill="#FFFFFF">
+      <animate attributeName="cy" values="350;360;350" dur="4.5s" repeatCount="indefinite" />
+    </circle>
+    
+    <circle cx="400" cy="450" r="2" fill="#FFFFFF">
+      <animate attributeName="cy" values="450;460;450" dur="5.2s" repeatCount="indefinite" />
+    </circle>
+    
+    <circle cx="600" cy="400" r="2" fill="#FFFFFF">
+      <animate attributeName="cy" values="400;410;400" dur="4.8s" repeatCount="indefinite" />
+    </circle>
+    
+    <circle cx="700" cy="100" r="2" fill="#FFFFFF">
+      <animate attributeName="cy" values="100;110;100" dur="5.3s" repeatCount="indefinite" />
+    </circle>
+    
+    <circle cx="150" cy="450" r="2" fill="#FFFFFF">
+      <animate attributeName="cy" values="450;460;450" dur="4.7s" repeatCount="indefinite" />
+    </circle>
+    
+    <circle cx="450" cy="350" r="2" fill="#FFFFFF">
+      <animate attributeName="cy" values="350;360;350" dur="4.9s" repeatCount="indefinite" />
+    </circle>
+  </g>
+  
+  <!-- Gradients -->
+  <defs>
+    <radialGradient id="gradient1" cx="0.5" cy="0.5" r="0.5" gradientUnits="objectBoundingBox">
+      <stop offset="0%" stop-color="#4F46E5" />
+      <stop offset="100%" stop-color="#7C3AED" />
+    </radialGradient>
+    
+    <radialGradient id="gradient2" cx="0.5" cy="0.5" r="0.5" gradientUnits="objectBoundingBox">
+      <stop offset="0%" stop-color="#3B82F6" />
+      <stop offset="100%" stop-color="#1D4ED8" />
+    </radialGradient>
+    
+    <radialGradient id="gradient3" cx="0.5" cy="0.5" r="0.5" gradientUnits="objectBoundingBox">
+      <stop offset="0%" stop-color="#8B5CF6" />
+      <stop offset="100%" stop-color="#6D28D9" />
+    </radialGradient>
+    
+    <radialGradient id="gradient4" cx="0.5" cy="0.5" r="0.5" gradientUnits="objectBoundingBox">
+      <stop offset="0%" stop-color="#EC4899" />
+      <stop offset="100%" stop-color="#BE185D" />
+    </radialGradient>
+    
+    <radialGradient id="gradient5" cx="0.5" cy="0.5" r="0.5" gradientUnits="objectBoundingBox">
+      <stop offset="0%" stop-color="#10B981" />
+      <stop offset="100%" stop-color="#047857" />
+    </radialGradient>
+  </defs>
+</svg>
