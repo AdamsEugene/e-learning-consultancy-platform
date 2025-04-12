@@ -62,7 +62,7 @@ const caseStudies = ref([
     client: "RetailGiant Inc.",
     description:
       "Helped transition legacy system to a modern microservices architecture.",
-    image: "/api/placeholder/600/400",
+    image: "/images/courses/c2.jpg",
     gradient: "from-indigo-500 to-blue-600",
     stats: [
       { label: "Increase in Sales", value: "37%", color: "text-blue-500" },
@@ -77,7 +77,7 @@ const caseStudies = ref([
     client: "PayEasy Solutions",
     description:
       "Designed and developed a secure, high-performance payment application.",
-    image: "/api/placeholder/600/400",
+    image: "/images/courses/c1.jpg",
     gradient: "from-purple-500 to-pink-600",
     stats: [
       { label: "User Acquisition", value: "125K", color: "text-indigo-500" },

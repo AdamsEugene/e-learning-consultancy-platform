@@ -108,7 +108,7 @@ const fetchCourseData = async () => {
       language: "English",
       price: 89.99,
       originalPrice: 199.99,
-      image: "/api/placeholder/1200/600",
+      image: "/images/courses/c1.jpg",
       rating: 4.8,
       reviewCount: 1245,
       enrollmentCount: 15782,
@@ -317,7 +317,7 @@ const fetchCourseData = async () => {
         {
           id: 1,
           name: "Alex Johnson",
-          avatar: "/api/placeholder/150/150",
+          avatar: "/images/instructors/i1.jpg",
           role: "Senior Web Developer & Instructor",
           bio: "Alex has over 10 years of experience in web development and has worked with companies like Google and Microsoft. He specializes in modern JavaScript frameworks and has helped over 50,000 students master web development skills.",
           courses: 12,
@@ -327,7 +327,7 @@ const fetchCourseData = async () => {
         {
           id: 2,
           name: "Sarah Chen",
-          avatar: "/api/placeholder/150/150",
+          avatar: "/images/instructors/i3.jpg",
           role: "UX Designer & Frontend Developer",
           bio: "Sarah combines her design background with frontend development expertise to teach the principles of beautiful, functional web design. She has worked with numerous startups and Fortune 500 companies to create engaging user experiences.",
           courses: 8,
@@ -340,7 +340,7 @@ const fetchCourseData = async () => {
           id: 1,
           user: {
             name: "Michael P.",
-            avatar: "/api/placeholder/50/50",
+            avatar: "/images/instructors/i3.jpg",
           },
           rating: 5,
           date: "2024-02-15",
@@ -352,7 +352,7 @@ const fetchCourseData = async () => {
           id: 2,
           user: {
             name: "Jennifer K.",
-            avatar: "/api/placeholder/50/50",
+            avatar: "/images/instructors/i2.jpg",
           },
           rating: 4,
           date: "2024-01-28",
@@ -364,7 +364,7 @@ const fetchCourseData = async () => {
           id: 3,
           user: {
             name: "David T.",
-            avatar: "/api/placeholder/50/50",
+            avatar: "/images/instructors/i1.jpg",
           },
           rating: 5,
           date: "2023-12-10",
@@ -476,6 +476,7 @@ onMounted(() => {
 });
 </script>
 
+<!-- eslint-disable vue/html-self-closing -->
 <template>
   <div class="bg-gray-50 min-h-screen">
     <!-- Loading state -->

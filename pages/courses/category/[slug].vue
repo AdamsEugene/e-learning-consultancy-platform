@@ -62,7 +62,7 @@ const categoryInfo = computed(() => {
       title: "Web Development Courses",
       description:
         "Master the skills needed to build modern, responsive websites and web applications. Learn frontend technologies like HTML, CSS, and JavaScript, as well as backend development with Node.js, Python, PHP, and more.",
-      image: "/api/placeholder/1200/300",
+      image: "/images/courses/c1.jpg",
       subcategories: [
         "Frontend",
         "Backend",
@@ -79,7 +79,7 @@ const categoryInfo = computed(() => {
       title: "Data Science Courses",
       description:
         "Learn to analyze complex data, build machine learning models, and derive meaningful insights. Courses cover Python, R, statistics, visualization, and AI techniques to help you excel in this high-demand field.",
-      image: "/api/placeholder/1200/300",
+      image: "/images/courses/c2.jpg",
       subcategories: [
         "Machine Learning",
         "Deep Learning",
@@ -94,7 +94,7 @@ const categoryInfo = computed(() => {
       title: "Mobile Development Courses",
       description:
         "Build native and cross-platform mobile applications for iOS and Android. Master frameworks like React Native, Flutter, Swift, and Kotlin to create engaging mobile experiences.",
-      image: "/api/placeholder/1200/300",
+      image: "/images/courses/c3.jpg",
       subcategories: [
         "iOS",
         "Android",
@@ -108,7 +108,7 @@ const categoryInfo = computed(() => {
       title: "Design Courses",
       description:
         "Develop your creative skills and learn industry-standard design tools and principles. Courses cover UI/UX design, graphic design, web design, and more to help you create beautiful digital experiences.",
-      image: "/api/placeholder/1200/300",
+      image: "/images/courses/c2.jpg",
       subcategories: [
         "UI/UX",
         "Graphic Design",
@@ -124,7 +124,7 @@ const categoryInfo = computed(() => {
     categoryData[category.value] || {
       title: `${category.value} Courses`,
       description: `Explore our comprehensive collection of ${category.value} courses.`,
-      image: "/api/placeholder/1200/300",
+      image: "/images/courses/c3.jpg",
       subcategories: [],
     }
   );
@@ -146,7 +146,7 @@ const fetchCourses = async () => {
         title: "Complete Web Development Bootcamp",
         category: "Web Development",
         subcategory: "Full-Stack",
-        image: "/api/placeholder/600/400",
+        image: "/images/courses/c2.jpg",
         instructor: "Alex Johnson",
         rating: 4.8,
         reviewCount: 1245,
@@ -163,7 +163,7 @@ const fetchCourses = async () => {
         title: "The Complete React Developer Course",
         category: "Web Development",
         subcategory: "Frontend",
-        image: "/api/placeholder/600/400",
+        image: "/images/courses/c1.jpg",
         instructor: "Michael Brown",
         rating: 4.8,
         reviewCount: 1089,
@@ -180,7 +180,7 @@ const fetchCourses = async () => {
         title: "Advanced CSS and Sass: Flexbox, Grid, Animations",
         category: "Web Development",
         subcategory: "Frontend",
-        image: "/api/placeholder/600/400",
+        image: "/images/courses/c3.jpg",
         instructor: "Alex Johnson",
         rating: 4.9,
         reviewCount: 1245,
@@ -197,7 +197,7 @@ const fetchCourses = async () => {
         title: "Full-Stack JavaScript: Node.js, Express, MongoDB",
         category: "Web Development",
         subcategory: "Backend",
-        image: "/api/placeholder/600/400",
+        image: "/images/courses/c1.jpg",
         instructor: "Michael Brown",
         rating: 4.8,
         reviewCount: 932,
@@ -214,7 +214,7 @@ const fetchCourses = async () => {
         title: "Vue.js - The Complete Guide",
         category: "Web Development",
         subcategory: "Frontend",
-        image: "/api/placeholder/600/400",
+        image: "/images/courses/c2.jpg",
         instructor: "Sarah Chen",
         rating: 4.9,
         reviewCount: 876,
@@ -231,7 +231,7 @@ const fetchCourses = async () => {
         title: "PHP & MySQL - Complete Web Development Course",
         category: "Web Development",
         subcategory: "Backend",
-        image: "/api/placeholder/600/400",
+        image: "/images/courses/c3.jpg",
         instructor: "David Miller",
         rating: 4.6,
         reviewCount: 732,
@@ -248,7 +248,7 @@ const fetchCourses = async () => {
         title: "Responsive Web Design Masterclass",
         category: "Web Development",
         subcategory: "Frontend",
-        image: "/api/placeholder/600/400",
+        image: "/images/courses/c2.jpg",
         instructor: "Emma Wilson",
         rating: 4.7,
         reviewCount: 654,
@@ -265,7 +265,7 @@ const fetchCourses = async () => {
         title: "Angular - The Complete Guide",
         category: "Web Development",
         subcategory: "Frontend",
-        image: "/api/placeholder/600/400",
+        image: "/images/courses/c1.jpg",
         instructor: "Thomas Clark",
         rating: 4.8,
         reviewCount: 921,
@@ -282,7 +282,7 @@ const fetchCourses = async () => {
         title: "Modern JavaScript From The Beginning",
         category: "Web Development",
         subcategory: "JavaScript",
-        image: "/api/placeholder/600/400",
+        image: "/images/courses/c2.jpg",
         instructor: "Alex Johnson",
         rating: 4.9,
         reviewCount: 1184,
@@ -299,7 +299,7 @@ const fetchCourses = async () => {
         title: "GraphQL with Node.js - The Complete Guide",
         category: "Web Development",
         subcategory: "Backend",
-        image: "/api/placeholder/600/400",
+        image: "/images/courses/c3.jpg",
         instructor: "Sarah Chen",
         rating: 4.7,
         reviewCount: 687,
@@ -316,7 +316,7 @@ const fetchCourses = async () => {
         title: "Web Accessibility - Build Inclusive Websites",
         category: "Web Development",
         subcategory: "Frontend",
-        image: "/api/placeholder/600/400",
+        image: "/images/courses/c1.jpg",
         instructor: "Emma Wilson",
         rating: 4.8,
         reviewCount: 532,
@@ -333,7 +333,7 @@ const fetchCourses = async () => {
         title: "TypeScript for Web Developers",
         category: "Web Development",
         subcategory: "JavaScript",
-        image: "/api/placeholder/600/400",
+        image: "/images/courses/c2.jpg",
         instructor: "Michael Brown",
         rating: 4.9,
         reviewCount: 743,
@@ -513,7 +513,7 @@ onMounted(() => {
       <!-- Background image with overlay -->
       <div class="relative h-64 md:h-80">
         <img
-          src=""
+          :src="categoryInfo.image"
           :alt="categoryInfo.title"
           class="absolute inset-0 w-full h-full object-cover"
         />
@@ -1343,7 +1343,7 @@ onMounted(() => {
               <!-- Course card header -->
               <div class="relative overflow-hidden rounded-t-lg">
                 <img
-                  src=""
+                  :src="course.image"
                   :alt="course.title"
                   class="w-full h-48 object-cover transition-transform duration-300 group-hover:scale-105"
                 />

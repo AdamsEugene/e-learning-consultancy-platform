@@ -254,7 +254,7 @@ const badgesSvg = `${imageFolder}badges.svg`;
               <img
                 v-for="i in 4"
                 :key="i"
-                :src="`/images/avatars/user-${i}.jpg`"
+                :src="`/images/instructors/i${i}.jpg`"
                 class="w-10 h-10 rounded-full border-2 border-indigo-500 object-cover"
               />
             </div>

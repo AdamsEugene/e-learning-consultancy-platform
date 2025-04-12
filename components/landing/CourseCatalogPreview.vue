@@ -19,7 +19,7 @@ const featuredCourses = ref([
     price: 89.99,
     rating: 4.8,
     students: 2345,
-    image: "/api/placeholder/600/400",
+    image: "/images/courses/c1.jpg",
     badges: ["Bestseller", "New"],
     level: "Intermediate",
     colorClasses: {
@@ -36,7 +36,7 @@ const featuredCourses = ref([
     price: 79.99,
     rating: 4.7,
     students: 1823,
-    image: "/api/placeholder/600/400",
+    image: "/images/courses/c2.jpg",
     badges: ["Top Rated"],
     level: "All Levels",
     colorClasses: {
@@ -53,7 +53,7 @@ const featuredCourses = ref([
     price: 99.99,
     rating: 4.9,
     students: 1245,
-    image: "/api/placeholder/600/400",
+    image: "/images/courses/c3.jpg",
     badges: ["Hot & New"],
     level: "Advanced",
     colorClasses: {
