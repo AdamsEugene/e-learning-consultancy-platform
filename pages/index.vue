@@ -1,6 +1,4 @@
 <script setup lang="ts">
-import { ref, reactive, onMounted, onBeforeUnmount } from "vue";
-
 // Animation states
 const isFloating = ref(false);
 const visibleSections = reactive({
