@@ -1,7 +1,5 @@
 <!-- pages/dashboard/index.vue -->
 <script setup lang="ts">
-import { ref, onMounted, computed } from "vue";
-
 // Set page layout
 definePageMeta({
   layout: "dashboard",

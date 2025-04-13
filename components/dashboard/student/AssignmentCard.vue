@@ -17,7 +17,7 @@ interface Props {
   isLoaded?: boolean;
 }
 
-const props = defineProps<Props>();
+defineProps<Props>();
 
 // Get icon based on assignment type
 const getTypeIcon = (type: string): string => {
