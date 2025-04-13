@@ -253,6 +253,7 @@ watch(
 );
 </script>
 
+<!-- eslint-disable vue/html-self-closing -->
 <template>
   <div
     class="w-full relative bg-black overflow-hidden group"
