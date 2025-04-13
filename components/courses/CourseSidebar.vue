@@ -160,8 +160,8 @@ const closeMobileSidebar = () => {
         {{ courseTitle }}
       </h3>
       <button
-        @click="closeMobileSidebar"
         class="text-gray-500 hover:text-gray-800 focus:outline-none"
+        @click="closeMobileSidebar"
       >
         <svg
           xmlns="http://www.w3.org/2000/svg"
@@ -182,34 +182,26 @@ const closeMobileSidebar = () => {
 
     <!-- Course info and progress -->
     <div class="px-4 py-5 border-b">
-      <h3
-        class="font-bold text-lg mb-2 truncate hidden lg:block"
-      >
+      <h3 class="font-bold text-lg mb-2 truncate hidden lg:block">
         {{ courseTitle }}
       </h3>
 
       <!-- Progress bar and stats -->
       <div class="mb-4">
-        <div
-          class="flex justify-between text-sm text-gray-600 mb-1"
-        >
+        <div class="flex justify-between text-sm text-gray-600 mb-1">
           <span>Your progress</span>
           <span>{{ progress }}%</span>
         </div>
-        <div
-          class="h-2 bg-gray-200 rounded-full overflow-hidden"
-        >
+        <div class="h-2 bg-gray-200 rounded-full overflow-hidden">
           <div
             class="h-full bg-indigo-600 transition-all duration-500"
             :style="{ width: `${progress}%` }"
-          ></div>
+          />
         </div>
       </div>
 
       <!-- Course stats -->
-      <div
-        class="flex items-center justify-between text-sm text-gray-600"
-      >
+      <div class="flex items-center justify-between text-sm text-gray-600">
         <div class="flex items-center">
           <svg
             xmlns="http://www.w3.org/2000/svg"
@@ -256,8 +248,8 @@ const closeMobileSidebar = () => {
           <li v-for="section in sections" :key="section.id" class="px-4">
             <!-- Section header -->
             <div
-              @click="toggleSection(section.id)"
               class="flex items-center justify-between py-3 px-2 cursor-pointer hover:bg-gray-100 rounded-md transition-colors"
+              @click="toggleSection(section.id)"
             >
               <div class="flex items-start flex-grow pr-2">
                 <span
@@ -294,9 +286,7 @@ const closeMobileSidebar = () => {
                     />
                   </svg>
                 </span>
-                <span class="font-medium">{{
-                  section.title
-                }}</span>
+                <span class="font-medium">{{ section.title }}</span>
               </div>
               <svg
                 xmlns="http://www.w3.org/2000/svg"
@@ -330,9 +320,6 @@ const closeMobileSidebar = () => {
               >
                 <li v-for="lesson in section.lessons" :key="lesson.id">
                   <div
-                    @click="
-                      navigateToLesson(lesson.id, section.id, lesson.isLocked)
-                    "
                     :class="[
                       'flex items-center py-2 px-2 rounded-md cursor-pointer transition-colors',
                       isCurrentLesson(lesson.id)
@@ -340,6 +327,9 @@ const closeMobileSidebar = () => {
                         : 'hover:bg-gray-100 text-gray-700',
                       lesson.isLocked && 'cursor-not-allowed opacity-70',
                     ]"
+                    @click="
+                      navigateToLesson(lesson.id, section.id, lesson.isLocked)
+                    "
                   >
                     <!-- Lesson completion status -->
                     <span
