@@ -567,7 +567,7 @@ onMounted(() => {
 
                     <!-- Mobile filters content -->
                     <div class="p-4">
-                      <CourseFilters
+                      <CoursesCourseFilters
                         :categories="categories"
                         :instructors="instructors"
                         @update:filters="updateFilters"
