@@ -1,5 +1,8 @@
 <!-- pages/courses/index.vue -->
 <script setup lang="ts">
+import { ref, computed, onMounted } from "vue";
+import { coursesData, popularCategoriesData } from "~/constants/coursesData";
+
 // Define types
 interface Course {
   id: number;
@@ -26,6 +29,7 @@ const popularCategories = ref<{ name: string; count: number; image: string }[]>(
 );
 const loading = ref(true);
 const showMobileFilters = ref(false);
+const searchQuery = ref("");
 
 // Filter state (shared with CourseFilters component)
 const filters = ref({
@@ -37,6 +41,16 @@ const filters = ref({
   duration: "any",
 });
 
+// Sort options
+const sortOptions = [
+  { label: "Most Popular", value: "popular" },
+  { label: "Highest Rated", value: "rating" },
+  { label: "Newest", value: "newest" },
+  { label: "Price: Low to High", value: "price_asc" },
+  { label: "Price: High to Low", value: "price_desc" },
+];
+const selectedSort = ref("popular");
+
 // Fetch data
 const fetchCoursesData = async () => {
   loading.value = true;
@@ -46,173 +60,7 @@ const fetchCoursesData = async () => {
     await new Promise((resolve) => setTimeout(resolve, 800));
 
     // Mock data
-    courses.value = [
-      {
-        id: 1,
-        title: "Complete Web Development Bootcamp",
-        category: "Web Development",
-        image: "/images/courses/c1.jpg",
-        instructor: "Alex Johnson",
-        rating: 4.8,
-        reviewCount: 1245,
-        price: 89.99,
-        originalPrice: 199.99,
-        level: "All Levels",
-        duration: "42h 30m",
-        badges: ["Bestseller", "Top Rated"],
-      },
-      {
-        id: 2,
-        title: "Advanced JavaScript: From Fundamentals to Functional JS",
-        category: "JavaScript",
-        image: "/images/courses/c2.jpg",
-        instructor: "Sarah Chen",
-        rating: 4.9,
-        reviewCount: 982,
-        price: 79.99,
-        originalPrice: 149.99,
-        level: "Intermediate",
-        duration: "28h 15m",
-        badges: ["Hot & New"],
-      },
-      {
-        id: 3,
-        title: "Flutter & Dart: The Complete Guide",
-        category: "Mobile Development",
-        image: "/images/courses/c3.jpg",
-        instructor: "Mark Williams",
-        rating: 4.7,
-        reviewCount: 843,
-        price: 94.99,
-        originalPrice: 189.99,
-        level: "Beginner",
-        duration: "32h 45m",
-        badges: ["Bestseller"],
-      },
-      {
-        id: 4,
-        title: "Machine Learning A-Z: Hands-On Python & R",
-        category: "Data Science",
-        image: "/images/courses/c1.jpg",
-        instructor: "Jessica Taylor",
-        rating: 4.6,
-        reviewCount: 1532,
-        price: 129.99,
-        originalPrice: 199.99,
-        level: "Advanced",
-        duration: "45h 20m",
-        badges: ["Highest Rated"],
-      },
-      {
-        id: 5,
-        title: "The Complete React Developer Course",
-        category: "Web Development",
-        image: "/images/courses/c2.jpg",
-        instructor: "Michael Brown",
-        rating: 4.8,
-        reviewCount: 1089,
-        price: 84.99,
-        originalPrice: 169.99,
-        level: "Intermediate",
-        duration: "30h 10m",
-        badges: ["Bestseller"],
-      },
-      {
-        id: 6,
-        title: "UX & UI Design Masterclass",
-        category: "Design",
-        image: "/images/courses/c3.jpg",
-        instructor: "Emma Wilson",
-        rating: 4.7,
-        reviewCount: 756,
-        price: 69.99,
-        originalPrice: 139.99,
-        level: "All Levels",
-        duration: "24h 30m",
-      },
-      {
-        id: 7,
-        title: "AWS Certified Solutions Architect",
-        category: "Cloud Computing",
-        image: "/images/courses/c1.jpg",
-        instructor: "David Miller",
-        rating: 4.9,
-        reviewCount: 1342,
-        price: 119.99,
-        originalPrice: 229.99,
-        level: "Advanced",
-        duration: "38h 15m",
-        badges: ["Highest Rated", "Bestseller"],
-      },
-      {
-        id: 8,
-        title: "Python for Data Science and Machine Learning",
-        category: "Data Science",
-        image: "/images/courses/c2.jpg",
-        instructor: "Rebecca Lee",
-        rating: 4.8,
-        reviewCount: 982,
-        price: 89.99,
-        originalPrice: 179.99,
-        level: "Intermediate",
-        duration: "36h 45m",
-        badges: ["Top Rated"],
-      },
-      {
-        id: 9,
-        title: "The Complete Digital Marketing Course",
-        category: "Marketing",
-        image: "/images/courses/c3.jpg",
-        instructor: "Thomas Clark",
-        rating: 4.6,
-        reviewCount: 1120,
-        price: 94.99,
-        originalPrice: 189.99,
-        level: "Beginner",
-        duration: "32h 15m",
-      },
-      {
-        id: 10,
-        title: "iOS App Development with Swift",
-        category: "Mobile Development",
-        image: "/images/courses/c1.jpg",
-        instructor: "Jennifer Roberts",
-        rating: 4.7,
-        reviewCount: 876,
-        price: 99.99,
-        originalPrice: 199.99,
-        level: "Intermediate",
-        duration: "34h 20m",
-      },
-      {
-        id: 11,
-        title: "Advanced CSS and Sass: Flexbox, Grid, Animations",
-        category: "Web Development",
-        image: "/images/courses/c2.jpg",
-        instructor: "Alex Johnson",
-        rating: 4.9,
-        reviewCount: 1245,
-        price: 74.99,
-        originalPrice: 149.99,
-        level: "Intermediate",
-        duration: "28h 30m",
-        badges: ["Top Rated"],
-      },
-      {
-        id: 12,
-        title: "Full-Stack JavaScript: Node.js, Express, MongoDB",
-        category: "Web Development",
-        image: "/images/courses/c3.jpg",
-        instructor: "Michael Brown",
-        rating: 4.8,
-        reviewCount: 932,
-        price: 89.99,
-        originalPrice: 179.99,
-        level: "Intermediate",
-        duration: "32h 45m",
-        badges: ["Bestseller"],
-      },
-    ];
+    courses.value = [...coursesData];
 
     // Set featured courses (would be from API in real app)
     featuredCourses.value = courses.value
@@ -224,38 +72,7 @@ const fetchCoursesData = async () => {
       .slice(0, 4);
 
     // Set popular categories (would be from API in real app)
-    popularCategories.value = [
-      {
-        name: "Web Development",
-        count: 425,
-        image: "/images/courses/c1.jpg",
-      },
-      {
-        name: "Data Science",
-        count: 320,
-        image: "/images/courses/c3.jpg",
-      },
-      {
-        name: "Mobile Development",
-        count: 275,
-        image: "/images/courses/c2.jpg",
-      },
-      {
-        name: "Design",
-        count: 245,
-        image: "/images/courses/c1.jpg",
-      },
-      {
-        name: "Marketing",
-        count: 180,
-        image: "/images/courses/c3.jpg",
-      },
-      {
-        name: "Cloud Computing",
-        count: 165,
-        image: "/images/courses/c1.jpg",
-      },
-    ];
+    popularCategories.value = [...popularCategoriesData];
   } catch (error) {
     console.error("Error fetching courses:", error);
   } finally {
@@ -282,14 +99,49 @@ const updateFilters = (newFilters: typeof filters.value) => {
   filters.value = newFilters;
 };
 
-// Toggle mobile filters
-const toggleMobileFilters = () => {
-  showMobileFilters.value = !showMobileFilters.value;
+// Handle mobile filter toggle
+const handleMobileFilterToggle = (isOpen: boolean) => {
+  showMobileFilters.value = isOpen;
 };
 
-// Filter courses based on current filters
+// Clear filters
+const clearFilters = () => {
+  filters.value = {
+    category: "all",
+    instructor: "all",
+    price: "all",
+    level: "All Levels",
+    rating: 0,
+    duration: "any",
+  };
+};
+
+// Handle search input
+const handleSearch = () => {
+  // In a real app, you might make an API call with the search query
+  console.log("Searching for:", searchQuery.value);
+};
+
+// Handle sort change
+const handleSortChange = (event: Event) => {
+  const select = event.target as HTMLSelectElement;
+  selectedSort.value = select.value;
+};
+
+// Filter courses based on current filters and search query
 const filteredCourses = computed(() => {
   let result = [...courses.value];
+
+  // Filter by search query
+  if (searchQuery.value.trim() !== "") {
+    const searchTerm = searchQuery.value.toLowerCase();
+    result = result.filter(
+      (course) =>
+        course.title.toLowerCase().includes(searchTerm) ||
+        course.category.toLowerCase().includes(searchTerm) ||
+        course.instructor.toLowerCase().includes(searchTerm)
+    );
+  }
 
   // Filter by category
   if (filters.value.category !== "all") {
@@ -344,6 +196,47 @@ const filteredCourses = computed(() => {
   if (filters.value.duration !== "any") {
     // This would need a more complex implementation for real duration filtering
     // Just a placeholder for now
+    switch (filters.value.duration) {
+      case "short":
+        // Under 3 hours
+        result = result.filter(
+          (course) => parseFloat(course.duration.split("h")[0]) < 3
+        );
+        break;
+      case "medium":
+        // 3-10 hours
+        result = result.filter((course) => {
+          const hours = parseFloat(course.duration.split("h")[0]);
+          return hours >= 3 && hours <= 10;
+        });
+        break;
+      case "long":
+        // Over 10 hours
+        result = result.filter(
+          (course) => parseFloat(course.duration.split("h")[0]) > 10
+        );
+        break;
+    }
+  }
+
+  // Apply sorting
+  switch (selectedSort.value) {
+    case "popular":
+      result.sort((a, b) => b.reviewCount - a.reviewCount);
+      break;
+    case "rating":
+      result.sort((a, b) => b.rating - a.rating);
+      break;
+    case "newest":
+      // In a real app, you'd have createdAt field
+      result.sort((a, b) => b.id - a.id);
+      break;
+    case "price_asc":
+      result.sort((a, b) => a.price - b.price);
+      break;
+    case "price_desc":
+      result.sort((a, b) => b.price - a.price);
+      break;
   }
 
   return result;
@@ -381,13 +274,15 @@ onMounted(() => {
 
           <!-- Search form -->
           <div class="max-w-xl mx-auto animate-fade-in animation-delay-400">
-            <div class="relative">
+            <form class="relative" @submit.prevent="handleSearch">
               <input
+                v-model="searchQuery"
                 type="text"
                 placeholder="Search for courses, skills, or topics..."
                 class="w-full py-4 px-5 pr-12 rounded-lg border-none shadow-lg text-gray-900 focus:ring-2 focus:ring-indigo-400"
               />
               <button
+                type="submit"
                 class="absolute inset-y-0 right-0 px-4 flex items-center bg-indigo-700 hover:bg-indigo-800 text-white rounded-r-lg transition-colors"
               >
                 <svg
@@ -403,7 +298,7 @@ onMounted(() => {
                   />
                 </svg>
               </button>
-            </div>
+            </form>
           </div>
         </div>
       </div>
@@ -412,9 +307,31 @@ onMounted(() => {
     <!-- Popular categories section -->
     <section class="py-16">
       <div class="container mx-auto px-4">
-        <h2 class="text-2xl md:text-3xl font-bold mb-8 text-gray-900">
-          Popular Categories
-        </h2>
+        <div
+          class="flex flex-col md:flex-row justify-between items-start md:items-center mb-8"
+        >
+          <h2 class="text-2xl md:text-3xl font-bold text-gray-900">
+            Popular Categories
+          </h2>
+          <NuxtLink
+            to="/categories"
+            class="mt-2 md:mt-0 text-indigo-600 hover:text-indigo-800 font-medium flex items-center"
+          >
+            View All Categories
+            <svg
+              xmlns="http://www.w3.org/2000/svg"
+              class="h-5 w-5 ml-1"
+              viewBox="0 0 20 20"
+              fill="currentColor"
+            >
+              <path
+                fill-rule="evenodd"
+                d="M12.293 5.293a1 1 0 011.414 0l4 4a1 1 0 010 1.414l-4 4a1 1 0 01-1.414-1.414L14.586 11H3a1 1 0 110-2h11.586l-2.293-2.293a1 1 0 010-1.414z"
+                clip-rule="evenodd"
+              />
+            </svg>
+          </NuxtLink>
+        </div>
 
         <!-- Categories grid -->
         <div class="grid grid-cols-2 md:grid-cols-3 lg:grid-cols-6 gap-5">
@@ -422,7 +339,7 @@ onMounted(() => {
             v-for="category in popularCategories"
             :key="category.name"
             :to="`/courses/category/${encodeURIComponent(category.name)}`"
-            class="group relative rounded-xl overflow-hidden hover:shadow-lg transition-all duration-300 bg-white"
+            class="group relative rounded-xl overflow-hidden hover:shadow-lg transition-all duration-300 bg-white border border-gray-200"
           >
             <!-- Category image with overlay -->
             <div class="h-36 relative overflow-hidden">
@@ -432,7 +349,7 @@ onMounted(() => {
                 class="w-full h-full object-cover transform group-hover:scale-110 transition-transform duration-300"
               />
               <div
-                class="absolute inset-0 bg-gradient-to-t from-black/60 to-transparent"
+                class="absolute inset-0 bg-gradient-to-t from-black/70 to-transparent group-hover:from-black/80 transition-all duration-300"
               />
               <div class="absolute inset-x-0 bottom-0 p-4">
                 <h3 class="text-white font-bold">{{ category.name }}</h3>
@@ -495,97 +412,97 @@ onMounted(() => {
 
         <div class="flex flex-col lg:flex-row gap-8">
           <!-- Sidebar filters - desktop -->
-          <div class="hidden lg:block lg:w-1/4">
+          <div class="lg:w-1/4">
             <CoursesCourseFilters
               :categories="categories"
               :instructors="instructors"
+              :show-mobile-filter="showMobileFilters"
+              :initial-filters="filters"
               @update:filters="updateFilters"
-              @clear="fetchCoursesData"
+              @clear="clearFilters"
+              @mobile-drawer-toggle="handleMobileFilterToggle"
             />
           </div>
 
-          <!-- Mobile filter toggle button -->
-          <div class="lg:hidden mb-4">
-            <button
-              class="w-full flex items-center justify-center space-x-2 bg-indigo-600 hover:bg-indigo-700 text-white py-3 px-4 rounded-lg transition-colors"
-              @click="toggleMobileFilters"
+          <!-- Course list area -->
+          <div class="lg:w-3/4">
+            <!-- Sorting and results count -->
+            <div
+              class="bg-white p-4 rounded-lg mb-6 flex flex-col md:flex-row justify-between items-center border border-gray-200 shadow-sm"
+            >
+              <div class="text-gray-700 mb-4 md:mb-0">
+                Showing
+                <span class="font-bold">{{ filteredCourses.length }}</span>
+                results
+              </div>
+              <div class="flex items-center">
+                <label for="sort" class="text-gray-700 mr-2">Sort by:</label>
+                <select
+                  id="sort"
+                  v-model="selectedSort"
+                  class="rounded-lg border-gray-300 shadow-sm focus:border-indigo-500 focus:ring-indigo-500"
+                  @change="handleSortChange"
+                >
+                  <option
+                    v-for="option in sortOptions"
+                    :key="option.value"
+                    :value="option.value"
+                  >
+                    {{ option.label }}
+                  </option>
+                </select>
+              </div>
+            </div>
+
+            <!-- Show empty state if no courses found -->
+            <div
+              v-if="!loading && filteredCourses.length === 0"
+              class="bg-white p-10 rounded-lg border border-gray-200 text-center shadow"
             >
               <svg
                 xmlns="http://www.w3.org/2000/svg"
-                class="h-5 w-5"
+                class="h-16 w-16 mx-auto mb-4 text-gray-400"
                 viewBox="0 0 20 20"
                 fill="currentColor"
               >
                 <path
                   fill-rule="evenodd"
-                  d="M3 3a1 1 0 011-1h12a1 1 0 011 1v3a1 1 0 01-.293.707L12 11.414V15a1 1 0 01-.293.707l-2 2A1 1 0 018 17v-5.586L3.293 6.707A1 1 0 013 6V3z"
+                  d="M8 4a4 4 0 100 8 4 4 0 000-8zM2 8a6 6 0 1110.89 3.476l4.817 4.817a1 1 0 01-1.414 1.414l-4.816-4.816A6 6 0 012 8z"
                   clip-rule="evenodd"
                 />
               </svg>
-              <span>Filters</span>
-            </button>
-
-            <!-- Mobile filters drawer -->
-            <div
-              v-if="showMobileFilters"
-              class="fixed inset-0 z-50 overflow-hidden"
-            >
-              <div
-                class="absolute inset-0 bg-black bg-opacity-50"
-                @click="toggleMobileFilters"
-              />
-              <div class="absolute inset-y-0 left-0 max-w-full flex">
-                <div class="relative w-screen max-w-md">
-                  <div
-                    class="h-full flex flex-col bg-white shadow-xl overflow-y-auto"
-                  >
-                    <!-- Mobile filter header -->
-                    <div
-                      class="px-4 py-5 border-b border-gray-200 flex items-center justify-between"
-                    >
-                      <h3 class="text-lg font-medium text-gray-900">Filters</h3>
-                      <button
-                        class="text-gray-500 hover:text-gray-700"
-                        @click="toggleMobileFilters"
-                      >
-                        <svg
-                          xmlns="http://www.w3.org/2000/svg"
-                          class="h-6 w-6"
-                          fill="none"
-                          viewBox="0 0 24 24"
-                          stroke="currentColor"
-                        >
-                          <path
-                            stroke-linecap="round"
-                            stroke-linejoin="round"
-                            stroke-width="2"
-                            d="M6 18L18 6M6 6l12 12"
-                          />
-                        </svg>
-                      </button>
-                    </div>
-
-                    <!-- Mobile filters content -->
-                    <div class="p-4">
-                      <CoursesCourseFilters
-                        :categories="categories"
-                        :instructors="instructors"
-                        @update:filters="updateFilters"
-                        @clear="fetchCoursesData"
-                      />
-                    </div>
-                  </div>
-                </div>
-              </div>
+              <h3 class="text-lg font-bold text-gray-900 mb-2">
+                No courses found
+              </h3>
+              <p class="text-gray-600 mb-4">
+                Try changing your search or filter criteria.
+              </p>
+              <button
+                class="inline-flex items-center px-4 py-2 bg-indigo-600 hover:bg-indigo-700 text-white rounded-md transition-colors"
+                @click="clearFilters"
+              >
+                <svg
+                  xmlns="http://www.w3.org/2000/svg"
+                  class="h-4 w-4 mr-2"
+                  viewBox="0 0 20 20"
+                  fill="currentColor"
+                >
+                  <path
+                    fill-rule="evenodd"
+                    d="M4 2a1 1 0 011 1v2.101a7.002 7.002 0 0111.601 2.566 1 1 0 11-1.885.666A5.002 5.002 0 005.999 7H9a1 1 0 010 2H4a1 1 0 01-1-1V3a1 1 0 011-1zm.008 9.057a1 1 0 011.276.61A5.002 5.002 0 0014.001 13H11a1 1 0 110-2h5a1 1 0 011 1v5a1 1 0 11-2 0v-2.101a7.002 7.002 0 01-11.601-2.566 1 1 0 01.61-1.276z"
+                    clip-rule="evenodd"
+                  />
+                </svg>
+                Clear Filters
+              </button>
             </div>
-          </div>
 
-          <!-- Course list -->
-          <div class="lg:w-3/4">
+            <!-- Course list component -->
             <CoursesCourseList
+              v-else
               :courses="filteredCourses"
               :loading="loading"
-              title="All Courses"
+              :title="searchQuery ? 'Search Results' : 'All Courses'"
               :subtitle="`${filteredCourses.length} courses found`"
             />
           </div>
@@ -609,7 +526,7 @@ onMounted(() => {
         <div class="flex flex-col sm:flex-row gap-4 justify-center">
           <NuxtLink
             to="/courses"
-            class="px-8 py-4 bg-white text-indigo-600 hover:bg-gray-100 rounded-lg font-bold transition-colors"
+            class="px-8 py-4 bg-white text-indigo-600 hover:bg-gray-100 rounded-lg font-bold transition-colors shadow-md hover:shadow-lg"
           >
             Browse All Courses
           </NuxtLink>

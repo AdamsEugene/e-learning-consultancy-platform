@@ -8,7 +8,6 @@ import {
   onMounted,
   onBeforeUnmount,
 } from "vue";
-import MobileFilterDrawer from "./filters/MobileFilterDrawer.vue";
 
 // Props
 interface Props {
@@ -268,9 +267,11 @@ onBeforeUnmount(() => {
       class="lg:hidden fixed inset-0 bg-black bg-opacity-50 z-40 transition-opacity duration-300 backdrop-blur-sm"
       @click="toggleMobileFilter"
     />
-
+<pre>
+  {{ isMobileFilterOpen }}
+</pre>
     <!-- Mobile filter drawer as a component -->
-    <MobileFilterDrawer
+    <CoursesFiltersMobileFilterDrawer
       v-show="isMobileFilterOpen"
       :is-open="isMobileFilterOpen"
       :categories="categories"

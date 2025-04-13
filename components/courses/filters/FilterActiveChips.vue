@@ -1,5 +1,6 @@
 <!-- components/courses/filters/FilterActiveChips.vue -->
 <script setup lang="ts">
+// Props
 interface Props {
   filters: {
     category: string;
@@ -12,295 +13,272 @@ interface Props {
   isAnimating: boolean;
 }
 
-const props = defineProps<Props>();
+defineProps<Props>();
 
+// Emits
 const emit = defineEmits<{
   (e: "filter-change", type: string, value: string | number): void;
 }>();
 
-// Clear a specific filter
-const clearFilter = (type: string, defaultValue: string | number) => {
-  emit("filter-change", type, defaultValue);
+// Helper method to get price label
+const getPriceLabel = (value: string): string => {
+  switch (value) {
+    case "free":
+      return "Free";
+    case "paid":
+      return "Paid";
+    case "under50":
+      return "Under $50";
+    case "under100":
+      return "Under $100";
+    case "over100":
+      return "$100 & Above";
+    default:
+      return value;
+  }
 };
 
-// For animation classes
-const animationClass = computed(() => {
-  return props.isAnimating ? "animate-bounce-once" : "";
-});
+// Helper method to get duration label
+const getDurationLabel = (value: string): string => {
+  switch (value) {
+    case "short":
+      return "Short (0-3h)";
+    case "medium":
+      return "Medium (3-10h)";
+    case "long":
+      return "Long (10h+)";
+    default:
+      return value;
+  }
+};
+
+// Handle removing a filter
+const removeFilter = (type: string) => {
+  // Reset to default value based on filter type
+  switch (type) {
+    case "category":
+      emit("filter-change", type, "all");
+      break;
+    case "instructor":
+      emit("filter-change", type, "all");
+      break;
+    case "price":
+      emit("filter-change", type, "all");
+      break;
+    case "level":
+      emit("filter-change", type, "All Levels");
+      break;
+    case "rating":
+      emit("filter-change", type, 0);
+      break;
+    case "duration":
+      emit("filter-change", type, "any");
+      break;
+  }
+};
 </script>
 
 <template>
-  <div class="mb-6 border-b border-gray-200 pb-6">
+  <div class="flex flex-wrap gap-2 mb-4">
+    <!-- Category chip -->
     <div
-      class="flex flex-wrap gap-2 filter-chips-container"
-      :class="animationClass"
+      v-if="filters.category !== 'all'"
+      class="inline-flex items-center bg-indigo-100 text-indigo-800 px-3 py-1 rounded-full text-sm font-medium transition-all hover:bg-indigo-200"
+      :class="{ 'animate-bounce': isAnimating }"
     >
-      <!-- Category chip -->
-      <div
-        v-if="filters.category !== 'all'"
-        class="filter-chip bg-indigo-100 text-indigo-800"
+      <span class="mr-1">Category:</span>
+      <span class="font-bold">{{ filters.category }}</span>
+      <button
+        class="ml-1 text-indigo-600 hover:text-indigo-800 focus:outline-none"
+        aria-label="Remove category filter"
+        @click="removeFilter('category')"
       >
-        <span class="chip-text">{{ filters.category }}</span>
-        <button
-          class="chip-close-btn text-indigo-600 hover:text-indigo-800"
-          aria-label="Clear category filter"
-          @click="clearFilter('category', 'all')"
+        <svg
+          xmlns="http://www.w3.org/2000/svg"
+          class="h-4 w-4"
+          viewBox="0 0 20 20"
+          fill="currentColor"
         >
-          <svg
-            xmlns="http://www.w3.org/2000/svg"
-            class="h-4 w-4"
-            viewBox="0 0 20 20"
-            fill="currentColor"
-          >
-            <path
-              fill-rule="evenodd"
-              d="M10 18a8 8 0 100-16 8 8 0 000 16zM8.707 7.293a1 1 0 00-1.414 1.414L8.586 10l-1.293 1.293a1 1 0 101.414 1.414L10 11.414l1.293 1.293a1 1 0 001.414-1.414L11.414 10l1.293-1.293a1 1 0 00-1.414-1.414L10 8.586 8.707 7.293z"
-              clip-rule="evenodd"
-            />
-          </svg>
-        </button>
-      </div>
+          <path
+            fill-rule="evenodd"
+            d="M4.293 4.293a1 1 0 011.414 0L10 8.586l4.293-4.293a1 1 0 111.414 1.414L11.414 10l4.293 4.293a1 1 0 01-1.414 1.414L10 11.414l-4.293 4.293a1 1 0 01-1.414-1.414L8.586 10 4.293 5.707a1 1 0 010-1.414z"
+            clip-rule="evenodd"
+          />
+        </svg>
+      </button>
+    </div>
 
-      <!-- Instructor chip -->
-      <div
-        v-if="filters.instructor !== 'all'"
-        class="filter-chip bg-green-100 text-green-800"
+    <!-- Instructor chip -->
+    <div
+      v-if="filters.instructor !== 'all'"
+      class="inline-flex items-center bg-green-100 text-green-800 px-3 py-1 rounded-full text-sm font-medium transition-all hover:bg-green-200"
+      :class="{ 'animate-bounce': isAnimating }"
+    >
+      <span class="mr-1">Instructor:</span>
+      <span class="font-bold">{{ filters.instructor }}</span>
+      <button
+        class="ml-1 text-green-600 hover:text-green-800 focus:outline-none"
+        aria-label="Remove instructor filter"
+        @click="removeFilter('instructor')"
       >
-        <span class="chip-text">{{ filters.instructor }}</span>
-        <button
-          class="chip-close-btn text-green-600 hover:text-green-800"
-          aria-label="Clear instructor filter"
-          @click="clearFilter('instructor', 'all')"
+        <svg
+          xmlns="http://www.w3.org/2000/svg"
+          class="h-4 w-4"
+          viewBox="0 0 20 20"
+          fill="currentColor"
         >
-          <svg
-            xmlns="http://www.w3.org/2000/svg"
-            class="h-4 w-4"
-            viewBox="0 0 20 20"
-            fill="currentColor"
-          >
-            <path
-              fill-rule="evenodd"
-              d="M10 18a8 8 0 100-16 8 8 0 000 16zM8.707 7.293a1 1 0 00-1.414 1.414L8.586 10l-1.293 1.293a1 1 0 101.414 1.414L10 11.414l1.293 1.293a1 1 0 001.414-1.414L11.414 10l1.293-1.293a1 1 0 00-1.414-1.414L10 8.586 8.707 7.293z"
-              clip-rule="evenodd"
-            />
-          </svg>
-        </button>
-      </div>
+          <path
+            fill-rule="evenodd"
+            d="M4.293 4.293a1 1 0 011.414 0L10 8.586l4.293-4.293a1 1 0 111.414 1.414L11.414 10l4.293 4.293a1 1 0 01-1.414 1.414L10 11.414l-4.293 4.293a1 1 0 01-1.414-1.414L8.586 10 4.293 5.707a1 1 0 010-1.414z"
+            clip-rule="evenodd"
+          />
+        </svg>
+      </button>
+    </div>
 
-      <!-- Price chip -->
-      <div
-        v-if="filters.price !== 'all'"
-        class="filter-chip bg-purple-100 text-purple-800"
+    <!-- Price chip -->
+    <div
+      v-if="filters.price !== 'all'"
+      class="inline-flex items-center bg-purple-100 text-purple-800 px-3 py-1 rounded-full text-sm font-medium transition-all hover:bg-purple-200"
+      :class="{ 'animate-bounce': isAnimating }"
+    >
+      <span class="mr-1">Price:</span>
+      <span class="font-bold">{{ getPriceLabel(filters.price) }}</span>
+      <button
+        class="ml-1 text-purple-600 hover:text-purple-800 focus:outline-none"
+        aria-label="Remove price filter"
+        @click="removeFilter('price')"
       >
-        <span class="chip-text">{{ filters.price }}</span>
-        <button
-          class="chip-close-btn text-purple-600 hover:text-purple-800"
-          aria-label="Clear price filter"
-          @click="clearFilter('price', 'all')"
+        <svg
+          xmlns="http://www.w3.org/2000/svg"
+          class="h-4 w-4"
+          viewBox="0 0 20 20"
+          fill="currentColor"
         >
-          <svg
-            xmlns="http://www.w3.org/2000/svg"
-            class="h-4 w-4"
-            viewBox="0 0 20 20"
-            fill="currentColor"
-          >
-            <path
-              fill-rule="evenodd"
-              d="M10 18a8 8 0 100-16 8 8 0 000 16zM8.707 7.293a1 1 0 00-1.414 1.414L8.586 10l-1.293 1.293a1 1 0 101.414 1.414L10 11.414l1.293 1.293a1 1 0 001.414-1.414L11.414 10l1.293-1.293a1 1 0 00-1.414-1.414L10 8.586 8.707 7.293z"
-              clip-rule="evenodd"
-            />
-          </svg>
-        </button>
-      </div>
+          <path
+            fill-rule="evenodd"
+            d="M4.293 4.293a1 1 0 011.414 0L10 8.586l4.293-4.293a1 1 0 111.414 1.414L11.414 10l4.293 4.293a1 1 0 01-1.414 1.414L10 11.414l-4.293 4.293a1 1 0 01-1.414-1.414L8.586 10 4.293 5.707a1 1 0 010-1.414z"
+            clip-rule="evenodd"
+          />
+        </svg>
+      </button>
+    </div>
 
-      <!-- Level chip -->
-      <div
-        v-if="filters.level !== 'All Levels'"
-        class="filter-chip bg-blue-100 text-blue-800"
+    <!-- Level chip -->
+    <div
+      v-if="filters.level !== 'All Levels'"
+      class="inline-flex items-center bg-blue-100 text-blue-800 px-3 py-1 rounded-full text-sm font-medium transition-all hover:bg-blue-200"
+      :class="{ 'animate-bounce': isAnimating }"
+    >
+      <span class="mr-1">Level:</span>
+      <span class="font-bold">{{ filters.level }}</span>
+      <button
+        class="ml-1 text-blue-600 hover:text-blue-800 focus:outline-none"
+        aria-label="Remove level filter"
+        @click="removeFilter('level')"
       >
-        <span class="chip-text">{{ filters.level }}</span>
-        <button
-          class="chip-close-btn text-blue-600 hover:text-blue-800"
-          aria-label="Clear level filter"
-          @click="clearFilter('level', 'All Levels')"
+        <svg
+          xmlns="http://www.w3.org/2000/svg"
+          class="h-4 w-4"
+          viewBox="0 0 20 20"
+          fill="currentColor"
         >
-          <svg
-            xmlns="http://www.w3.org/2000/svg"
-            class="h-4 w-4"
-            viewBox="0 0 20 20"
-            fill="currentColor"
-          >
-            <path
-              fill-rule="evenodd"
-              d="M10 18a8 8 0 100-16 8 8 0 000 16zM8.707 7.293a1 1 0 00-1.414 1.414L8.586 10l-1.293 1.293a1 1 0 101.414 1.414L10 11.414l1.293 1.293a1 1 0 001.414-1.414L11.414 10l1.293-1.293a1 1 0 00-1.414-1.414L10 8.586 8.707 7.293z"
-              clip-rule="evenodd"
-            />
-          </svg>
-        </button>
-      </div>
+          <path
+            fill-rule="evenodd"
+            d="M4.293 4.293a1 1 0 011.414 0L10 8.586l4.293-4.293a1 1 0 111.414 1.414L11.414 10l4.293 4.293a1 1 0 01-1.414 1.414L10 11.414l-4.293 4.293a1 1 0 01-1.414-1.414L8.586 10 4.293 5.707a1 1 0 010-1.414z"
+            clip-rule="evenodd"
+          />
+        </svg>
+      </button>
+    </div>
 
-      <!-- Rating chip -->
-      <div
-        v-if="filters.rating !== 0"
-        class="filter-chip bg-yellow-100 text-yellow-800"
-      >
-        <span class="chip-text flex items-center">
-          {{ filters.rating }}+
+    <!-- Rating chip -->
+    <div
+      v-if="filters.rating > 0"
+      class="inline-flex items-center bg-yellow-100 text-yellow-800 px-3 py-1 rounded-full text-sm font-medium transition-all hover:bg-yellow-200"
+      :class="{ 'animate-bounce': isAnimating }"
+    >
+      <span class="mr-1">Rating:</span>
+      <div class="flex items-center">
+        <div class="flex text-yellow-500">
           <svg
-            xmlns="http://www.w3.org/2000/svg"
-            class="h-3.5 w-3.5 ml-1 text-yellow-500"
-            viewBox="0 0 20 20"
-            fill="currentColor"
-          >
-            <path
-              d="M9.049 2.927c.3-.921 1.603-.921 1.902 0l1.07 3.292a1 1 0 00.95.69h3.462c.969 0 1.371 1.24.588 1.81l-2.8 2.034a1 1 0 00-.364 1.118l1.07 3.292c.3.921-.755 1.688-1.54 1.118l-2.8-2.034a1 1 0 00-1.175 0l-2.8 2.034c-.784.57-1.838-.197-1.539-1.118l1.07-3.292a1 1 0 00-.364-1.118L2.98 8.72c-.783-.57-.38-1.81.588-1.81h3.461a1 1 0 00.951-.69l1.07-3.292z"
-            />
-          </svg>
-        </span>
-        <button
-          class="chip-close-btn text-yellow-600 hover:text-yellow-800"
-          aria-label="Clear rating filter"
-          @click="clearFilter('rating', 0)"
-        >
-          <svg
+            v-for="i in Math.floor(filters.rating)"
+            :key="i"
             xmlns="http://www.w3.org/2000/svg"
             class="h-4 w-4"
             viewBox="0 0 20 20"
             fill="currentColor"
           >
             <path
-              fill-rule="evenodd"
-              d="M10 18a8 8 0 100-16 8 8 0 000 16zM8.707 7.293a1 1 0 00-1.414 1.414L8.586 10l-1.293 1.293a1 1 0 101.414 1.414L10 11.414l1.293 1.293a1 1 0 001.414-1.414L11.414 10l1.293-1.293a1 1 0 00-1.414-1.414L10 8.586 8.707 7.293z"
-              clip-rule="evenodd"
+              d="M9.049 2.927c.3-.921 1.603-.921 1.902 0l1.07 3.292a1 1 0 00.95.69h3.462c.969 0 1.371 1.24.588 1.81l-2.8 2.034a1 1 0 00-.364 1.118l1.07 3.292c.3.921-.755 1.688-1.54 1.118l-2.8-2.034a1 1 0 00-1.175 0l-2.8 2.034c-.784.57-1.838-.197-1.539-1.118l1.07-3.292a1 1 0 00-.364-1.118l-2.8-2.034c-.783-.57-.38-1.81.588-1.81h3.461a1 1 0 00.951-.69l1.07-3.292z"
             />
           </svg>
-        </button>
+        </div>
+        <span class="ml-1 font-bold">& Up</span>
       </div>
+      <button
+        class="ml-1 text-yellow-600 hover:text-yellow-800 focus:outline-none"
+        aria-label="Remove rating filter"
+        @click="removeFilter('rating')"
+      >
+        <svg
+          xmlns="http://www.w3.org/2000/svg"
+          class="h-4 w-4"
+          viewBox="0 0 20 20"
+          fill="currentColor"
+        >
+          <path
+            fill-rule="evenodd"
+            d="M4.293 4.293a1 1 0 011.414 0L10 8.586l4.293-4.293a1 1 0 111.414 1.414L11.414 10l4.293 4.293a1 1 0 01-1.414 1.414L10 11.414l-4.293 4.293a1 1 0 01-1.414-1.414L8.586 10 4.293 5.707a1 1 0 010-1.414z"
+            clip-rule="evenodd"
+          />
+        </svg>
+      </button>
+    </div>
 
-      <!-- Duration chip -->
-      <div
-        v-if="filters.duration !== 'any'"
-        class="filter-chip bg-red-100 text-red-800"
+    <!-- Duration chip -->
+    <div
+      v-if="filters.duration !== 'any'"
+      class="inline-flex items-center bg-red-100 text-red-800 px-3 py-1 rounded-full text-sm font-medium transition-all hover:bg-red-200"
+      :class="{ 'animate-bounce': isAnimating }"
+    >
+      <span class="mr-1">Duration:</span>
+      <span class="font-bold">{{ getDurationLabel(filters.duration) }}</span>
+      <button
+        class="ml-1 text-red-600 hover:text-red-800 focus:outline-none"
+        aria-label="Remove duration filter"
+        @click="removeFilter('duration')"
       >
-        <span class="chip-text">{{ filters.duration }}</span>
-        <button
-          class="chip-close-btn text-red-600 hover:text-red-800"
-          aria-label="Clear duration filter"
-          @click="clearFilter('duration', 'any')"
+        <svg
+          xmlns="http://www.w3.org/2000/svg"
+          class="h-4 w-4"
+          viewBox="0 0 20 20"
+          fill="currentColor"
         >
-          <svg
-            xmlns="http://www.w3.org/2000/svg"
-            class="h-4 w-4"
-            viewBox="0 0 20 20"
-            fill="currentColor"
-          >
-            <path
-              fill-rule="evenodd"
-              d="M10 18a8 8 0 100-16 8 8 0 000 16zM8.707 7.293a1 1 0 00-1.414 1.414L8.586 10l-1.293 1.293a1 1 0 101.414 1.414L10 11.414l1.293 1.293a1 1 0 001.414-1.414L11.414 10l1.293-1.293a1 1 0 00-1.414-1.414L10 8.586 8.707 7.293z"
-              clip-rule="evenodd"
-            />
-          </svg>
-        </button>
-      </div>
+          <path
+            fill-rule="evenodd"
+            d="M4.293 4.293a1 1 0 011.414 0L10 8.586l4.293-4.293a1 1 0 111.414 1.414L11.414 10l4.293 4.293a1 1 0 01-1.414 1.414L10 11.414l-4.293 4.293a1 1 0 01-1.414-1.414L8.586 10 4.293 5.707a1 1 0 010-1.414z"
+            clip-rule="evenodd"
+          />
+        </svg>
+      </button>
     </div>
   </div>
 </template>
 
 <style scoped>
-.filter-chips-container {
-  position: relative;
-  z-index: 1;
-}
-
-.filter-chip {
-  display: flex;
-  align-items: center;
-  padding: 0.25rem 0.75rem;
-  border-radius: 9999px;
-  font-size: 0.875rem;
-  position: relative;
-  overflow: hidden;
-  transition: all 0.3s cubic-bezier(0.4, 0, 0.2, 1);
-  box-shadow: 0 1px 2px rgba(0, 0, 0, 0.05);
-}
-
-.filter-chip:hover {
-  transform: translateY(-1px);
-  box-shadow: 0 2px 4px rgba(0, 0, 0, 0.1);
-}
-
-.filter-chip:active {
-  transform: translateY(0);
-}
-
-.chip-text {
-  position: relative;
-  z-index: 1;
-}
-
-.chip-close-btn {
-  margin-left: 0.25rem;
-  display: flex;
-  align-items: center;
-  justify-content: center;
-  border-radius: 9999px;
-  transition: all 0.2s;
-  z-index: 1;
-}
-
-.chip-close-btn:hover {
-  transform: scale(1.1);
-}
-
-.chip-close-btn:active {
-  transform: scale(0.95);
-}
-
-/* Animation for clearing filters */
-@keyframes bounceOnce {
+/* Bounce animation for clearing filters */
+@keyframes bounce {
   0%,
   100% {
     transform: translateY(0);
   }
-  25% {
+  50% {
     transform: translateY(-5px);
   }
-  50% {
-    transform: translateY(0);
-  }
-  75% {
-    transform: translateY(-2px);
-  }
 }
 
-.animate-bounce-once {
-  animation: bounceOnce 0.5s ease-in-out;
-}
-
-/* Gradient shine effect */
-.filter-chip::after {
-  content: "";
-  position: absolute;
-  top: 0;
-  left: -100%;
-  width: 100%;
-  height: 100%;
-  background: linear-gradient(
-    to right,
-    transparent 0%,
-    rgba(255, 255, 255, 0.2) 50%,
-    transparent 100%
-  );
-  animation: shine 3s infinite;
-}
-
-@keyframes shine {
-  0% {
-    left: -100%;
-  }
-  20%,
-  100% {
-    left: 100%;
-  }
+.animate-bounce {
+  animation: bounce 0.5s ease-in-out;
 }
 </style>
