@@ -71,3 +71,10 @@ export interface Course {
   progress?: number;
   badges?: string[];
 }
+
+export interface Note {
+  id: string;
+  text: string;
+  timestamp: number;
+  lessonId: number | string;
+}
