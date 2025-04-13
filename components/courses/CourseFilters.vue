@@ -267,9 +267,7 @@ onBeforeUnmount(() => {
       class="lg:hidden fixed inset-0 bg-black bg-opacity-50 z-40 transition-opacity duration-300 backdrop-blur-sm"
       @click="toggleMobileFilter"
     />
-<pre>
-  {{ isMobileFilterOpen }}
-</pre>
+
     <!-- Mobile filter drawer as a component -->
     <CoursesFiltersMobileFilterDrawer
       v-show="isMobileFilterOpen"
