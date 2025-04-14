@@ -43,7 +43,7 @@ const caseStudies = ref<CaseStudy[]>([
     client: "RetailGiant Inc.",
     description:
       "Helped transition legacy system to a modern microservices architecture, resulting in 60% faster page loads and a 37% increase in conversion rates.",
-    image: "/api/placeholder/400/300",
+    image: "/images/courses/c2.jpg",
     stats: [
       { label: "Increase in Sales", value: "37%" },
       { label: "Page Load Time", value: "0.8s" },
@@ -61,7 +61,7 @@ const caseStudies = ref<CaseStudy[]>([
     client: "PayEasy Solutions",
     description:
       "Designed and developed a secure, high-performance payment application with biometric authentication, resulting in 125K+ downloads in the first quarter.",
-    image: "/api/placeholder/400/300",
+    image: "/images/courses/c2.jpg",
     stats: [
       { label: "User Acquisition", value: "125K" },
       { label: "Transaction Time", value: "1.2s" },
@@ -78,7 +78,7 @@ const caseStudies = ref<CaseStudy[]>([
     client: "MediCorp Health Systems",
     description:
       "Created a comprehensive analytics solution that helped the client reduce operational costs by 24% while improving patient care metrics across 12 facilities.",
-    image: "/api/placeholder/400/300",
+    image: "/images/courses/c2.jpg",
     stats: [
       { label: "Cost Reduction", value: "24%" },
       { label: "Data Sources", value: "15+" },
@@ -95,7 +95,7 @@ const caseStudies = ref<CaseStudy[]>([
     client: "GlobalLogistics Ltd.",
     description:
       "Implemented an AI-powered supply chain optimization system that reduced delivery times by 32% and improved inventory forecasting accuracy to 94%.",
-    image: "/api/placeholder/400/300",
+    image: "/images/courses/c2.jpg",
     stats: [
       { label: "Delivery Time", value: "-32%" },
       { label: "Forecast Accuracy", value: "94%" },
@@ -112,7 +112,7 @@ const caseStudies = ref<CaseStudy[]>([
     client: "Pinnacle Insurance Group",
     description:
       "Completely redesigned the client's website with a focus on user experience, resulting in a 45% increase in lead generation and 65% improvement in user engagement.",
-    image: "/api/placeholder/400/300",
+    image: "/images/courses/c2.jpg",
     stats: [
       { label: "Lead Generation", value: "+45%" },
       { label: "Bounce Rate", value: "-35%" },
@@ -129,7 +129,7 @@ const caseStudies = ref<CaseStudy[]>([
     client: "Industrial Dynamics Corp",
     description:
       "Migrated on-premises infrastructure to a secure cloud environment, reducing IT costs by 38% and improving system reliability with 99.99% uptime.",
-    image: "/api/placeholder/400/300",
+    image: "/images/courses/c2.jpg",
     stats: [
       { label: "Cost Reduction", value: "38%" },
       { label: "System Uptime", value: "99.99%" },

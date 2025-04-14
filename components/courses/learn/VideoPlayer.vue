@@ -10,7 +10,7 @@ interface Props {
 
 // Props
 const props = withDefaults(defineProps<Props>(), {
-  poster: "/api/placeholder/1280/720",
+  poster: "/images/courses/c3.jpg",
   progress: 0,
 });
 

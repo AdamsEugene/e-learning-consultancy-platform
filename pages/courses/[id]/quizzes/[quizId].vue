@@ -55,7 +55,7 @@ const fetchCourseData = async () => {
       instructor: {
         id: "instructor-1",
         name: "Sarah Johnson",
-        avatar: "/api/placeholder/64/64",
+        avatar: "/images/instructors/i1.jpg",
         title: "Senior Web Developer",
         bio: "15+ years of experience in web development. Worked at Google and Microsoft.",
       },

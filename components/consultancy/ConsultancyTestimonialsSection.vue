@@ -36,7 +36,7 @@ const props = withDefaults(defineProps<Props>(), {
       company: "TechInnovate Solutions",
       content:
         "Working with this consultancy team transformed our digital strategy. Their expert guidance helped us identify opportunities we had overlooked and implement solutions that improved efficiency by 45%. The team's technical knowledge combined with their business acumen made them invaluable partners.",
-      image: "/api/placeholder/100/100",
+      image: "/images/instructors/i1.jpg",
       rating: 5,
       highlight: true,
     },
@@ -47,7 +47,7 @@ const props = withDefaults(defineProps<Props>(), {
       company: "GrowthFocus Media",
       content:
         "The strategic insights provided by the consultancy team revolutionized our marketing approach. They not only identified our challenges but delivered practical solutions that generated a 60% increase in qualified leads within three months. Their data-driven methodology exceeded our expectations.",
-      image: "/api/placeholder/100/100",
+      image: "/images/instructors/i1.jpg",
       rating: 5,
     },
     {
@@ -57,7 +57,7 @@ const props = withDefaults(defineProps<Props>(), {
       company: "GlobalTrade Systems",
       content:
         "We engaged the consultancy team to optimize our operational workflows, and the results were impressive. They quickly identified bottlenecks in our processes and implemented solutions that reduced processing time by 35%. Their practical approach and clear communication made the entire project seamless.",
-      image: "/api/placeholder/100/100",
+      image: "/images/instructors/i1.jpg",
       rating: 4,
     },
     {
@@ -67,7 +67,7 @@ const props = withDefaults(defineProps<Props>(), {
       company: "FutureBuild Construction",
       content:
         "The consultancy team delivered exceptional value to our business transformation initiative. Their methodical approach to analyzing our challenges and implementing tailored solutions helped us navigate a complex industry transition. The ROI on their services has been substantial.",
-      image: "/api/placeholder/100/100",
+      image: "/images/instructors/i1.jpg",
       rating: 5,
     },
   ],
@@ -370,7 +370,7 @@ onBeforeUnmount(() => {
                   <div class="flex items-center">
                     <div class="mr-4">
                       <img
-                        :src="testimonial.image || '/api/placeholder/64/64'"
+                        :src="testimonial.image || '/images/instructors/i1.jpg'"
                         :alt="testimonial.name"
                         class="w-16 h-16 rounded-full object-cover border-2 border-indigo-100"
                       />

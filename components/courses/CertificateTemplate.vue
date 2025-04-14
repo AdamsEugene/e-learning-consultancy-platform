@@ -17,8 +17,8 @@ const props = withDefaults(defineProps<CertificateTemplateProps>(), {
   completionDate: () => new Date(),
   certificateId: () => "",
   certificateType: "completion",
-  companyLogo: "/api/placeholder/120/60",
-  signatureImageUrl: "/api/placeholder/150/60",
+  companyLogo: "/images/courses/c3.jpg",
+  signatureImageUrl: "/images/courses/c3.jpg",
   certificateStyle: "classic",
   isPreview: false,
 });

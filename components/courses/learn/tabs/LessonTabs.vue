@@ -60,7 +60,7 @@ const discussions = [
     id: 1,
     user: {
       name: "Alex Thompson",
-      avatar: "/api/placeholder/40/40",
+      avatar: "/images/courses/c3.jpg",
       role: "Student",
     },
     content:
@@ -72,7 +72,7 @@ const discussions = [
         id: 101,
         user: {
           name: "Sarah Johnson",
-          avatar: "/api/placeholder/40/40",
+          avatar: "/images/courses/c3.jpg",
           role: "Instructor",
         },
         content:

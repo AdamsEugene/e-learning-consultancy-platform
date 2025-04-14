@@ -107,7 +107,7 @@ const caseStudies = ref([
     client: "RetailGiant Inc.",
     description:
       "Helped transition legacy system to a modern microservices architecture, resulting in 60% faster page loads and a 37% increase in conversion rates.",
-    image: "/api/placeholder/400/300",
+    image: "/images/courses/c2.jpg",
     stats: [
       { label: "Increase in Sales", value: "37%" },
       { label: "Page Load Time", value: "0.8s" },
@@ -122,7 +122,7 @@ const caseStudies = ref([
     client: "PayEasy Solutions",
     description:
       "Designed and developed a secure, high-performance payment application with biometric authentication, resulting in 125K+ downloads in the first quarter.",
-    image: "/api/placeholder/400/300",
+    image: "/images/courses/c2.jpg",
     stats: [
       { label: "User Acquisition", value: "125K" },
       { label: "Transaction Time", value: "1.2s" },
@@ -136,7 +136,7 @@ const caseStudies = ref([
     client: "MediCorp Health Systems",
     description:
       "Created a comprehensive analytics solution that helped the client reduce operational costs by 24% while improving patient care metrics across 12 facilities.",
-    image: "/api/placeholder/400/300",
+    image: "/images/courses/c2.jpg",
     stats: [
       { label: "Cost Reduction", value: "24%" },
       { label: "Data Sources", value: "15+" },
@@ -150,7 +150,7 @@ const caseStudies = ref([
     client: "GlobalLogistics Ltd.",
     description:
       "Implemented an AI-powered supply chain optimization system that reduced delivery times by 32% and improved inventory forecasting accuracy to 94%.",
-    image: "/api/placeholder/400/300",
+    image: "/images/courses/c2.jpg",
     stats: [
       { label: "Delivery Time", value: "-32%" },
       { label: "Forecast Accuracy", value: "94%" },

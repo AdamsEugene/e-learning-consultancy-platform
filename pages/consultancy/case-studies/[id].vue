@@ -75,11 +75,11 @@ const mockCaseStudyData: Record<number, CaseStudy> = {
       "Our solution included:\n\n- Breaking down the monolithic application into independent, scalable microservices\n- Implementing a container orchestration system with Kubernetes for improved scalability\n- Developing a new API gateway to manage service communication\n- Creating a robust CI/CD pipeline for faster deployment\n- Implementing advanced caching strategies\n- Building a responsive, mobile-first frontend using modern JavaScript frameworks\n- Setting up comprehensive monitoring and alerting systems",
     results:
       "The new platform launched on schedule and immediately showed impressive improvements. Page load times decreased by 60%, and the system easily handled a Black Friday sale that generated 3x the traffic of their previous record without any performance issues. Most importantly, the conversion rate increased by 37% and cart abandonment dropped by 25%.",
-    image: "/api/placeholder/800/400",
+    image: "/images/courses/c3.jpg",
     gallery: [
-      "/api/placeholder/600/400",
-      "/api/placeholder/600/400",
-      "/api/placeholder/600/400",
+      "/images/courses/c3.jpg",
+      "/images/courses/c3.jpg",
+      "/images/courses/c3.jpg",
     ],
     stats: [
       { label: "Increase in Sales", value: "37%" },
@@ -104,13 +104,13 @@ const mockCaseStudyData: Record<number, CaseStudy> = {
       {
         id: 2,
         title: "FinTech Mobile App Development",
-        image: "/api/placeholder/400/300",
+        image: "/images/courses/c2.jpg",
         industry: "Finance",
       },
       {
         id: 5,
         title: "Corporate Website Redesign",
-        image: "/api/placeholder/400/300",
+        image: "/images/courses/c2.jpg",
         industry: "Insurance",
       },
     ],
@@ -133,11 +133,11 @@ const mockCaseStudyData: Record<number, CaseStudy> = {
       "We developed a cross-platform mobile application with advanced security features including biometric authentication, real-time fraud detection, and end-to-end encryption. The app integrated with multiple payment processors and banking systems while maintaining a clean, simple user interface.",
     results:
       "The application gained immediate traction upon release, achieving over a quarter-million users within the first six months. The platform processes transactions securely in 1.2 seconds on average, and has maintained a near-perfect rating on app stores.",
-    image: "/api/placeholder/800/400",
+    image: "/images/courses/c3.jpg",
     gallery: [
-      "/api/placeholder/600/400",
-      "/api/placeholder/600/400",
-      "/api/placeholder/600/400",
+      "/images/courses/c3.jpg",
+      "/images/courses/c3.jpg",
+      "/images/courses/c3.jpg",
     ],
     stats: [
       { label: "User Acquisition", value: "125K" },
@@ -162,13 +162,13 @@ const mockCaseStudyData: Record<number, CaseStudy> = {
       {
         id: 1,
         title: "E-commerce Platform Migration",
-        image: "/api/placeholder/400/300",
+        image: "/images/courses/c2.jpg",
         industry: "Retail",
       },
       {
         id: 3,
         title: "Healthcare Analytics Dashboard",
-        image: "/api/placeholder/400/300",
+        image: "/images/courses/c2.jpg",
         industry: "Healthcare",
       },
     ],

@@ -35,7 +35,7 @@ const props = withDefaults(defineProps<Props>(), {
       name: "Sarah Johnson",
       role: "Senior Strategy Consultant",
       bio: "With over 15 years of experience in business strategy and digital transformation, Sarah has helped numerous Fortune 500 companies achieve sustainable growth and competitive advantage.",
-      image: "/api/placeholder/300/300",
+      image: "/images/instructors/i1.jpg",
       socials: {
         linkedin: "#",
         twitter: "#",
@@ -52,7 +52,7 @@ const props = withDefaults(defineProps<Props>(), {
       name: "Michael Chen",
       role: "Technical Solutions Architect",
       bio: "Michael combines deep technical knowledge with business acumen to architect scalable solutions that drive efficiency and innovation. He specializes in cloud architecture and enterprise systems.",
-      image: "/api/placeholder/300/300",
+      image: "/images/instructors/i1.jpg",
       socials: {
         linkedin: "#",
         twitter: "#",
@@ -69,7 +69,7 @@ const props = withDefaults(defineProps<Props>(), {
       name: "Amara Okafor",
       role: "Data Analytics Consultant",
       bio: "Amara is passionate about turning data into actionable insights. With expertise in advanced analytics and machine learning, she helps businesses make data-driven decisions that deliver measurable results.",
-      image: "/api/placeholder/300/300",
+      image: "/images/instructors/i1.jpg",
       socials: {
         linkedin: "#",
         email: "amara@example.com",
@@ -85,7 +85,7 @@ const props = withDefaults(defineProps<Props>(), {
       name: "David Rodriguez",
       role: "UX/UI Design Consultant",
       bio: "David creates exceptional user experiences that balance business goals with user needs. His human-centered design approach has helped numerous clients improve conversion rates and customer satisfaction.",
-      image: "/api/placeholder/300/300",
+      image: "/images/instructors/i1.jpg",
       socials: {
         linkedin: "#",
         twitter: "#",

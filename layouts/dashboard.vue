@@ -32,7 +32,7 @@ const notificationCount = ref(3);
 // User data - in a real app, this would be from your user store or API
 const user = ref({
   name: "Emily Johnson",
-  avatar: "/api/placeholder/100/100",
+  avatar: "/images/instructors/i1.jpg",
   role: "student",
 });
 

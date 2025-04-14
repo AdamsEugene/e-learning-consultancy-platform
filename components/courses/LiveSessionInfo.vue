@@ -65,7 +65,7 @@ const handleBackToCourse = () => {
       <div class="md:flex-shrink-0">
         <img
           class="h-48 w-full object-cover md:w-48"
-          src="/api/placeholder/512/512"
+          src="/images/instructors/i1.jpg"
           alt="Live Session"
         />
       </div>
