@@ -737,6 +737,17 @@ onBeforeUnmount(() => {
         </svg>
       </button>
     </footer>
+
+    <!-- Support Chat Component -->
+    <UiSupportChat
+      brand-name="LearnConsult"
+      agent-name="Alex from Support"
+      agent-avatar="/images/instructors/i3.jpg"
+      brand-color="purple"
+      position="bottom-right"
+      greeting-message="👋 Hi there! Need any help with your courses or consultancy?"
+      response-time="We aim to respond within an hour"
+    />
   </div>
 </template>
 

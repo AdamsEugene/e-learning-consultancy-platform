@@ -215,7 +215,7 @@ const renderIcon = (iconName: string) => {
             :src="user.avatar"
             :alt="user.name"
             class="h-9 w-9 rounded-full object-cover border-2 border-indigo-100"
-          />
+          >
 
           <!-- User info - only show if sidebar is open -->
           <div v-if="isSidebarOpen" class="ml-3">
@@ -286,7 +286,7 @@ const renderIcon = (iconName: string) => {
                 type="text"
                 placeholder="Search..."
                 class="w-full md:w-64 pl-10 pr-4 py-2 rounded-lg border border-gray-300 focus:outline-none focus:ring-2 focus:ring-indigo-500 focus:border-transparent"
-              />
+              >
               <div class="absolute left-3 top-2.5 text-gray-400">
                 <svg
                   xmlns="http://www.w3.org/2000/svg"
@@ -350,7 +350,7 @@ const renderIcon = (iconName: string) => {
                 :src="user.avatar"
                 :alt="user.name"
                 class="h-8 w-8 rounded-full object-cover border-2 border-indigo-100"
-              />
+              >
             </div>
           </div>
         </div>
@@ -361,6 +361,16 @@ const renderIcon = (iconName: string) => {
         <slot />
       </main>
     </div>
+
+    <UiSupportChat
+      brand-name="LearnConsult Enterprise"
+      agent-name="Enterprise Support"
+      agent-avatar="/images/instructors/i3.jpg"
+      brand-color="blue"
+      position="bottom-right"
+      greeting-message="Welcome to Enterprise Support. How may we assist you today?"
+      response-time="Our dedicated team typically responds within 15 minutes"
+    />
   </div>
 </template>
 
