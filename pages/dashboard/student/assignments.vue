@@ -11,7 +11,7 @@ import type {
 
 // Set page layout
 definePageMeta({
-  layout: "dashboard",
+  layout: "dashboard-student",
 });
 
 // State

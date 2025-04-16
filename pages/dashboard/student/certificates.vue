@@ -2,7 +2,7 @@
 <script setup lang="ts">
 // Set page layout
 definePageMeta({
-  layout: "dashboard",
+  layout: "dashboard-student",
 });
 
 // Certificate interface

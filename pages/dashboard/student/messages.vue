@@ -4,7 +4,7 @@ import type { User, Conversation, Message } from "~/types/messaging";
 
 // Set page layout
 definePageMeta({
-  layout: "dashboard",
+  layout: "dashboard-student",
 });
 
 // States

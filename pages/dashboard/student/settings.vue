@@ -5,7 +5,7 @@ import { useRoute, useRouter } from "vue-router";
 
 // Page meta
 definePageMeta({
-  layout: "dashboard",
+  layout: "dashboard-student",
 });
 
 useHead({

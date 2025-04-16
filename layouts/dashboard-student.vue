@@ -38,19 +38,39 @@ const user = ref({
 
 // Navigation menu
 const navItems = [
-  { title: "Dashboard", path: "/dashboard", icon: "home" },
-  { title: "My Courses", path: "/dashboard/courses", icon: "book-open" },
-  { title: "Upcoming Classes", path: "/dashboard/classes", icon: "calendar" },
-  { title: "Assignments", path: "/dashboard/assignments", icon: "clipboard" },
-  { title: "Certificates", path: "/dashboard/certificates", icon: "award" },
+  { title: "Dashboard", path: "/dashboard/student", icon: "home" },
+  {
+    title: "My Courses",
+    path: "/dashboard/student/courses",
+    icon: "book-open",
+  },
+  {
+    title: "Upcoming Classes",
+    path: "/dashboard/student/classes",
+    icon: "calendar",
+  },
+  {
+    title: "Assignments",
+    path: "/dashboard/student/assignments",
+    icon: "clipboard",
+  },
+  {
+    title: "Certificates",
+    path: "/dashboard/student/certificates",
+    icon: "award",
+  },
   {
     title: "Messages",
-    path: "/dashboard/messages",
+    path: "/dashboard/student/messages",
     icon: "message-circle",
     badge: notificationCount,
   },
-  { title: "Settings", path: "/dashboard/settings", icon: "settings" },
-  { title: "Help & Support", path: "/dashboard/support", icon: "help-circle" },
+  { title: "Settings", path: "/dashboard/student/settings", icon: "settings" },
+  {
+    title: "Help & Support",
+    path: "/dashboard/student/support",
+    icon: "help-circle",
+  },
 ];
 
 // Lifecycle hooks
@@ -215,7 +235,7 @@ const renderIcon = (iconName: string) => {
             :src="user.avatar"
             :alt="user.name"
             class="h-9 w-9 rounded-full object-cover border-2 border-indigo-100"
-          >
+          />
 
           <!-- User info - only show if sidebar is open -->
           <div v-if="isSidebarOpen" class="ml-3">
@@ -275,7 +295,7 @@ const renderIcon = (iconName: string) => {
 
           <!-- Page title - can be dynamic based on current route -->
           <div class="text-xl font-bold text-gray-800 hidden sm:block">
-            Student Dashboard d d d
+            Student Dashboard
           </div>
 
           <!-- Right navigation items -->
@@ -286,7 +306,7 @@ const renderIcon = (iconName: string) => {
                 type="text"
                 placeholder="Search..."
                 class="w-full md:w-64 pl-10 pr-4 py-2 rounded-lg border border-gray-300 focus:outline-none focus:ring-2 focus:ring-indigo-500 focus:border-transparent"
-              >
+              />
               <div class="absolute left-3 top-2.5 text-gray-400">
                 <svg
                   xmlns="http://www.w3.org/2000/svg"
@@ -350,7 +370,7 @@ const renderIcon = (iconName: string) => {
                 :src="user.avatar"
                 :alt="user.name"
                 class="h-8 w-8 rounded-full object-cover border-2 border-indigo-100"
-              >
+              />
             </div>
           </div>
         </div>
