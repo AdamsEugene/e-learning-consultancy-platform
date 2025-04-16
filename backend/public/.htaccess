@@ -1,0 +1,83 @@
+# Disable directory browsing
+Options All -Indexes
+
+# ----------------------------------------------------------------------
+# Rewrite engine
+# ----------------------------------------------------------------------
+
+<IfModule mod_rewrite.c>
+	Options +FollowSymlinks
+	RewriteEngine On
+
+	# Allow direct access to .csv files in the tmp/ directory
+	RewriteCond %{REQUEST_URI} ^/tmp/.*\.csv$ [NC]
+	RewriteRule .* - [L]
+
+	# Redirect Trailing Slashes...
+	RewriteCond %{REQUEST_FILENAME} !-d
+	RewriteCond %{REQUEST_URI} (.+)/$
+	RewriteRule ^ %1 [L,R=301]
+
+	# Block access to .git folders
+	RewriteRule .*\.git/.* - [F]
+
+	# Rewrite "www.example.com -> example.com"
+	RewriteCond %{HTTPS} !=on
+	RewriteCond %{HTTP_HOST} ^www\.(.+)$ [NC]
+	RewriteRule ^ http://%1%{REQUEST_URI} [R=301,L]
+
+	# Route all non-existing files/directories to index.php
+	RewriteCond %{REQUEST_FILENAME} !-f
+	RewriteCond %{REQUEST_FILENAME} !-d
+	RewriteRule ^([\s\S]*)$ index.php/$1 [L,NC,QSA]
+
+	# Ensure Authorization header is passed along
+	RewriteCond %{HTTP:Authorization} .
+	RewriteRule .* - [E=HTTP_AUTHORIZATION:%{HTTP:Authorization}]
+</IfModule>
+
+# ----------------------------------------------------------------------
+# Security Headers
+# ----------------------------------------------------------------------
+<IfModule mod_headers.c>
+	Header always add Access-Control-Allow-Origin "*"
+	Header always add Access-Control-Allow-Headers "Content-Type, Authorization, X-Requested-With, Mode"
+	Header always add Access-Control-Allow-Methods "PUT, GET, POST, DELETE, OPTIONS"
+	Header always add X-Content-Type-Options "nosniff"
+	Header always add X-XSS-Protection "1; mode=block"
+</IfModule>
+
+# ----------------------------------------------------------------------
+# Error Handling for Non-Rewrite Support
+# ----------------------------------------------------------------------
+<IfModule !mod_rewrite.c>
+	ErrorDocument 404 index.php
+</IfModule>
+
+# ----------------------------------------------------------------------
+# File Restrictions
+# ----------------------------------------------------------------------
+<Files ~ ".env|.gitignore|composer|php.ini|spark|heatmap_db">
+    Order allow,deny
+    Deny from all
+</Files>
+
+<FilesMatch ".(env|htaccess|htpasswd|ini|psd|log|sh|spark|heatmap_db)$">
+	Order Allow,Deny
+	Deny from all
+</FilesMatch>
+
+# ----------------------------------------------------------------------
+# Allow CSV file downloads in the tmp/ directory
+# ----------------------------------------------------------------------
+<Directory "/tmp">
+    <FilesMatch "\.csv$">
+        Order Allow,Deny
+        Allow from all
+        ForceType application/octet-stream
+        Header set Content-Disposition attachment
+    </FilesMatch>
+</Directory>
+
+# Disable server signature
+ServerSignature Off

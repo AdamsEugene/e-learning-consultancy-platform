@@ -1,0 +1,173 @@
+<?php
+
+namespace App\Models;
+
+use CodeIgniter\Model;
+use CodeIgniter\Database\Exceptions\DatabaseException;
+
+class CoursesModel extends Model
+{
+
+    protected $table;
+    protected $categoriesTable;
+    protected $userTable;
+    protected $instructorsTable;
+    protected $reviewsTable;
+    protected $enrollmentsTable;
+    protected $tagsTable;
+    protected $primaryKey = 'id';
+    protected $allowedFields = [
+        "title",
+        "title_slug",
+        "rating",
+        "enrolled_students",
+        "tags",
+        "level",
+        "initial_price",
+        "final_price",
+        "course_overview",
+        "course_description",
+        "description",
+        "created_by",
+        "status",
+        "created_at",
+        "updated_at"
+    ];
+
+    /**
+     * Constructor
+     */
+    public function __construct()
+    {
+        parent::__construct();
+
+        $this->table = DbTables::$coursesTable;
+        foreach (DbTables::initTables() as $key) {
+            if (property_exists($this, $key)) {
+                $this->{$key} = DbTables::${$key};
+            }
+        }
+    }
+
+    /**
+     * Get all courses
+     * 
+     * @param int $limit
+     * @param int $offset
+     * @param string $search
+     * @param array $data
+     * 
+     * @return array
+     */
+    public function getRecords($limit = 10, $offset = 0, $search = null, $data = []) {
+        // get query
+        $query = $this->select('courses.*, c.name as category_name, c.name_slug as category_slug, u.username as created_by_username')
+            ->join("{$this->categoriesTable} c", 'c.id = courses.category_id', 'left')
+            ->join("{$this->userTable} u", 'u.id = courses.created_by', 'left');
+
+        // search
+        if (!empty($search)) {
+            $query->like('title', $search);
+        }
+
+        // search by course ids
+        if (!empty($data['course_ids'])) {
+            $query->whereIn('courses.id', $data['course_ids']);
+        }
+
+        // search by price ranges
+        if (!empty($data['price_range']) && is_array($data['price_range'])) {
+            $query->groupStart();
+            $query->where('final_price >=', $data['price_range'][0]);
+            $query->orWhere('final_price <=', $data['price_range'][1]);
+            $query->groupEnd();
+        }
+
+        // search by course type, category id and level
+        foreach (['course_type', 'category_id', 'level', 'rating', 'status'] as $key) {
+            if (!empty($data[$key])) {
+                if(is_array($data[$key])) {
+                    $query->whereIn($key, $data[$key]);
+                } else {
+                    $query->where($key, $data[$key]);
+                }
+            }
+        }
+
+        return $query->findAll($limit, $offset);
+    }
+
+    /**
+     * Get a course record
+     * 
+     * @param int $id
+     * 
+     * @return array
+     */
+    public function getRecord($id) {
+        try {
+            // get column
+            $column = preg_match("/^[0-9]+$/", $id) ? 'courses.id' : 'courses.title_slug';
+
+            // get query
+            $query = $this->select('courses.*, c.name as category_name, c.name_slug as category_slug, u.username as created_by_username')
+                ->join("{$this->categoriesTable} c", 'c.id = courses.category_id', 'left')
+                ->join("{$this->userTable} u", 'u.id = courses.created_by', 'left')
+                ->where($column, $id);
+
+            return $query->first();
+        } catch (DatabaseException $e) {
+            return false;
+        }
+    }
+
+    /**
+     * Create a course record
+     * 
+     * @param array $data
+     * 
+     * @return int
+     */
+    public function createRecord($data) {
+        try {
+            $this->insert($data);
+            return $this->getInsertID();
+        } catch (DatabaseException $e) {
+            return false;
+        }
+    }
+
+    /**
+     * Update a course record
+     * 
+     * @param int $id
+     * @param array $data
+     * 
+     * @return bool
+     */
+    public function updateRecord($id, $data) {
+        try {
+            return $this->update($id, $data);
+        } catch (DatabaseException $e) {
+            return false;
+        }
+    }
+
+    /**
+     * Delete a course record
+     * 
+     * @param int $id
+     * @param int $created_by
+     * 
+     * @return bool
+     */
+    public function deleteRecord($id, $created_by) {
+        try {
+            $this->where('id', $id)->update(['status' => 'Deleted']);
+            $this->db->query("UPDATE {$this->userTable} SET courses_count = courses_count - 1 WHERE id = {$created_by}");
+            return true;
+        } catch (DatabaseException $e) {
+            return false;
+        }
+    }
+}
