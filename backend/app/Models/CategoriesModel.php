@@ -8,7 +8,7 @@ use CodeIgniter\Database\Exceptions\DatabaseException;
 class CategoriesModel extends Model {
 
     protected $table = 'categories';
-    protected $allowedFields = ['name', 'description', 'image', 'created_by', 'created_at', 'updated_at', 'courses_count', 'status', 'name_slug'];
+    protected $allowedFields = ['name', 'description', 'parent_id', 'image', 'created_by', 'created_at', 'updated_at', 'courses_count', 'status', 'name_slug'];
     
     public function __construct() {
         parent::__construct();

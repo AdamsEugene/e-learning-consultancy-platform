@@ -71,6 +71,14 @@ class Categories extends LoadController {
             $this->payload['created_by'] = $this->currentUser['user_id'];
         }
 
+        // check if the parent category exists
+        if(!empty($this->payload['parent_id'])) {
+            $parentCategory = $this->categoriesModel->getRecord($this->payload['parent_id']);
+            if(empty($parentCategory)) {
+                return Routing::error('Parent category not found');
+            }
+        }
+
         // create the category
         $this->payload['name_slug'] = $create_slug;
 
@@ -101,6 +109,14 @@ class Categories extends LoadController {
         
         if(empty($category)) {
             return Routing::notFound('Category not found', true);
+        }
+
+        // check if the parent category exists
+        if(!empty($this->payload['parent_id'])) {
+            $parentCategory = $this->categoriesModel->getRecord($this->payload['parent_id']);
+            if(empty($parentCategory)) {
+                return Routing::error('Parent category not found');
+            }
         }
 
         // update the last date
