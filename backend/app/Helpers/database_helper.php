@@ -101,18 +101,23 @@ $databases = [
     "CREATE TABLE IF NOT EXISTS courses (
         id INTEGER PRIMARY KEY AUTOINCREMENT,
         title VARCHAR(255) NOT NULL,
+        subtitle VARCHAR(255) DEFAULT '',
         title_slug VARCHAR(255) NOT NULL,
         rating INTEGER DEFAULT 0,
-        enrolled_students INTEGER DEFAULT 0,
+        reviewCount INTEGER DEFAULT 0,
+        enrollmentCount INTEGER DEFAULT 0,
         tags TEXT DEFAULT '',
         level VARCHAR(255) DEFAULT '',
         category_id INTEGER DEFAULT 0,
+        subcategory_id INTEGER DEFAULT 0,
         course_type VARCHAR(255) DEFAULT 'free',
-        initial_price INTEGER DEFAULT 0,
-        final_price INTEGER DEFAULT 0,
-        course_overview TEXT DEFAULT '',
-        course_description TEXT DEFAULT '',
+        originalPrice INTEGER DEFAULT 0,
+        price INTEGER DEFAULT 0,
+        features TEXT DEFAULT '',
+        description TEXT DEFAULT '',
         course_duration INTEGER DEFAULT 0,
+        what_you_will_learn TEXT DEFAULT '',
+        requirements TEXT DEFAULT '',
         description TEXT,
         created_by INTEGER DEFAULT 0,
         status VARCHAR(20) DEFAULT 'Published',
@@ -158,9 +163,9 @@ $databases = [
         course_id INTEGER DEFAULT 0,
         user_id INTEGER DEFAULT 0,
         rating INTEGER DEFAULT 0,
-        review TEXT DEFAULT '',
-        likes_count INTEGER DEFAULT 0,
-        dislikes_count INTEGER DEFAULT 0,
+        content TEXT DEFAULT '',
+        helpfulCount INTEGER DEFAULT 0,
+        dislikesCount INTEGER DEFAULT 0,
         created_at DATETIME DEFAULT CURRENT_TIMESTAMP,
         updated_at DATETIME DEFAULT CURRENT_TIMESTAMP
     );
@@ -186,14 +191,12 @@ $databases = [
 ];
 
 $alterTables = [
-    // "ALTER TABLE courses ADD COLUMN course_type VARCHAR(255) DEFAULT 'free';",
-    // "ALTER TABLE courses ADD COLUMN course_duration INTEGER DEFAULT 0;",
+    // "ALTER TABLE courses ADD COLUMN reviewCount INTEGER DEFAULT 0;",
 ];
 
 function createDatabaseStructure() {
     global $databases, $alterTables;
     $db = \Config\Database::connect();
-    // $db->query("drop table courses");
     foreach(array_merge($databases, $alterTables) as $query) {
         try {
             if(empty($query)) continue;

@@ -13,6 +13,28 @@ class CoursesValidation {
                 "data" => "permit_empty|is_array",
             ]
         ],
+        'create' => [
+            'method' => 'POST',
+            'payload' => [
+                "title" => "required|string|max_length[255]",
+                "subtitle" => "permit_empty|string|max_length[255]",
+                "rating" => "permit_empty|integer",
+                "tags" => "permit_empty|string",
+                "level" => "permit_empty|string",
+                "category_id" => "required|integer",
+                "subcategory_id" => "permit_empty|integer",
+                "course_type" => "permit_empty|in_list[free,paid]",
+                "originalPrice" => "permit_empty|integer",
+                "price" => "permit_empty|integer",
+                "features" => "permit_empty|string",
+                "description" => "permit_empty|string",
+                "course_duration" => "permit_empty|integer",
+                "description" => "permit_empty|string",
+                "requirements" => "permit_empty|string",
+                "what_you_will_learn" => "permit_empty|string",
+                "status" => "permit_empty|string",
+            ]
+        ],
         'view:course_id' => [
             'method' => 'GET',
             'payload' => [

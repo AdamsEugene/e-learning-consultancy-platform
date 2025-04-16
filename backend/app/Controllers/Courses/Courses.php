@@ -93,6 +93,7 @@ class Courses extends LoadController {
             'data' => 'Course created successfully',
             'record' => $this->view($courseId)
         ]);
+        
     }
 
 }

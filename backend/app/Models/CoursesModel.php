@@ -18,15 +18,25 @@ class CoursesModel extends Model
     protected $primaryKey = 'id';
     protected $allowedFields = [
         "title",
+        "subtitle",
         "title_slug",
         "rating",
-        "enrolled_students",
+        "reviewCount",
+        "enrollmentCount",
         "tags",
+        "category_id",
+        "subcategory_id",
+        "course_type",
         "level",
-        "initial_price",
-        "final_price",
-        "course_overview",
-        "course_description",
+        "totalDuration",
+        "totalLessons",
+        "originalPrice",
+        "price",
+        "what_you_will_learn",
+        "requirements",
+        "features",
+        "description",
+        "course_duration",
         "description",
         "created_by",
         "status",
@@ -78,8 +88,8 @@ class CoursesModel extends Model
         // search by price ranges
         if (!empty($data['price_range']) && is_array($data['price_range'])) {
             $query->groupStart();
-            $query->where('final_price >=', $data['price_range'][0]);
-            $query->orWhere('final_price <=', $data['price_range'][1]);
+            $query->where('price >=', $data['price_range'][0]);
+            $query->orWhere('price <=', $data['price_range'][1]);
             $query->groupEnd();
         }
 

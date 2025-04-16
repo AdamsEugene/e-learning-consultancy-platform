@@ -7,7 +7,7 @@ use CodeIgniter\Database\Exceptions\DatabaseException;
 class ReviewsModel extends Model {
     
     protected $table = 'courses_reviews';
-    protected $allowedFields = ['course_id', 'user_id', 'rating', 'review', 'likes_count', 'dislikes_count'];
+    protected $allowedFields = ['course_id', 'user_id', 'rating', 'content', 'helpfulCount', 'dislikesCount'];
 
     /**
      * Get all records
