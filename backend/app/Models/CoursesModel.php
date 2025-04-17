@@ -71,7 +71,7 @@ class CoursesModel extends Model
      */
     public function getRecords($limit = 10, $offset = 0, $search = null, $data = []) {
         // get query
-        $query = $this->select('courses.*, c.name as category_name, c.name_slug as category_slug, u.username as created_by_username')
+        $query = $this->select('courses.*, c.name as category_name, c.name_slug as category_slug')
             ->join("{$this->categoriesTable} c", 'c.id = courses.category_id', 'left')
             ->join("{$this->userTable} u", 'u.id = courses.created_by', 'left');
 
@@ -104,6 +104,8 @@ class CoursesModel extends Model
             }
         }
 
+        $query->orderBy('courses.id', 'DESC');
+
         return $query->findAll($limit, $offset);
     }
 
@@ -129,6 +131,17 @@ class CoursesModel extends Model
         } catch (DatabaseException $e) {
             return false;
         }
+    }
+
+    /**
+     * Get a course record by slug
+     * 
+     * @param string $slug
+     * 
+     * @return array
+     */
+    public function getRecordBySlug($slug) {
+        return $this->where(['title_slug' => $slug, 'status !=' => 'Deleted'])->first();
     }
 
     /**

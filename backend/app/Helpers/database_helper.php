@@ -191,7 +191,7 @@ $databases = [
 ];
 
 $alterTables = [
-    // "ALTER TABLE courses ADD COLUMN reviewCount INTEGER DEFAULT 0;",
+    // "ALTER TABLE users ADD COLUMN image TEXT DEFAULT '';",
 ];
 
 function createDatabaseStructure() {

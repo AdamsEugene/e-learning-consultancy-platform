@@ -15,6 +15,7 @@ class CoursesValidation {
         ],
         'create' => [
             'method' => 'POST',
+            'authenticate' => true,
             'payload' => [
                 "title" => "required|string|max_length[255]",
                 "subtitle" => "permit_empty|string|max_length[255]",
@@ -27,11 +28,11 @@ class CoursesValidation {
                 "originalPrice" => "permit_empty|integer",
                 "price" => "required|integer",
                 "instructors" => "permit_empty",
-                "features" => "permit_empty|string",
-                "description" => "permit_empty|string",
+                "features" => "permit_empty",
+                "description" => "permit_empty",
                 "course_duration" => "permit_empty|integer",
-                "what_you_will_learn" => "permit_empty|string",
-                "requirements" => "permit_empty|string",
+                "what_you_will_learn" => "permit_empty",
+                "requirements" => "permit_empty",
                 "status" => "permit_empty|string",
             ]
         ],

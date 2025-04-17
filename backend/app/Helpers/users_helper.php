@@ -12,7 +12,7 @@
  * @return array
  * 
  */
-function formatUserResponse($user, bool $single = false, $userId = [], bool $isAdmin = false, $search = null) {
+function formatUserResponse($user, bool $single = false, $simpleData = false) {
     if(empty($user)) return [];
 
     // format the user response
@@ -23,33 +23,27 @@ function formatUserResponse($user, bool $single = false, $userId = [], bool $isA
 
         // format the user response
         $result[] = [
-            "username" => $value['username'],
             "email" => $value['email'],
             "firstname" => $value['firstname'],
             "lastname" => $value['lastname'],
             "status" => $value['status'],
-            "two_factor_setup" => $value['two_factor_setup'],
             "user_type" => $value['user_type'],
-            "admin_access" => $value['admin_access'],
             "date_registered" => $value['date_registered'],
-            "nationality" => $value['nationality'],
             "gender" => $value['gender'],
-            "date_of_birth" => $value['date_of_birth'],
-            "phone" => $value['phone'],
-            "timezone" => $value['timezone'],
-            "website" => $value['website'],
-            "company" => $value['company'],
-            "language" => $value['language'],
-            "preferences" => $value['preferences'],
             "job_title" => $value['job_title'],
             "skills" => $value['skills'],
             "rating" => $value['rating'],
-            "students_count" => $value['students_count'],
-            "courses_count" => $value['courses_count'],
             "last_login" => $value['last_login'],
             "billing_address" => $value['billing_address'],
             "permissions" => $value['permissions'],
         ];
+
+        if(!$simpleData) {
+            foreach(['username', 'two_factor_setup', 'nationality', 'date_of_birth', 'phone', 'preferences', 'students_count', 'courses_count',
+                'timezone', 'website', 'company', 'language', 'last_login', 'permissions', 'admin_access'] as $item) {
+                $result[$key][$item] = $value[$item];
+            }
+        }
     }
 
     return $single ? ($result[0] ?? []) : ($result ?? []);

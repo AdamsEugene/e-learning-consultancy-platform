@@ -33,7 +33,7 @@ class InstructorsModel extends Model {
     public function getRecords($limit = 100, $offset = 0, $data = []) {
         try {
             $query = $this->select("{$this->table}.*, u.firstname, u.lastname, u.email, u.phone, u.image")
-                        ->join("{$this->userTable} u", 'u.id = instructors.instructor_id', 'left');
+                        ->join("{$this->userTable} u", "u.id = {$this->table}.instructor_id", 'left');
 
             if(isset($data['course_id'])) {
                 $query->where('course_id', $data['course_id']);
