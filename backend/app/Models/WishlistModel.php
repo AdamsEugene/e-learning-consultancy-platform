@@ -28,7 +28,7 @@ class WishlistModel extends Model {
     public function getRecords($limit = 10, $offset = 0, $data = []) {
 
         $columns = "";
-        foreach(['title', 'title_slug', 'image', 'thumbnail', 'rating', 'tags', 'features', 'description', 'requirements'] as $column) {
+        foreach(['title', 'title_slug', 'image', 'thumbnail', 'rating', 'tags', 'features'] as $column) {
             $columns .= "{$this->coursesTable}.{$column} as course_{$column},";
         }
         $columns = rtrim($columns, ',');
@@ -63,8 +63,20 @@ class WishlistModel extends Model {
      */
     public function getRecord($data) {
         try {
-            return $this->where($data)->first();
+            $columns = "";
+            foreach(['title', 'title_slug', 'image', 'thumbnail', 'rating', 'tags', 'features'] as $column) {
+                $columns .= "{$this->coursesTable}.{$column} as course_{$column},";
+            }
+            $columns = rtrim($columns, ',');
+
+            // get query
+            $query = $this->select("{$this->table}.*, {$columns}")
+                ->join($this->coursesTable, "{$this->coursesTable}.id = {$this->table}.course_id", 'left')
+                ->where($data);
+
+            return $query->first();
         } catch(DatabaseException $e) {
+            print_r($e->getMessage());
             return [];
         }
     }

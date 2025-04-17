@@ -64,15 +64,30 @@ class Wishlist extends LoadController {
         }
 
         // get the wishlist record
-        $wishList = $this->wishlistModel->getRecord($payload);
+        $wishList = $this->wishlistModel->getRecords(1, 0, $payload);
 
         // if the wishlist record is not found
         if(empty($wishList)) {
             return Routing::notFound();
         }
 
+        // create a new instance of the courses controller
+        $courseObject = new \App\Controllers\Courses\Courses();
+        
+        // set the course id
+        $this->payload['course_id'] = $wishList[0]['course_id'];
+
+        // set the payload
+        $courseObject->payload = $this->payload;
+
+        // get the course info
+        $courseInfo = $courseObject->view()['data'];
+
         // return the wishlist record
-        return Routing::success(formatWishlistResponse($wishList, true));
+        return Routing::success([
+            'wishlist' => formatWishlistResponse($wishList, true),
+            'course_info' => $courseInfo
+        ]);
     }
 
     /**

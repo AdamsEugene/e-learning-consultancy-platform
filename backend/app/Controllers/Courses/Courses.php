@@ -39,8 +39,10 @@ class Courses extends LoadController {
         // trigger models
         $this->triggerModel(['courses', 'instructors', 'reviews']);
 
+        $courseId = !empty($this->mainRawId) ? $this->mainRawId : $this->payload['course_id'];
+
         // get course
-        $course = $this->coursesModel->getRecord($this->payload['course_id']);
+        $course = $this->coursesModel->getRecord($courseId);
 
         if(empty($course)) {
             return Routing::notFound();
