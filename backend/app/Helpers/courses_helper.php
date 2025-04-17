@@ -114,18 +114,6 @@ function formatCourseResponse($courses = []) {
 }
 
 /**
- * Convert seconds to hours and minutes
- * 
- * @param int $seconds
- * @return string
- */
-function convertSecondsToHoursAndMinutes($seconds = 0) {
-    $hours = floor($seconds / 3600);
-    $minutes = floor(($seconds % 3600) / 60);
-    return $hours . 'h ' . $minutes . 'm';
-}
-
-/**
  * Format the course sections
  * 
  * @param array $sections
@@ -144,6 +132,12 @@ function formatCourseSections($sections = []) {
             if(!empty($value[$field])) {
                 $list = json_decode($value[$field], true);
                 $value[$field] = empty($list) ? $value[$field] : $list;
+            }
+        }
+
+        if(!empty($value['lessons'])) {
+            foreach($value['lessons'] as $key => $lesson) {
+                $value['lessons'][$key]['formatDuration'] = convertSecondsToHoursAndMinutes($lesson['duration']);
             }
         }
 

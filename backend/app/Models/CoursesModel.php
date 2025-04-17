@@ -95,7 +95,7 @@ class CoursesModel extends Model
         }
 
         // search by course type, category id and level
-        foreach (['course_type', 'category_id', 'level', 'rating', 'status'] as $key) {
+        foreach (['course_type', 'category_id', 'subcategory_id', 'level', 'rating', 'status'] as $key) {
             if (!empty($data[$key])) {
                 if(is_array($data[$key])) {
                     $query->whereIn($key, $data[$key]);
