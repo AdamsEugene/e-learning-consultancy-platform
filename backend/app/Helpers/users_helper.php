@@ -28,19 +28,16 @@ function formatUserResponse($user, bool $single = false, $simpleData = false) {
             "lastname" => $value['lastname'],
             "status" => $value['status'],
             "user_type" => $value['user_type'],
-            "date_registered" => $value['date_registered'],
             "gender" => $value['gender'],
             "job_title" => $value['job_title'],
             "skills" => $value['skills'],
             "rating" => $value['rating'],
-            "last_login" => $value['last_login'],
-            "billing_address" => $value['billing_address'],
-            "permissions" => $value['permissions'],
+            "billing_address" => $value['billing_address']
         ];
 
         if(!$simpleData) {
             foreach(['username', 'two_factor_setup', 'nationality', 'date_of_birth', 'phone', 'preferences', 'students_count', 'courses_count',
-                'timezone', 'website', 'company', 'language', 'last_login', 'permissions', 'admin_access'] as $item) {
+                'timezone', 'website', 'company', 'language', 'last_login', 'permissions', 'admin_access', 'date_registered'] as $item) {
                 $result[$key][$item] = $value[$item];
             }
         }

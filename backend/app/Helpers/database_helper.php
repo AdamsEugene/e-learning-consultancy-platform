@@ -107,6 +107,8 @@ $databases = [
         rating INTEGER DEFAULT 0,
         reviewCount INTEGER DEFAULT 0,
         enrollmentCount INTEGER DEFAULT 0,
+        image TEXT DEFAULT '',
+        thumbnail TEXT DEFAULT '',
         tags TEXT DEFAULT '',
         level VARCHAR(255) DEFAULT '',
         category_id INTEGER DEFAULT 0,
@@ -187,11 +189,20 @@ $databases = [
     );
     CREATE INDEX IF NOT EXISTS idx_courses_enrollments_course_id ON courses_enrollments (course_id);
     CREATE INDEX IF NOT EXISTS idx_courses_enrollments_user_id ON courses_enrollments (user_id);
-    CREATE INDEX IF NOT EXISTS idx_courses_enrollments_status ON courses_enrollments (status);"
+    CREATE INDEX IF NOT EXISTS idx_courses_enrollments_status ON courses_enrollments (status);",
+    "CREATE TABLE IF NOT EXISTS wishlist (
+        id INTEGER PRIMARY KEY AUTOINCREMENT,
+        user_id INTEGER DEFAULT 0,
+        course_id INTEGER DEFAULT 0,
+        created_at DATETIME DEFAULT CURRENT_TIMESTAMP,
+        updated_at DATETIME DEFAULT CURRENT_TIMESTAMP
+    );"
 ];
 
 $alterTables = [
     // "ALTER TABLE users ADD COLUMN image TEXT DEFAULT '';",
+    // "ALTER TABLE courses ADD COLUMN image TEXT DEFAULT '';",
+    // "ALTER TABLE courses ADD COLUMN thumbnail TEXT DEFAULT '';",
 ];
 
 function createDatabaseStructure() {

@@ -92,6 +92,11 @@ abstract class BaseController extends Controller
     public $defaultLimit = 1000;
 
     /**
+     * @var int
+     */
+    public $defaultOffset = 0;
+
+    /**
      * @var bool
      */
     public $routingInfo = [];

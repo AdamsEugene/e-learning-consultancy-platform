@@ -12,7 +12,7 @@ use App\Models\TagsModel;
 use App\Models\CoursesModel;
 use App\Models\InstructorsModel;
 use App\Models\ReviewsModel;
-
+use App\Models\WishlistModel;
 class LoadController extends BaseController
 {
     public $restrictedDomain = ['e-learning.com', 'e-learning.com'];
@@ -26,6 +26,7 @@ class LoadController extends BaseController
     protected $coursesModel;
     protected $instructorsModel;
     protected $reviewsModel;
+    protected $wishlistModel;
 
     public function __construct($model = [])
     {
@@ -61,6 +62,10 @@ class LoadController extends BaseController
 
         if(in_array('instructors', $model)) {
             $this->instructorsModel = new InstructorsModel();
+        }
+
+        if(in_array('wishlist', $model)) {
+            $this->wishlistModel = new WishlistModel();
         }
 
         if(in_array('reviews', $model)) {
