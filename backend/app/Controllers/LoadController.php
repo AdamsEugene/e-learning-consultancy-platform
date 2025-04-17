@@ -48,27 +48,30 @@ class LoadController extends BaseController
      * @return void
      */
     public function triggerModel($model) {
-        if(in_array('categories', $model)) {
+
+        $models = stringToArray($model);
+
+        if(in_array('categories', $models)) {
             $this->categoriesModel = new CategoriesModel();
         }
 
-        if(in_array('tags', $model)) {
+        if(in_array('tags', $models)) {
             $this->tagsModel = new TagsModel();
         }
 
-        if(in_array('courses', $model)) {
+        if(in_array('courses', $models)) {
             $this->coursesModel = new CoursesModel();
         }
 
-        if(in_array('instructors', $model)) {
+        if(in_array('instructors', $models)) {
             $this->instructorsModel = new InstructorsModel();
         }
 
-        if(in_array('wishlist', $model)) {
+        if(in_array('wishlist', $models)) {
             $this->wishlistModel = new WishlistModel();
         }
 
-        if(in_array('reviews', $model)) {
+        if(in_array('reviews', $models)) {
             $this->reviewsModel = new ReviewsModel();
         }
     }

@@ -28,7 +28,7 @@ class WishlistModel extends Model {
     public function getRecords($limit = 10, $offset = 0, $data = []) {
 
         $columns = "";
-        foreach(['title', 'image', 'thumbnail', 'rating', 'tags'] as $column) {
+        foreach(['title', 'title_slug', 'image', 'thumbnail', 'rating', 'tags', 'features', 'description', 'requirements'] as $column) {
             $columns .= "{$this->coursesTable}.{$column} as course_{$column},";
         }
         $columns = rtrim($columns, ',');
@@ -57,12 +57,13 @@ class WishlistModel extends Model {
     /**
      * Get record
      * 
-     * @param int $id
+     * @param array $data
+     * 
      * @return array
      */
-    public function getRecord($id) {
+    public function getRecord($data) {
         try {
-            return $this->where('id', $id)->first();
+            return $this->where($data)->first();
         } catch(DatabaseException $e) {
             return [];
         }

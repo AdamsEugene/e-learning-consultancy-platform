@@ -14,6 +14,9 @@ class Wishlist extends LoadController {
      */
     public function list() {
 
+        // trigger the models
+        $this->triggerModel(['wishlist']);
+
         // get the payload
         $payload = [];
 
@@ -40,7 +43,7 @@ class Wishlist extends LoadController {
         );
 
         // return the wishlist record
-        return Routing::success($wishList);
+        return Routing::success(formatWishlistResponse($wishList));
     }
 
     /**
@@ -50,8 +53,10 @@ class Wishlist extends LoadController {
      */
     public function view() {
 
+        $this->triggerModel(['wishlist']);
+
         // get the payload
-        $payload = ['wishlist_id' => $this->payload['id']];
+        $payload = ['id' => $this->payload['wishlist_id']];
 
         // if the user is not admin, then add the user id to the payload
         if(!is_admin($this->currentUser)) {
@@ -59,7 +64,7 @@ class Wishlist extends LoadController {
         }
 
         // get the wishlist record
-        $wishList = $this->wishlistModel->getRecords(1, 0, $payload);
+        $wishList = $this->wishlistModel->getRecord($payload);
 
         // if the wishlist record is not found
         if(empty($wishList)) {
@@ -67,7 +72,54 @@ class Wishlist extends LoadController {
         }
 
         // return the wishlist record
-        return Routing::success($wishList);
+        return Routing::success(formatWishlistResponse($wishList, true));
+    }
+
+    /**
+     * Create
+     * 
+     * @return void
+     */
+    public function create() {
+
+        $this->triggerModel(['wishlist', 'courses']);
+
+        // get the payload
+        $payload = ['course_id' => $this->payload['course_id']];
+
+        // confirm if the course exists
+        $course = $this->coursesModel->getRecord($this->payload['course_id']);
+
+        // if the course does not exist, then return an error
+        if(empty($course)) {
+            return Routing::error('Course not found');
+        }
+
+        // if the user is not admin, then add the user id to the payload
+        $payload['user_id'] = $this->currentUser['user_id'];
+
+        // if the user is admin, then add the user id to the payload
+        if(is_admin($this->currentUser) && !empty($this->payload['user_id'])) {
+            $payload['user_id'] = $this->payload['user_id'];
+        }
+
+        // check if the records for this user already exist
+        $wishlist = $this->wishlistModel->getRecords(1, 0, $payload);
+
+        // if the records for this user already exist, then return an error
+        if(!empty($wishlist)) {
+            return Routing::error('This course is already in your wishlist');
+        }
+
+        // create the wishlist record
+        $wishlistId = $this->wishlistModel->createRecord($payload);
+
+        $this->payload['wishlist_id'] = $wishlistId;
+
+        return Routing::created([
+            'data' => 'Wishlist created successfully',
+            'record' => $this->view()['data']
+        ]);
     }
 
     /**
@@ -77,8 +129,10 @@ class Wishlist extends LoadController {
      */
     public function delete() {
 
+        $this->triggerModel(['wishlist']);
+
         // get the payload
-        $payload = ['wishlist_id' => $this->payload['id']];
+        $payload = ['wishlist_id' => $this->payload['wishlist_id']];
 
         // if the user is not admin, then add the user id to the payload
         if(!is_admin($this->currentUser)) {
@@ -94,7 +148,7 @@ class Wishlist extends LoadController {
         }
 
         // delete the wishlist record
-        $this->wishlistModel->deleteRecord($this->payload['id']);
+        $this->wishlistModel->deleteRecord($this->payload['wishlist_id']);
 
         return Routing::success('Wishlist deleted successfully');
     }
