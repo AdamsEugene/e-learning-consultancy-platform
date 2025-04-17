@@ -27,6 +27,7 @@ class CoursesValidation {
                 "course_type" => "permit_empty|in_list[free,paid]",
                 "originalPrice" => "permit_empty|integer",
                 "price" => "required|integer",
+                "sections" => "permit_empty",
                 "instructors" => "permit_empty",
                 "features" => "permit_empty",
                 "description" => "permit_empty",

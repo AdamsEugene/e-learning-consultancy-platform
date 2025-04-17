@@ -8,6 +8,11 @@ use App\Libraries\Routing;
 
 class Courses extends LoadController {
 
+    // get all the sections
+    public $allSections = ['id', 'title', 'lessons', 'totalDuration'];
+    public $allLessons = ['id', 'title', 'duration', 'videoUrl', 'type'];
+    public $acceptedLessonTypes = ["video", "quiz", "assignment", "resource"];
+
     /**
      * List courses
      * 
@@ -52,13 +57,15 @@ class Courses extends LoadController {
         $created_by = empty($course['id']) ? [] : formatUserResponse([$this->usersModel->findById($course['created_by'])], true, true);
         $instructors = empty($course['id']) ? [] : $this->instructorsModel->getRecords(100, 0, ['course_id' => $course['id']]);
         $reviews = empty($course['id']) ? [] : $this->reviewsModel->getRecordByCourseId(100, 0, ['course_id' => $course['id']]);
+        $sections = empty($course['id']) ? [] : $this->coursesModel->getSections(['course_id' => $course['id']]);
 
         // return response
         return Routing::success([
             'course' => empty($course) ? [] : formatCourseResponse([$course]),
             'created_by' => empty($created_by) ? [] : $created_by,
             'instructors' => empty($instructors) ? [] : $instructors,
-            'reviews' => empty($reviews) ? [] : $reviews
+            'reviews' => empty($reviews) ? [] : $reviews,
+            'sections' => empty($sections) ? [] : formatCourseSections($sections)
         ]);
     }
 
@@ -136,6 +143,21 @@ class Courses extends LoadController {
             $this->payload['tags'] = json_encode($tags_list ?? []);
         }
 
+        // validate the sections
+        if(!empty($this->payload['sections'])) {
+            // decode the sections
+            $sections = is_array($this->payload['sections']) ? $this->payload['sections'] : json_decode($this->payload['sections'], true);
+
+            // validate the sections
+            $validateSections = validateCourseSections($sections, $this->allSections, $this->allLessons, $this->acceptedLessonTypes);
+            if(is_string($validateSections)) {
+                return Routing::error($validateSections);
+            }
+
+            // set the sections
+            $sectionsList = $validateSections;
+        }
+
         // create course
         $courseId = $this->coursesModel->createRecord($this->payload);
 
@@ -147,16 +169,30 @@ class Courses extends LoadController {
             $instructor_id = $this->payload['instructor_id'];
         }
 
+        // insert the sections
+        if(!empty($sectionsList) && is_array($sectionsList)) {
+            foreach($sectionsList as $section) {
+                $this->coursesModel->createSection([
+                    'course_id' => $courseId,
+                    'title' => $section['title'],
+                    'lessons' => json_encode($section['lessons']),
+                    'totalDuration' => $section['totalDuration'],
+                    'totalLessons' => count($section['lessons'])
+                ]);
+            }
+        }
         // insert the course instructors
         $this->instructorsModel->createRecord([
             'course_id' => $courseId,
             'instructor_id' => $instructor_id
         ]);
 
+        // get the instructors
         if(!empty($this->payload['instructors'])) {
             $instructors = stringToArray($this->payload['instructors']);
             foreach($instructors as $instructor) {
                 if(!empty($instructor) && preg_match("/^[0-9]+$/", $instructor)) {
+                    if((int)$instructor_id == (int)$instructor) continue;
                     $this->instructorsModel->createRecord([
                         'course_id' => $courseId,
                         'instructor_id' => $instructor

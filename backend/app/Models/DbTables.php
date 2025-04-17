@@ -15,6 +15,7 @@ class DbTables {
     public static $coursesReviewsTable = 'courses_reviews';
     public static $coursesEnrollmentsTable = 'courses_enrollments';
     public static $wishlistTable = 'wishlist';
+    public static $contentTable = 'courses_content';
 
     public static $altUserTable = 'temp_table';
     public static $instructorsTable = 'courses_instructors';
@@ -48,8 +49,8 @@ class DbTables {
      */
     public static function initTables() {
         return [
-            'categoriesTable', 'authTokenTable', 'userTable', 'accessTable', 'labelsTable',
-            'coursesTable', 'coursesInstructorsTable', 'coursesTagsTable', 'coursesReviewsTable', 
+            'categoriesTable', 'authTokenTable', 'userTable', 'accessTable', 'labelsTable', 'contentTable',
+            'coursesTable', 'coursesInstructorsTable', 'coursesTagsTable', 'coursesReviewsTable', 'wishlistTable',
             'coursesEnrollmentsTable', 'altUserTable', 'couponTable', 'promoCodeTable', 'dashboardTable', 
             'userDashboardTable', 'subscriptionTable', 'educationTable', 'settingsTable', 'ipBlockingTable', 
             'paymentsTable', 'paymentsTokenTable', 'shareableLinksTable', 'feedbackTable', 'invoiceTable'

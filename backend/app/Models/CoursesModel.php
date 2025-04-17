@@ -11,6 +11,7 @@ class CoursesModel extends Model
     protected $table;
     protected $categoriesTable;
     protected $userTable;
+    protected $contentTable;
     protected $instructorsTable;
     protected $reviewsTable;
     protected $enrollmentsTable;
@@ -188,6 +189,58 @@ class CoursesModel extends Model
         try {
             $this->where('id', $id)->update(['status' => 'Deleted']);
             $this->db->query("UPDATE {$this->userTable} SET courses_count = courses_count - 1 WHERE id = {$created_by}");
+            return true;
+        } catch (DatabaseException $e) {
+            return false;
+        }
+    }
+
+    /**
+     * Create a course section
+     * 
+     * @param array $data
+     * 
+     * @return int
+     */
+    public function createSection($data) {
+        try {
+            $this->db->table($this->contentTable)->insert($data);
+            return $this->db->insertID();
+        } catch (DatabaseException $e) {
+            return false;
+        }
+    }
+
+    /**
+     * Create a course section
+     * 
+     * @param array $data
+     * 
+     * @return int
+     */
+    public function getSections($data) {
+        try {
+            return $this->db->table($this->contentTable)
+                ->where($data)
+                ->orderBy('id', 'DESC')
+                ->get()
+                ->getResultArray();
+        } catch (DatabaseException $e) {
+            print_r($e->getMessage());
+            return false;
+        }
+    }
+
+    /**
+     * Create a course section
+     * 
+     * @param array $data
+     * 
+     * @return int
+     */
+    public function deleteSection($id) {
+        try {
+            $this->db->table($this->contentTable)->where('id', $id)->delete();
             return true;
         } catch (DatabaseException $e) {
             return false;

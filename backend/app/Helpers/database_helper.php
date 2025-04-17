@@ -152,10 +152,10 @@ $databases = [
     "CREATE TABLE IF NOT EXISTS courses_content (
         id INTEGER PRIMARY KEY AUTOINCREMENT,
         course_id INTEGER DEFAULT 0,
-        section_title VARCHAR(255) DEFAULT '',
-        section_content TEXT DEFAULT '',
-        section_duration INTEGER DEFAULT 0,
-        lessons_count INTEGER DEFAULT 0,
+        title VARCHAR(255) DEFAULT '',
+        lessons TEXT DEFAULT '',
+        totalDuration INTEGER DEFAULT 0,
+        totalLessons INTEGER DEFAULT 0,
         created_at DATETIME DEFAULT CURRENT_TIMESTAMP,
         updated_at DATETIME DEFAULT CURRENT_TIMESTAMP
     );
@@ -208,6 +208,7 @@ $alterTables = [
 function createDatabaseStructure() {
     global $databases, $alterTables;
     $db = \Config\Database::connect();
+    // $db->query("drop table courses_content");
     foreach(array_merge($databases, $alterTables) as $query) {
         try {
             if(empty($query)) continue;
