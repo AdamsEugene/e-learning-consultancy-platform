@@ -11,6 +11,9 @@ importers:
       '@faker-js/faker':
         specifier: ^9.6.0
         version: 9.6.0
+      '@floating-ui/dom':
+        specifier: ^1.6.13
+        version: 1.6.13
       '@nuxt/content':
         specifier: 3.4.0
         version: 3.4.0(magicast@0.3.5)(typescript@5.8.3)

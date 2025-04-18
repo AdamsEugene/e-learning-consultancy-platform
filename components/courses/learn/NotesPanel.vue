@@ -1,8 +1,6 @@
 <!-- components/courses/NotesPanel.vue -->
 <script setup lang="ts">
-import { ref, computed, watch, nextTick, onMounted } from "vue";
 import type { Note } from "~/types/courseTemp";
-import Drawer from "~/components/ui/Drawer.vue";
 
 // =============================================
 // INTERFACES
@@ -263,7 +261,7 @@ const formatTimestamp = (timestamp: number): string => {
 onMounted(() => {
   if (props.isOpen) {
     nextTick(() => {
-      const textarea = document.getElementById("note-textarea");
+      const textarea = document.getElementById("note-input");
       if (textarea) {
         textarea.focus();
       }
@@ -295,8 +293,9 @@ watch(
 );
 </script>
 
+<!-- eslint-disable vue/no-v-html -->
 <template>
-  <Drawer
+  <UiDrawer
     v-model="isOpenComputed"
     v-scroll-lock="isOpenComputed"
     :width="drawerWidth"
@@ -330,82 +329,37 @@ watch(
     <!-- Header actions slot -->
     <template #header-actions>
       <!-- Theme toggle -->
-      <button
-        class="p-1.5 rounded-full transition-colors focus:outline-none"
-        :class="themeClasses.icon"
+      <UiButton
+        variant="icon"
+        :color="theme === 'dark' ? 'secondary' : 'primary'"
+        size="sm"
+        :icon-only="true"
+        :left-icon="
+          theme === 'light'
+            ? 'ph:moon-fill'
+            : theme === 'dark'
+            ? 'ph:sun-fill'
+            : 'ph:paint-brush-fill'
+        "
         @click="toggleTheme"
-      >
-        <svg
-          v-if="theme === 'light'"
-          xmlns="http://www.w3.org/2000/svg"
-          class="h-5 w-5"
-          viewBox="0 0 20 20"
-          fill="currentColor"
-        >
-          <path
-            d="M17.293 13.293A8 8 0 016.707 2.707a8.001 8.001 0 1010.586 10.586z"
-          />
-        </svg>
-        <svg
-          v-else-if="theme === 'dark'"
-          xmlns="http://www.w3.org/2000/svg"
-          class="h-5 w-5"
-          viewBox="0 0 20 20"
-          fill="currentColor"
-        >
-          <path
-            fill-rule="evenodd"
-            d="M10 2a1 1 0 011 1v1a1 1 0 11-2 0V3a1 1 0 011-1zm4 8a4 4 0 11-8 0 4 4 0 018 0zm-.464 4.95l.707.707a1 1 0 001.414-1.414l-.707-.707a1 1 0 00-1.414 1.414zm2.12-10.607a1 1 0 010 1.414l-.706.707a1 1 0 11-1.414-1.414l.707-.707a1 1 0 011.414 0zM17 11a1 1 0 100-2h-1a1 1 0 100 2h1zm-7 4a1 1 0 011 1v1a1 1 0 11-2 0v-1a1 1 0 011-1zM5.05 6.464A1 1 0 106.465 5.05l-.708-.707a1 1 0 00-1.414 1.414l.707.707zm1.414 8.486l-.707.707a1 1 0 01-1.414-1.414l.707-.707a1 1 0 011.414 1.414zM4 11a1 1 0 100-2H3a1 1 0 000 2h1z"
-            clip-rule="evenodd"
-          />
-        </svg>
-        <svg
-          v-else
-          xmlns="http://www.w3.org/2000/svg"
-          class="h-5 w-5"
-          viewBox="0 0 20 20"
-          fill="currentColor"
-        >
-          <path
-            d="M4 2a2 2 0 00-2 2v11a3 3 0 106 0V4a2 2 0 00-2-2H4zm1 14a1 1 0 100-2 1 1 0 000 2zm5-1.757l4.9-4.9a2 2 0 000-2.828L13.485 5.1a2 2 0 00-2.828 0L10 5.757v8.486zM16 18H9.071l6-6H16a2 2 0 012 2v2a2 2 0 01-2 2z"
-          />
-        </svg>
-      </button>
+      />
     </template>
 
     <!-- Default slot (body content) -->
     <div class="flex flex-col h-full">
       <!-- Search bar -->
       <div class="p-3 border-b" :class="themeClasses.divider">
-        <div class="relative">
-          <input
-            v-model="searchQuery"
-            type="text"
-            placeholder="Search notes..."
-            class="w-full px-3 py-2 pr-10 rounded-lg transition-all duration-200"
-            :class="[
-              themeClasses.input,
-              isSearchFocused ? 'ring-2 ring-indigo-300' : '',
-            ]"
-            @focus="isSearchFocused = true"
-            @blur="isSearchFocused = false"
-          />
-          <svg
-            xmlns="http://www.w3.org/2000/svg"
-            class="h-5 w-5 absolute right-3 top-2.5"
-            :class="themeClasses.icon"
-            fill="none"
-            viewBox="0 0 24 24"
-            stroke="currentColor"
-          >
-            <path
-              stroke-linecap="round"
-              stroke-linejoin="round"
-              stroke-width="2"
-              d="M21 21l-6-6m2-5a7 7 0 11-14 0 7 7 0 0114 0z"
-            />
-          </svg>
-        </div>
+        <UiInput
+          v-model="searchQuery"
+          type="search"
+          placeholder="Search notes..."
+          :color="theme === 'dark' ? 'secondary' : 'primary'"
+          :variant="theme === 'dark' ? 'filled' : 'outlined'"
+          right-icon="ic:baseline-search"
+          :class="isSearchFocused ? 'ring-2 ring-indigo-300' : ''"
+          @focus="isSearchFocused = true"
+          @blur="isSearchFocused = false"
+        />
       </div>
 
       <!-- Editor area -->
@@ -447,17 +401,15 @@ watch(
         </div>
 
         <div class="relative">
-          <textarea
-            id="note-textarea"
+          <UiTextarea
+            id="note-input"
             v-model="localNoteContent"
-            rows="6"
             placeholder="Type your notes here..."
-            class="w-full px-3 py-2 rounded-lg resize-none transition-all duration-200"
-            :class="[
-              themeClasses.input,
-              isEditorFocused ? 'ring-2 ring-indigo-300' : '',
-              canSaveNote ? 'border-green-300' : '',
-            ]"
+            :color="theme === 'dark' ? 'secondary' : 'primary'"
+            :variant="theme === 'dark' ? 'filled' : 'outlined'"
+            :rows="6"
+            :resize="'vertical'"
+            :class="[canSaveNote ? 'border-green-500' : '', 'focus:ring-0']"
             @input="updateNoteContent"
             @focus="isEditorFocused = true"
             @blur="isEditorFocused = false"
@@ -466,7 +418,7 @@ watch(
 
           <!-- Focus indicator line -->
           <div
-            class="absolute top-0 left-0 w-1 h-full rounded-l-lg bg-indigo-500 transition-all duration-200"
+            class="absolute top-0 left-0 w-1 h-[calc(100%-6px)] rounded-l-lg bg-indigo-500 transition-all duration-200"
             :class="{
               'opacity-100': isEditorFocused,
               'opacity-0': !isEditorFocused,
@@ -478,31 +430,16 @@ watch(
           <div class="text-xs opacity-70" :class="themeClasses.noteText">
             Press Ctrl+Enter to save
           </div>
-          <button
-            class="px-4 py-2 rounded-lg transition-all duration-200 flex items-center focus:outline-none focus:ring-2 focus:ring-indigo-300 shadow-sm"
-            :class="[
-              canSaveNote
-                ? themeClasses.button +
-                  ' transform hover:scale-105 hover:shadow'
-                : 'bg-gray-300 text-gray-500 cursor-not-allowed',
-            ]"
+          <UiButton
             :disabled="!canSaveNote"
+            :color="theme === 'dark' ? 'secondary' : 'primary'"
+            :variant="theme === 'dark' ? 'ghost' : 'solid'"
+            size="md"
+            left-icon="ph:floppy-disk-fill"
             @click="saveNote"
           >
-            <svg
-              xmlns="http://www.w3.org/2000/svg"
-              class="h-4 w-4 mr-1"
-              viewBox="0 0 20 20"
-              fill="currentColor"
-            >
-              <path
-                fill-rule="evenodd"
-                d="M3 17a1 1 0 011-1h12a1 1 0 110 2H4a1 1 0 01-1-1zm3.293-7.707a1 1 0 011.414 0L9 10.586V3a1 1 0 112 0v7.586l1.293-1.293a1 1 0 111.414 1.414l-3 3a1 1 0 01-1.414 0l-3-3a1 1 0 010-1.414z"
-                clip-rule="evenodd"
-              />
-            </svg>
             Save Note
-          </button>
+          </UiButton>
         </div>
       </div>
 
@@ -519,29 +456,19 @@ watch(
           </h4>
 
           <div class="flex items-center">
-            <button
-              class="flex items-center text-xs p-1.5 rounded transition-colors"
-              :class="themeClasses.icon"
+            <UiButton
+              variant="ghost"
+              :color="theme === 'dark' ? 'secondary' : 'primary'"
+              size="sm"
+              :left-icon="
+                sortBy === 'newest'
+                  ? 'ph:sort-ascending-fill'
+                  : 'ph:sort-descending-fill'
+              "
               @click="toggleSortOrder"
             >
-              <svg
-                xmlns="http://www.w3.org/2000/svg"
-                class="h-4 w-4 mr-1"
-                viewBox="0 0 20 20"
-                fill="currentColor"
-              >
-                <path
-                  v-if="sortBy === 'newest'"
-                  d="M3 3a1 1 0 000 2h11a1 1 0 100-2H3zM3 7a1 1 0 000 2h7a1 1 0 100-2H3zM3 11a1 1 0 100 2h4a1 1 0 100-2H3zM15 8a1 1 0 10-2 0v5.586l-1.293-1.293a1 1 0 00-1.414 1.414l3 3a1 1 0 001.414 0l3-3a1 1 0 00-1.414-1.414L15 13.586V8z"
-                />
-                <path
-                  v-else
-                  d="M3 3a1 1 0 000 2h11a1 1 0 100-2H3zM3 7a1 1 0 000 2h7a1 1 0 100-2H3zM3 11a1 1 0 100 2h4a1 1 0 100-2H3zM15 8a1 1 0 10-2 0v5.586l-1.293-1.293a1 1 0 00-1.414 1.414l3 3a1 1 0 001.414 0l3-3a1 1 0 00-1.414-1.414L15 13.586V8z"
-                  transform="rotate(180, 12, 12)"
-                />
-              </svg>
               Sort: {{ sortBy === "newest" ? "Newest first" : "Oldest first" }}
-            </button>
+            </UiButton>
           </div>
         </div>
 
@@ -601,40 +528,34 @@ watch(
                   v-if="deleteConfirmation === note.id"
                   class="flex items-center space-x-2"
                 >
-                  <button
-                    class="text-xs px-2 py-1 rounded bg-red-500 text-white hover:bg-red-600 transition-colors"
+                  <UiButton
+                    variant="solid"
+                    color="danger"
+                    size="xs"
                     @click="deleteNote(note.id)"
                   >
                     Confirm
-                  </button>
-                  <button
-                    class="text-xs px-2 py-1 rounded bg-gray-200 text-gray-800 hover:bg-gray-300 transition-colors"
+                  </UiButton>
+                  <UiButton
+                    variant="ghost"
+                    color="secondary"
+                    size="xs"
                     @click="cancelDelete"
                   >
                     Cancel
-                  </button>
+                  </UiButton>
                 </div>
 
-                <button
+                <UiButton
                   v-else
-                  class="p-1 rounded-full transition-colors focus:outline-none"
-                  :class="themeClasses.icon"
+                  variant="icon"
+                  color="danger"
+                  size="xs"
+                  :icon-only="true"
+                  left-icon="ph:trash-fill"
                   aria-label="Delete note"
                   @click="confirmDelete(note.id)"
-                >
-                  <svg
-                    xmlns="http://www.w3.org/2000/svg"
-                    class="h-4 w-4"
-                    viewBox="0 0 20 20"
-                    fill="currentColor"
-                  >
-                    <path
-                      fill-rule="evenodd"
-                      d="M9 2a1 1 0 00-.894.553L7.382 4H4a1 1 0 000 2v10a2 2 0 002 2h8a2 2 0 002-2V6a1 1 0 100-2h-3.382l-.724-1.447A1 1 0 0011 2H9zM7 8a1 1 0 012 0v6a1 1 0 11-2 0V8zm5-1a1 1 0 00-1 1v6a1 1 0 102 0V8a1 1 0 00-1-1z"
-                      clip-rule="evenodd"
-                    />
-                  </svg>
-                </button>
+                />
               </div>
 
               <!-- Note text with highlight for search terms -->
@@ -662,7 +583,7 @@ watch(
         </div>
       </div>
     </div>
-  </Drawer>
+  </UiDrawer>
 </template>
 
 <style scoped>
