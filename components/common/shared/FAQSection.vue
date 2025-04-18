@@ -1,49 +1,42 @@
 <script lang="ts" setup>
-// FAQ section with additional metadata
-const faqs = ref([
-  {
-    question: "How does the course enrollment process work?",
-    answer:
-      "Our enrollment process is simple. Browse courses, select the one you want, make a payment, and gain immediate access to all course materials. You'll have lifetime access to the content, allowing you to learn at your own pace.",
-    isOpen: false,
-    icon: "shopping-cart",
-    delay: "delay-0",
-    color: "indigo",
-  },
-  {
-    question: "What makes your consultancy services different?",
-    answer:
-      "We combine industry expertise with a personalized approach to each project. Our consultants work closely with your team to understand your specific challenges and goals, then develop tailored solutions that deliver measurable results.",
-    isOpen: false,
-    icon: "lightbulb",
-    delay: "delay-100",
-    color: "purple",
-  },
-  {
-    question: "Do you offer certification for completed courses?",
-    answer:
-      "Yes, all our courses come with completion certificates that you can add to your portfolio or LinkedIn profile. For certain specialized courses, we also offer industry-recognized certifications upon passing the final assessment.",
-    isOpen: false,
-    icon: "badge-check",
-    delay: "delay-200",
-    color: "blue",
-  },
-  {
-    question: "Can I request a custom training program for my team?",
-    answer:
-      "Absolutely! We offer custom corporate training programs tailored to your team's specific needs and skill levels. Contact us through the consultancy request form to discuss your requirements.",
-    isOpen: false,
-    icon: "users",
-    delay: "delay-300",
-    color: "pink",
-  },
-]);
+interface FAQ {
+  question: string;
+  answer: string;
+  icon?: string;
+  delay?: string;
+  color?: string;
+}
+
+interface Props {
+  faqs: FAQ[];
+  title?: string;
+  subtitle?: string;
+  showSearch?: boolean;
+}
+
+withDefaults(defineProps<Props>(), {
+  title: "Frequently Asked Questions",
+  subtitle: "Find answers to common questions about our platform and services.",
+  showSearch: true,
+});
+
+// Track which FAQ is open
+const openFaqIndex = ref<number | null>(null);
 
 const toggleFaq = (index: number) => {
-  faqs.value = faqs.value.map((faq, i) => ({
+  openFaqIndex.value = openFaqIndex.value === index ? null : index;
+};
+
+// Get default values for missing properties
+const getFaqWithDefaults = (faq: FAQ, index: number): FAQ => {
+  return {
+    icon:
+      faq.icon ||
+      ["shopping-cart", "lightbulb", "badge-check", "users"][index % 4],
+    delay: faq.delay || `delay-${(index % 5) * 100}`,
+    color: faq.color || ["indigo", "purple", "blue", "pink"][index % 4],
     ...faq,
-    isOpen: i === index ? !faq.isOpen : false,
-  }));
+  };
 };
 </script>
 
@@ -90,13 +83,13 @@ const toggleFaq = (index: number) => {
           class="text-3xl md:text-5xl font-bold mb-4 bg-clip-text text-transparent bg-gradient-to-r from-indigo-600 to-purple-600 animate-fade-in"
           style="animation-delay: 100ms"
         >
-          Frequently Asked Questions
+          {{ title }}
         </h2>
         <p
           class="text-xl text-gray-600 max-w-3xl mx-auto mb-8 animate-fade-in"
           style="animation-delay: 200ms"
         >
-          Find answers to common questions about our platform and services.
+          {{ subtitle }}
         </p>
 
         <!-- Animated underline -->
@@ -114,21 +107,24 @@ const toggleFaq = (index: number) => {
           v-for="(faq, index) in faqs"
           :key="index"
           class="animate-fade-in rounded-xl overflow-hidden shadow-md hover:shadow-lg transition-all duration-500"
-          :class="faq.delay"
+          :class="getFaqWithDefaults(faq, index).delay"
         >
           <div
             class="border border-gray-200 rounded-xl overflow-hidden bg-white group transform transition-all duration-500"
-            :class="{ 'shadow-lg ring-2': faq.isOpen }"
+            :class="{ 'shadow-lg ring-2': openFaqIndex === index }"
             :style="{
-              borderColor: faq.isOpen
-                ? `rgb(var(--color-${faq.color}-200))`
-                : 'transparent',
+              borderColor:
+                openFaqIndex === index
+                  ? `rgb(var(--color-${
+                      getFaqWithDefaults(faq, index).color
+                    }-200))`
+                  : 'transparent',
             }"
           >
             <!-- Question header with icon -->
             <button
               class="w-full flex justify-between items-center p-6 text-left font-semibold hover:bg-gray-50/80 focus:outline-none focus:bg-gray-50/80 transition-all duration-300"
-              :class="{ 'bg-gray-50/80': faq.isOpen }"
+              :class="{ 'bg-gray-50/80': openFaqIndex === index }"
               @click="toggleFaq(index)"
             >
               <div class="flex items-center">
@@ -136,14 +132,18 @@ const toggleFaq = (index: number) => {
                 <div
                   class="w-10 h-10 rounded-full flex items-center justify-center mr-4 transition-all duration-500"
                   :class="[
-                    faq.isOpen
-                      ? `bg-${faq.color}-100 text-${faq.color}-600`
+                    openFaqIndex === index
+                      ? `bg-${getFaqWithDefaults(faq, index).color}-100 text-${
+                          getFaqWithDefaults(faq, index).color
+                        }-600`
                       : 'bg-gray-100 text-gray-500',
                   ]"
                 >
                   <!-- Shopping cart icon -->
                   <svg
-                    v-if="faq.icon === 'shopping-cart'"
+                    v-if="
+                      getFaqWithDefaults(faq, index).icon === 'shopping-cart'
+                    "
                     xmlns="http://www.w3.org/2000/svg"
                     class="h-5 w-5"
                     viewBox="0 0 20 20"
@@ -156,7 +156,7 @@ const toggleFaq = (index: number) => {
 
                   <!-- Lightbulb icon -->
                   <svg
-                    v-if="faq.icon === 'lightbulb'"
+                    v-if="getFaqWithDefaults(faq, index).icon === 'lightbulb'"
                     xmlns="http://www.w3.org/2000/svg"
                     class="h-5 w-5"
                     viewBox="0 0 20 20"
@@ -169,7 +169,7 @@ const toggleFaq = (index: number) => {
 
                   <!-- Badge icon -->
                   <svg
-                    v-if="faq.icon === 'badge-check'"
+                    v-if="getFaqWithDefaults(faq, index).icon === 'badge-check'"
                     xmlns="http://www.w3.org/2000/svg"
                     class="h-5 w-5"
                     viewBox="0 0 20 20"
@@ -184,7 +184,7 @@ const toggleFaq = (index: number) => {
 
                   <!-- Users icon -->
                   <svg
-                    v-if="faq.icon === 'users'"
+                    v-if="getFaqWithDefaults(faq, index).icon === 'users'"
                     xmlns="http://www.w3.org/2000/svg"
                     class="h-5 w-5"
                     viewBox="0 0 20 20"
@@ -200,8 +200,9 @@ const toggleFaq = (index: number) => {
                 <span
                   class="text-lg transition-colors duration-300"
                   :class="{
-                    [`text-${faq.color}-700`]: faq.isOpen,
-                    'text-gray-800': !faq.isOpen,
+                    [`text-${getFaqWithDefaults(faq, index).color}-700`]:
+                      openFaqIndex === index,
+                    'text-gray-800': openFaqIndex !== index,
                   }"
                 >
                   {{ faq.question }}
@@ -212,17 +213,19 @@ const toggleFaq = (index: number) => {
               <div
                 class="ml-4 flex-shrink-0 w-8 h-8 rounded-full flex items-center justify-center transition-colors duration-300"
                 :class="{
-                  [`bg-${faq.color}-100`]: faq.isOpen,
-                  'bg-gray-100': !faq.isOpen,
+                  [`bg-${getFaqWithDefaults(faq, index).color}-100`]:
+                    openFaqIndex === index,
+                  'bg-gray-100': openFaqIndex !== index,
                 }"
               >
                 <svg
                   xmlns="http://www.w3.org/2000/svg"
                   class="h-5 w-5 transition-transform duration-500"
                   :class="{
-                    'transform rotate-180': faq.isOpen,
-                    [`text-${faq.color}-600`]: faq.isOpen,
-                    'text-gray-400': !faq.isOpen,
+                    'transform rotate-180': openFaqIndex === index,
+                    [`text-${getFaqWithDefaults(faq, index).color}-600`]:
+                      openFaqIndex === index,
+                    'text-gray-400': openFaqIndex !== index,
                   }"
                   viewBox="0 0 20 20"
                   fill="currentColor"
@@ -240,12 +243,15 @@ const toggleFaq = (index: number) => {
             <div
               class="transition-all duration-500 ease-in-out overflow-hidden bg-gradient-to-br from-white to-gray-50"
               :style="{
-                maxHeight: faq.isOpen ? '500px' : '0px',
-                opacity: faq.isOpen ? 1 : 0,
+                maxHeight: openFaqIndex === index ? '500px' : '0px',
+                opacity: openFaqIndex === index ? 1 : 0,
               }"
             >
               <div class="p-6 pt-0 text-gray-600 leading-relaxed">
-                <div class="border-l-2 pl-5" :class="`border-${faq.color}-300`">
+                <div
+                  class="border-l-2 pl-5"
+                  :class="`border-${getFaqWithDefaults(faq, index).color}-300`"
+                >
                   {{ faq.answer }}
                 </div>
 
@@ -253,14 +259,31 @@ const toggleFaq = (index: number) => {
                 <div class="mt-4 flex justify-end">
                   <button
                     class="px-4 py-2 rounded-lg text-white text-sm font-medium transition-all duration-300 transform hover:scale-105 flex items-center space-x-1"
-                    :class="`bg-gradient-to-r from-${faq.color}-500 to-${faq.color}-600 shadow-sm hover:shadow`"
+                    :class="`bg-gradient-to-r from-${
+                      getFaqWithDefaults(faq, index).color
+                    }-500 to-${
+                      getFaqWithDefaults(faq, index).color
+                    }-600 shadow-sm hover:shadow`"
                   >
-                    <span v-if="faq.icon === 'shopping-cart'">Enroll Now</span>
-                    <span v-if="faq.icon === 'lightbulb'">Learn More</span>
-                    <span v-if="faq.icon === 'badge-check'"
+                    <span
+                      v-if="
+                        getFaqWithDefaults(faq, index).icon === 'shopping-cart'
+                      "
+                      >Enroll Now</span
+                    >
+                    <span
+                      v-if="getFaqWithDefaults(faq, index).icon === 'lightbulb'"
+                      >Learn More</span
+                    >
+                    <span
+                      v-if="
+                        getFaqWithDefaults(faq, index).icon === 'badge-check'
+                      "
                       >View Certifications</span
                     >
-                    <span v-if="faq.icon === 'users'">Request Training</span>
+                    <span v-if="getFaqWithDefaults(faq, index).icon === 'users'"
+                      >Request Training</span
+                    >
 
                     <svg
                       xmlns="http://www.w3.org/2000/svg"
@@ -286,6 +309,7 @@ const toggleFaq = (index: number) => {
 
       <!-- Search bar and support info -->
       <div
+        v-if="showSearch"
         class="mt-12 bg-white p-8 rounded-2xl shadow-lg border border-gray-200 animate-fade-in"
         style="animation-delay: 500ms"
       >
