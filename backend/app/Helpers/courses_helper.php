@@ -103,7 +103,7 @@ function formatCourseResponse($courses = []) {
         foreach(['tags', 'features', 'description', 'requirements'] as $field) {
             if(!empty($value[$field])) {
                 $list = json_decode($value[$field], true);
-                $value[$field] = empty($list) ? $value[$field] : $list;
+                $value[$field] = empty($list) ? html_entity_decode($value[$field]) : $list;
             }
         }
 
@@ -131,7 +131,7 @@ function formatCourseSections($sections = []) {
         foreach(['lessons'] as $field) {
             if(!empty($value[$field])) {
                 $list = json_decode($value[$field], true);
-                $value[$field] = empty($list) ? $value[$field] : $list;
+                $value[$field] = empty($list) ? html_entity_decode($value[$field]) : $list;
             }
         }
 
@@ -152,6 +152,32 @@ function formatCourseSections($sections = []) {
 
     return $result;
 
+}
+
+/**
+ * Format the course reviews
+ * 
+ * @param array $reviews
+ * @return array
+ */
+function formatCourseReviews($reviews = []) {
+
+    // return empty array if no reviews
+    if(empty($reviews)) return [];
+    
+    foreach($reviews as $key => $value) {
+
+        unset($value['updated_at']);
+
+        // format the course
+        $value['course'] = json_decode($value['course'], true);
+        $value['user'] = json_decode($value['user'], true);
+
+        // format the user
+        $result[] = $value;
+    }
+
+    return $result ?? [];
 }
 
 /**

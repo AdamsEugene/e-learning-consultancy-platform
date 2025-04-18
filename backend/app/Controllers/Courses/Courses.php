@@ -19,8 +19,13 @@ class Courses extends LoadController {
      * @return void
      */
     public function list() {
-        // trigger models
-        $this->triggerModel(['courses']);
+
+        // set the default status of the course if no status is set
+        if(empty($this->payload['data'])) {
+            $this->payload['data'] = [
+                'status' => ['Published', 'Draft', 'Archived', 'Under Review', 'Unpublished']
+            ];
+        }
 
         // get courses
         $courses = $this->coursesModel->getRecords(
@@ -42,7 +47,7 @@ class Courses extends LoadController {
     public function view() {
 
         // trigger models
-        $this->triggerModel(['courses', 'instructors', 'reviews']);
+        $this->triggerModel(['instructors', 'reviews']);
 
         $courseId = !empty($this->mainRawId) ? $this->mainRawId : $this->payload['course_id'];
 
@@ -77,7 +82,7 @@ class Courses extends LoadController {
     public function create() {
 
         // trigger models
-        $this->triggerModel(['courses', 'categories', 'instructors', 'tags']);
+        $this->triggerModel(['categories', 'instructors', 'tags']);
 
         // confirm if the category set exists
         $category = $this->categoriesModel->getRecords(['active'], ['category_ids' => [$this->payload['category_id'], $this->payload['subcategory_id'] ?? 0]]);
@@ -158,6 +163,9 @@ class Courses extends LoadController {
             $sectionsList = $validateSections;
         }
 
+        // set the default status of the course to unpublished
+        $this->payload['status'] = 'Unpublished';
+
         // create course
         $courseId = $this->coursesModel->createRecord($this->payload);
 
@@ -211,4 +219,32 @@ class Courses extends LoadController {
         
     }
 
+    /**
+     * Update course
+     * 
+     * @return void
+     */
+    public function update() {
+
+    }
+
+    /**
+     * Delete course
+     * 
+     * @return void
+     */
+    public function delete() {
+
+        // confirm if the course exists
+        $course = $this->coursesModel->getRecord($this->mainRawId);
+        if(empty($course)) {
+            return Routing::notFound();
+        }
+
+        // delete the course
+        $this->coursesModel->deleteRecord($this->mainRawId);
+
+        // return response
+        return Routing::success('Course deleted successfully');
+    }
 }

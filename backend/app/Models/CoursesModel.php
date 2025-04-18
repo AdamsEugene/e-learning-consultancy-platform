@@ -72,18 +72,18 @@ class CoursesModel extends Model
      */
     public function getRecords($limit = 10, $offset = 0, $search = null, $data = []) {
         // get query
-        $query = $this->select('courses.*, c.name as category_name, c.name_slug as category_slug')
-            ->join("{$this->categoriesTable} c", 'c.id = courses.category_id', 'left')
-            ->join("{$this->userTable} u", 'u.id = courses.created_by', 'left');
+        $query = $this->select("{$this->table}.*, c.name as category_name, c.name_slug as category_slug")
+            ->join("{$this->categoriesTable} c", "c.id = {$this->table}.category_id", 'left')
+            ->join("{$this->userTable} u", "u.id = {$this->table}.created_by", 'left');
 
         // search
         if (!empty($search)) {
-            $query->like('title', $search);
+            $query->like("{$this->table}.title", $search);
         }
 
         // search by course ids
         if (!empty($data['course_ids'])) {
-            $query->whereIn('courses.id', $data['course_ids']);
+            $query->whereIn("{$this->table}.id", $data['course_ids']);
         }
 
         // search by price ranges
@@ -98,14 +98,14 @@ class CoursesModel extends Model
         foreach (['course_type', 'category_id', 'subcategory_id', 'level', 'rating', 'status'] as $key) {
             if (!empty($data[$key])) {
                 if(is_array($data[$key])) {
-                    $query->whereIn($key, $data[$key]);
+                    $query->whereIn("{$this->table}.{$key}", $data[$key]);
                 } else {
-                    $query->where($key, $data[$key]);
+                    $query->where("{$this->table}.{$key}", $data[$key]);
                 }
             }
         }
 
-        $query->orderBy('courses.id', 'DESC');
+        $query->orderBy("{$this->table}.id", 'DESC');
 
         return $query->findAll($limit, $offset);
     }

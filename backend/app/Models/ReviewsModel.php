@@ -6,8 +6,22 @@ use CodeIgniter\Database\Exceptions\DatabaseException;
 
 class ReviewsModel extends Model {
     
-    protected $table = 'courses_reviews';
+    protected $table;
+    protected $primaryKey = 'id';
+    protected $coursesTable;
+    protected $userTable;
     protected $allowedFields = ['course_id', 'user_id', 'rating', 'content', 'helpfulCount', 'dislikesCount'];
+
+    public function __construct() {
+        parent::__construct();
+
+        $this->table = DbTables::$reviewsTable;
+        foreach(DbTables::initTables() as $key) {
+            if (property_exists($this, $key)) {
+                $this->{$key} = DbTables::${$key};
+            }
+        }
+    }
 
     /**
      * Get all records
@@ -16,18 +30,29 @@ class ReviewsModel extends Model {
      * @param int $offset
      * @return array|false
      */
-    public function getRecords($limit = 10, $offset = 0, $data = []) {
+    public function getRecords($limit = 10, $offset = 0, $data = [], $courseData = false) {
         try {
             $query = $this->orderBy('created_at', 'DESC');
+
+            if(!empty($courseData)) {
+                $query->select("{$this->table}.*, (SELECT JSON_OBJECT(
+                    'title', c.title, 'slug', c.title_slug, 'image', c.image, 
+                    'description', c.description, 'created_at', c.created_at,
+                    'reviewCount', c.reviewCount, 'price', c.price, 'originalPrice', c.originalPrice
+                ) FROM {$this->coursesTable} c WHERE c.id = {$this->table}.course_id LIMIT 1) as course,
+                 (SELECT JSON_OBJECT(
+                    'id', u.id, 'firstname', u.firstname, 'lastname', u.lastname, 'email', u.email
+                ) FROM {$this->userTable} u WHERE u.id = {$this->table}.user_id LIMIT 1) as user");
+            }
 
             if(!empty($data)) {
                 foreach($data as $key => $value) {
                     $query->where($key, $value);
                 }
             }
-
             return $query->findAll($limit, $offset);
         } catch(DatabaseException $e) {
+            print $e->getMessage();
             return false;
         }
     }
@@ -39,15 +64,16 @@ class ReviewsModel extends Model {
      * @param int $offset
      * @return array|false
      */
-    public function getRecordByCourseId($courseId, $limit = 10, $offset = 0, $data = []) {
+    public function getRecordByCourseId($limit = 10, $offset = 0, $data = []) {
         try {
-            $query = $this->where('course_id', $courseId);
+            $query = $this->where('course_id', $data['course_id']);
 
             if(!empty($data)) {
                 foreach($data as $key => $value) {
                     $query->where($key, $value);
                 }
             }
+            return $query->findAll($limit, $offset);
         } catch(DatabaseException $e) {
             return false;
         }

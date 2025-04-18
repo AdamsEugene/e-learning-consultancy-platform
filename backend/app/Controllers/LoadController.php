@@ -39,6 +39,13 @@ class LoadController extends BaseController
         if(empty($this->cacheObject)) {
             $this->cacheObject = new Caching();
         }
+
+        // get the last name of the class that has been called and trigger the model
+        $childClass = get_called_class();
+        $getLastName = explode('\\', $childClass);
+        $triggeredModel = $getLastName[count($getLastName) - 1];
+
+        $this->triggerModel(strtolower($triggeredModel));
     }
 
     /**

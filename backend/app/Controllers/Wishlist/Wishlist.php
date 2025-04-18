@@ -14,9 +14,6 @@ class Wishlist extends LoadController {
      */
     public function list() {
 
-        // trigger the models
-        $this->triggerModel(['wishlist']);
-
         // get the payload
         $payload = [];
 
@@ -52,8 +49,6 @@ class Wishlist extends LoadController {
      * @return void
      */
     public function view() {
-
-        $this->triggerModel(['wishlist']);
 
         // get the payload
         $payload = ['id' => $this->payload['wishlist_id']];
@@ -96,8 +91,6 @@ class Wishlist extends LoadController {
      * @return void
      */
     public function create() {
-
-        $this->triggerModel(['wishlist', 'courses']);
 
         // get the payload
         $payload = ['course_id' => $this->payload['course_id']];
@@ -143,8 +136,6 @@ class Wishlist extends LoadController {
      * @return void
      */
     public function delete() {
-
-        $this->triggerModel(['wishlist']);
 
         // get the payload
         $payload = ['wishlist_id' => $this->payload['wishlist_id']];
