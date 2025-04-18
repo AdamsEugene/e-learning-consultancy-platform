@@ -28,10 +28,17 @@ class Courses extends LoadController {
             $this->payload['data'] = ['status' => $this->statusList];
         }
 
+        // loop through the payload and get the courses by the created by
+        foreach(['created_by', 'status'] as $key) {
+            if(!empty($this->payload[$key])) {
+                $this->payload['data'][$key] = $this->payload[$key];
+            }
+        }
+
         // get courses
         $courses = $this->coursesModel->getRecords(
-            $this->payload['limit'] ?? 12,
-            $this->payload['offset'] ?? 0,
+            $this->payload['limit'] ?? $this->defaultLimit,
+            $this->payload['offset'] ?? $this->defaultOffset,
             $this->payload['search'] ?? null,
             $this->payload['data'] ?? []
         );
@@ -50,7 +57,7 @@ class Courses extends LoadController {
         // trigger models
         $this->triggerModel(['instructors', 'reviews']);
 
-        $courseId = !empty($this->mainRawId) ? $this->mainRawId : $this->payload['course_id'];
+        $courseId = !empty($this->uniqueId) ? $this->uniqueId : $this->payload['course_id'];
 
         // get course
         $course = $this->coursesModel->getRecord($courseId);
@@ -276,13 +283,13 @@ class Courses extends LoadController {
     public function delete() {
 
         // confirm if the course exists
-        $course = $this->coursesModel->getRecord($this->mainRawId);
+        $course = $this->coursesModel->getRecord($this->uniqueId);
         if(empty($course)) {
             return Routing::notFound();
         }
 
         // delete the course
-        $this->coursesModel->deleteRecord($this->mainRawId);
+        $this->coursesModel->deleteRecord($this->uniqueId);
 
         // return response
         return Routing::success('Course deleted successfully');

@@ -23,6 +23,7 @@ function formatUserResponse($user, bool $single = false, $simpleData = false) {
 
         // format the user response
         $result[] = [
+            "user_id" => $value['id'],
             "email" => $value['email'],
             "firstname" => $value['firstname'],
             "lastname" => $value['lastname'],

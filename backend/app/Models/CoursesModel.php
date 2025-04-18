@@ -71,46 +71,55 @@ class CoursesModel extends Model
      * @return array
      */
     public function getRecords($limit = 10, $offset = 0, $search = null, $data = []) {
-        // get query
-        $query = $this->select("{$this->table}.*, 
-            (SELECT JSON_OBJECT(
-                'id', u.id, 'firstname', u.firstname, 'lastname', u.lastname, 'email', u.email
-            ) FROM {$this->userTable} u WHERE u.id = {$this->table}.created_by LIMIT 1) as created_by,
-            c.name as category_name, c.name_slug as category_slug")
-            ->join("{$this->categoriesTable} c", "c.id = {$this->table}.category_id", 'left');
+        try {
+            // get query
+            $query = $this->select("{$this->table}.*, 
+                (SELECT JSON_OBJECT(
+                    'id', u.id, 'firstname', u.firstname, 'lastname', u.lastname, 'email', u.email
+                ) FROM {$this->userTable} u WHERE u.id = {$this->table}.created_by LIMIT 1) as created_by,
+                c.name as category_name, c.name_slug as category_slug")
+                ->join("{$this->categoriesTable} c", "c.id = {$this->table}.category_id", 'left');
 
-        // search
-        if (!empty($search)) {
-            $query->like("{$this->table}.title", $search);
-        }
+            // search
+            if (!empty($search)) {
+                $query->like("{$this->table}.title", $search);
+            }
 
-        // search by course ids
-        if (!empty($data['course_ids'])) {
-            $query->whereIn("{$this->table}.id", $data['course_ids']);
-        }
+            // search by course ids
+            if (!empty($data['course_ids'])) {
+                $query->whereIn("{$this->table}.id", $data['course_ids']);
+            }
 
-        // search by price ranges
-        if (!empty($data['price_range']) && is_array($data['price_range'])) {
-            $query->groupStart();
-            $query->where('price >=', $data['price_range'][0]);
-            $query->orWhere('price <=', $data['price_range'][1]);
-            $query->groupEnd();
-        }
+            // search by price ranges
+            if (!empty($data['price_range']) && is_array($data['price_range'])) {
+                $query->groupStart();
+                $query->where('price >=', $data['price_range'][0]);
+                $query->orWhere('price <=', $data['price_range'][1]);
+                $query->groupEnd();
+            }
 
-        // search by course type, category id and level
-        foreach (['course_type', 'category_id', 'subcategory_id', 'level', 'rating', 'status'] as $key) {
-            if (!empty($data[$key])) {
-                if(is_array($data[$key])) {
-                    $query->whereIn("{$this->table}.{$key}", $data[$key]);
-                } else {
-                    $query->where("{$this->table}.{$key}", $data[$key]);
+            if(empty($data['status'])) {
+                $query->where("{$this->table}.status != 'Deleted'");
+            }
+
+            // search by course type, category id and level
+            foreach (['course_type', 'category_id', 'subcategory_id', 'level', 'rating', 'status'] as $key) {
+                if (!empty($data[$key])) {
+                    if(is_array($data[$key])) {
+                        $query->whereIn("{$this->table}.{$key}", $data[$key]);
+                    } else {
+                        $query->where("{$this->table}.{$key}", $data[$key]);
+                    }
                 }
             }
+
+            $query->orderBy("{$this->table}.id", 'DESC');
+
+            return $query->findAll($limit, $offset);
+
+        } catch (DatabaseException $e) {
+            return false;
         }
-
-        $query->orderBy("{$this->table}.id", 'DESC');
-
-        return $query->findAll($limit, $offset);
     }
 
     /**

@@ -51,7 +51,7 @@ class UsersModel extends Model {
      * @param string|null $search
      * @return array
      */
-    public function findUsers(?int $limit = null, int $offset = 0, ?string $search = null, ?array $status = ['active'], ?array $userIds = [])
+    public function findUsers(?int $limit = null, int $offset = 0, ?string $search = null, ?array $status = ['active'], ?array $userIds = [], ?array $data = [])
     {
         // get query
         $query = $this->limit($limit, $offset);
@@ -74,6 +74,16 @@ class UsersModel extends Model {
 
         if(!empty($userIds)) {
             $query->whereIn('id', $userIds);
+        }
+
+        if(!empty($data)) {
+            foreach($data as $key => $value) {
+                if(is_array($value)) {
+                    $query->whereIn($key, $value);
+                } else {
+                    $query->where($key, $value);
+                }
+            }
         }
 
         // order by idsite DESC
@@ -135,10 +145,18 @@ class UsersModel extends Model {
      * @param int $id
      * @return array|null
      */
-    public function findById(int $id, array $status = ['active'])
+    public function findById(int $id, array $status = ['active'], $data = [])
     {
         try {
-            return $this->where('id', $id)->whereIn('status', $status)->first();
+            $query = $this->where('id', $id)->whereIn('status', $status);
+
+            if(!empty($data)) {
+                foreach($data as $key => $value) {
+                    $query->where($key, $value);
+                }
+            }
+
+            return $query->first();
         } catch(DatabaseException $e) {
             return [];
         }

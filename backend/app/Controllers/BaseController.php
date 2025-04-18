@@ -89,7 +89,7 @@ abstract class BaseController extends Controller
     /**
      * @var int
      */
-    public $defaultLimit = 1000;
+    public $defaultLimit = 100;
 
     /**
      * @var int
