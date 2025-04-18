@@ -87,6 +87,7 @@ const discussions = [
 const discussionText = ref("");
 </script>
 
+<!-- eslint-disable vue/no-v-html -->
 <!-- eslint-disable vue/html-self-closing -->
 <template>
   <div class="bg-white rounded-lg shadow-sm overflow-hidden mb-6">
