@@ -27,8 +27,6 @@ const {
   formatLessonType,
 } = useCourse(courseId);
 
-
-
 onMounted(() => {
   fetchCourseData();
 });
