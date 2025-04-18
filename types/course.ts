@@ -6,17 +6,23 @@ export interface CourseLesson {
   id: number;
   title: string;
   duration: string;
+  description: string;
   videoUrl?: string;
-  type: LessonType;
-  isPreview?: boolean;
+  content?: string;
+  type: "video" | "quiz" | "assignment" | "resource";
   isCompleted?: boolean;
+  order: number;
+  learningObjectives?: string[];
+  requirements?: string[];
 }
 
 export interface CourseSection {
   id: number;
   title: string;
+  description: string;
   lessons: CourseLesson[];
-  totalDuration: string;
+  order: number;
+  estimatedCompletionTime?: string;
 }
 
 export interface CourseInstructor {
@@ -45,31 +51,32 @@ export interface CourseReview {
 export interface Course {
   id: number;
   title: string;
-  subtitle: string;
   description: string;
-  category: string;
-  subCategory?: string;
-  level: string;
-  language: string;
-  price: number;
-  originalPrice?: number;
-  image: string;
-  rating: number;
-  reviewCount: number;
-  enrollmentCount: number;
-  createdAt: string;
-  lastUpdated: string;
-  totalDuration: string;
-  totalLessons: number;
-  features: string[];
-  requirements: string[];
-  whatYouWillLearn: string[];
+  instructor: {
+    name: string;
+    avatar: string;
+    title: string;
+    bio: string;
+  };
   sections: CourseSection[];
-  instructors: CourseInstructor[];
-  reviews: CourseReview[];
-  isEnrolled?: boolean;
-  progress?: number;
-  badges?: string[];
+  level: string;
+  category: string;
+  tags: string[];
+  totalDuration: string;
+  rating: number;
+  studentsCount: number;
+  updatedAt: string;
+  objectives: string[];
+  requirements: string[];
+  progress?: {
+    completed: number;
+    total: number;
+    percentage: number;
+    lastLesson?: {
+      id: number;
+      title: string;
+    };
+  };
 }
 
 export interface Note {

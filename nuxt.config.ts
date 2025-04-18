@@ -19,6 +19,7 @@ export default defineNuxtConfig({
     "@nuxt/scripts",
     "@nuxt/test-utils",
     "@nuxt/ui",
+    // "@nuxtjs/tailwindcss",
   ],
 
   // Make sure layouts are properly configured
@@ -42,5 +43,18 @@ export default defineNuxtConfig({
   typescript: {
     strict: true,
     shim: false,
+  },
+
+  plugins: ["~/plugins/loading.ts"],
+
+  components: {
+    global: true,
+    dirs: [
+      "~/components",
+      {
+        path: "~/components/common",
+        global: true,
+      },
+    ],
   },
 });

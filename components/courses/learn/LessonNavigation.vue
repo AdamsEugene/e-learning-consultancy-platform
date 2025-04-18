@@ -35,41 +35,49 @@ const markComplete = () => {
 <template>
   <div class="flex justify-between items-center mb-8">
     <!-- Previous button -->
-    <button
+    <UiButton
       v-if="previousLesson"
-      class="group flex items-center bg-white border border-gray-200 hover:bg-gray-50 text-gray-700 px-5 py-3 rounded-lg transition-colors shadow-sm"
+      variant="outline"
+      color="gray"
+      size="md"
+      class="group flex items-center"
       @click="navigateToPrevious"
     >
-      <svg
-        xmlns="http://www.w3.org/2000/svg"
-        class="h-5 w-5 mr-2 transition-transform transform group-hover:-translate-x-1"
-        viewBox="0 0 20 20"
-        fill="currentColor"
-      >
-        <path
-          fill-rule="evenodd"
-          d="M12.707 5.293a1 1 0 010 1.414L9.414 10l3.293 3.293a1 1 0 01-1.414 1.414l-4-4a1 1 0 010-1.414l4-4a1 1 0 011.414 0z"
-          clip-rule="evenodd"
-        />
-      </svg>
+      <template #prefix>
+        <svg
+          xmlns="http://www.w3.org/2000/svg"
+          class="h-5 w-5 mr-2 transition-transform transform group-hover:-translate-x-1"
+          viewBox="0 0 20 20"
+          fill="currentColor"
+        >
+          <path
+            fill-rule="evenodd"
+            d="M12.707 5.293a1 1 0 010 1.414L9.414 10l3.293 3.293a1 1 0 01-1.414 1.414l-4-4a1 1 0 010-1.414l4-4a1 1 0 011.414 0z"
+            clip-rule="evenodd"
+          />
+        </svg>
+      </template>
       <div>
         <div class="text-xs text-gray-500 mb-1">Previous</div>
         <div class="font-medium truncate max-w-[150px]">
           {{ previousLesson.title }}
         </div>
       </div>
-    </button>
+    </UiButton>
     <div v-else class="w-36" />
 
     <!-- Middle complete button (only shown if lesson is not completed) -->
     <div class="flex-1 flex justify-center px-2">
       <transition name="fade" mode="out-in">
-        <button
+        <UiButton
           v-if="!isCompleted"
-          class="bg-indigo-600 hover:bg-indigo-700 text-white px-8 py-3 rounded-lg font-medium transition-all duration-200 transform hover:scale-105 shadow-md"
+          variant="solid"
+          color="primary"
+          size="md"
+          class="transition-all duration-200 transform hover:scale-105"
           @click="markComplete"
         >
-          <div class="flex items-center">
+          <template #prefix>
             <svg
               xmlns="http://www.w3.org/2000/svg"
               class="h-5 w-5 mr-2"
@@ -82,16 +90,19 @@ const markComplete = () => {
                 clip-rule="evenodd"
               />
             </svg>
-            Mark as Complete
-          </div>
-        </button>
+          </template>
+          Mark as Complete
+        </UiButton>
       </transition>
     </div>
 
     <!-- Next button -->
-    <button
+    <UiButton
       v-if="nextLesson"
-      class="group flex items-center bg-indigo-600 hover:bg-indigo-700 text-white px-5 py-3 rounded-lg transition-colors shadow-sm"
+      variant="solid"
+      color="primary"
+      size="md"
+      class="group flex items-center"
       @click="navigateToNext"
     >
       <div class="text-right">
@@ -100,19 +111,21 @@ const markComplete = () => {
           {{ nextLesson.title }}
         </div>
       </div>
-      <svg
-        xmlns="http://www.w3.org/2000/svg"
-        class="h-5 w-5 ml-2 transition-transform transform group-hover:translate-x-1"
-        viewBox="0 0 20 20"
-        fill="currentColor"
-      >
-        <path
-          fill-rule="evenodd"
-          d="M7.293 14.707a1 1 0 010-1.414L10.586 10 7.293 6.707a1 1 0 011.414-1.414l4 4a1 1 0 010 1.414l-4 4a1 1 0 01-1.414 0z"
-          clip-rule="evenodd"
-        />
-      </svg>
-    </button>
+      <template #suffix>
+        <svg
+          xmlns="http://www.w3.org/2000/svg"
+          class="h-5 w-5 ml-2 transition-transform transform group-hover:translate-x-1"
+          viewBox="0 0 20 20"
+          fill="currentColor"
+        >
+          <path
+            fill-rule="evenodd"
+            d="M7.293 14.707a1 1 0 010-1.414L10.586 10 7.293 6.707a1 1 0 011.414-1.414l4 4a1 1 0 010 1.414l-4 4a1 1 0 01-1.414 0z"
+            clip-rule="evenodd"
+          />
+        </svg>
+      </template>
+    </UiButton>
     <div v-else class="w-36" />
   </div>
 </template>

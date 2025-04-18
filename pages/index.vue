@@ -128,6 +128,45 @@ const testimonials = ref([
   },
 ]);
 
+const faqs = ref([
+  {
+    question: "How does the course enrollment process work?",
+    answer:
+      "Our enrollment process is simple. Browse courses, select the one you want, make a payment, and gain immediate access to all course materials. You'll have lifetime access to the content, allowing you to learn at your own pace.",
+    isOpen: false,
+    icon: "shopping-cart",
+    delay: "delay-0",
+    color: "indigo",
+  },
+  {
+    question: "What makes your consultancy services different?",
+    answer:
+      "We combine industry expertise with a personalized approach to each project. Our consultants work closely with your team to understand your specific challenges and goals, then develop tailored solutions that deliver measurable results.",
+    isOpen: false,
+    icon: "lightbulb",
+    delay: "delay-100",
+    color: "purple",
+  },
+  {
+    question: "Do you offer certification for completed courses?",
+    answer:
+      "Yes, all our courses come with completion certificates that you can add to your portfolio or LinkedIn profile. For certain specialized courses, we also offer industry-recognized certifications upon passing the final assessment.",
+    isOpen: false,
+    icon: "badge-check",
+    delay: "delay-200",
+    color: "blue",
+  },
+  {
+    question: "Can I request a custom training program for my team?",
+    answer:
+      "Absolutely! We offer custom corporate training programs tailored to your team's specific needs and skill levels. Contact us through the consultancy request form to discuss your requirements.",
+    isOpen: false,
+    icon: "users",
+    delay: "delay-300",
+    color: "pink",
+  },
+]);
+
 const activeTestimonial = ref(0);
 let testimonialInterval: number | null = null;
 
@@ -192,7 +231,7 @@ onBeforeUnmount(() => {
     <LandingConsultancyServices :visible-sections="visibleSections" />
 
     <!-- FAQ Section -->
-    <LandingFAQSection />
+    <CommonSharedFAQSection :faqs="faqs" title="Frequently Asked Questions" />
 
     <!-- Call to Action -->
     <LandingCallToAction

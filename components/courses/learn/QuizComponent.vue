@@ -1,5 +1,7 @@
 <!-- components/courses/QuizComponent.vue -->
 <script setup lang="ts">
+import UiButton from "~/components/ui/Button.vue";
+
 // Type definitions
 interface QuizOption {
   id: string;
@@ -384,15 +386,15 @@ onMounted(() => {
 
         <!-- Score gauge -->
         <div class="w-36 h-36 mx-auto mb-4 relative">
-          <svg viewBox="0 0 36 36" class="w-full h-full">
+          <svg viewBox="0 0 24 24" class="w-full h-full">
             <!-- Background circle -->
             <path
               class="stroke-current text-gray-200"
               fill="none"
-              stroke-width="3"
-              d="M18 2.0845
-                a 15.9155 15.9155 0 0 1 0 31.831
-                a 15.9155 15.9155 0 0 1 0 -31.831"
+              stroke-width="2.5"
+              d="M12 2.0845
+                a 9.9155 9.9155 0 0 1 0 19.831
+                a 9.9155 9.9155 0 0 1 0 -19.831"
             />
             <!-- Foreground circle with animation -->
             <path
@@ -405,21 +407,23 @@ onMounted(() => {
                   : 'text-red-500',
               ]"
               fill="none"
-              stroke-width="3"
+              stroke-width="2.5"
               stroke-linecap="round"
               :stroke-dasharray="
                 gaugeAnimation ? `${score?.percentage}, 100` : '0, 100'
               "
-              d="M18 2.0845
-                a 15.9155 15.9155 0 0 1 0 31.831
-                a 15.9155 15.9155 0 0 1 0 -31.831"
+              d="M12 2.0845
+                a 9.9155 9.9155 0 0 1 0 19.831
+                a 9.9155 9.9155 0 0 1 0 -19.831"
             />
             <!-- Percentage text with counter animation -->
             <text
-              x="18"
-              y="20.5"
-              class="text-3xl font-bold"
+              x="50%"
+              y="50%"
+              class="text-2xl font-bold"
               text-anchor="middle"
+              dominant-baseline="middle"
+              dy=".1em"
             >
               {{ gaugeAnimation ? score?.percentage : 0 }}%
             </text>
@@ -535,12 +539,14 @@ onMounted(() => {
 
       <!-- Action button -->
       <div class="mt-8 text-center">
-        <button
-          class="bg-indigo-600 hover:bg-indigo-700 text-white px-8 py-3 rounded-lg font-medium transition-all duration-300 shadow-md transform hover:scale-105 hover:shadow-lg"
+        <UiButton
+          variant="solid"
+          color="primary"
+          size="lg"
           @click="completeQuiz"
         >
           Complete & Continue
-        </button>
+        </UiButton>
       </div>
     </div>
 
@@ -632,34 +638,35 @@ onMounted(() => {
 
           <!-- Navigation buttons -->
           <div class="flex justify-between">
-            <button
+            <UiButton
               v-if="currentQuestionIndex > 0"
-              class="px-4 py-2 border border-gray-300 rounded-lg hover:bg-gray-50 transition-all duration-300 hover:border-indigo-300 hover:text-indigo-600 flex items-center"
+              variant="outline"
+              color="gray"
+              size="md"
               @click="previousQuestion"
             >
-              <svg
-                xmlns="http://www.w3.org/2000/svg"
-                class="h-4 w-4 mr-1"
-                viewBox="0 0 20 20"
-                fill="currentColor"
-              >
-                <path
-                  fill-rule="evenodd"
-                  d="M12.707 5.293a1 1 0 010 1.414L9.414 10l3.293 3.293a1 1 0 01-1.414 1.414l-4-4a1 1 0 010-1.414l4-4a1 1 0 011.414 0z"
-                  clip-rule="evenodd"
-                />
-              </svg>
+              <template #prefix>
+                <svg
+                  xmlns="http://www.w3.org/2000/svg"
+                  class="h-4 w-4"
+                  viewBox="0 0 20 20"
+                  fill="currentColor"
+                >
+                  <path
+                    fill-rule="evenodd"
+                    d="M12.707 5.293a1 1 0 010 1.414L9.414 10l3.293 3.293a1 1 0 01-1.414 1.414l-4-4a1 1 0 010-1.414l4-4a1 1 0 011.414 0z"
+                    clip-rule="evenodd"
+                  />
+                </svg>
+              </template>
               Previous
-            </button>
+            </UiButton>
             <div v-else />
 
-            <button
-              class="px-6 py-2 rounded-lg font-medium transition-all duration-300 flex items-center"
-              :class="[
-                isCurrentQuestionAnswered()
-                  ? 'bg-indigo-600 hover:bg-indigo-700 text-white hover:shadow-lg transform hover:scale-105'
-                  : 'bg-gray-300 text-gray-500 cursor-not-allowed',
-              ]"
+            <UiButton
+              :variant="isCurrentQuestionAnswered() ? 'solid' : 'ghost'"
+              :color="isCurrentQuestionAnswered() ? 'primary' : 'gray'"
+              size="md"
               :disabled="!isCurrentQuestionAnswered()"
               @click="nextQuestion"
             >
@@ -668,33 +675,35 @@ onMounted(() => {
                   ? "Submit Quiz"
                   : "Next Question"
               }}
-              <svg
-                v-if="currentQuestionIndex < questions.length - 1"
-                xmlns="http://www.w3.org/2000/svg"
-                class="h-4 w-4 ml-1"
-                viewBox="0 0 20 20"
-                fill="currentColor"
-              >
-                <path
-                  fill-rule="evenodd"
-                  d="M7.293 14.707a1 1 0 010-1.414L10.586 10 7.293 6.707a1 1 0 011.414-1.414l4 4a1 1 0 010 1.414l-4 4a1 1 0 01-1.414 0z"
-                  clip-rule="evenodd"
-                />
-              </svg>
-              <svg
-                v-else
-                xmlns="http://www.w3.org/2000/svg"
-                class="h-4 w-4 ml-1"
-                viewBox="0 0 20 20"
-                fill="currentColor"
-              >
-                <path
-                  fill-rule="evenodd"
-                  d="M16.707 5.293a1 1 0 010 1.414l-8 8a1 1 0 01-1.414 0l-4-4a1 1 0 011.414-1.414L8 12.586l7.293-7.293a1 1 0 011.414 0z"
-                  clip-rule="evenodd"
-                />
-              </svg>
-            </button>
+              <template #suffix>
+                <svg
+                  v-if="currentQuestionIndex < questions.length - 1"
+                  xmlns="http://www.w3.org/2000/svg"
+                  class="h-4 w-4"
+                  viewBox="0 0 20 20"
+                  fill="currentColor"
+                >
+                  <path
+                    fill-rule="evenodd"
+                    d="M7.293 14.707a1 1 0 010-1.414L10.586 10 7.293 6.707a1 1 0 011.414-1.414l4 4a1 1 0 010 1.414l-4 4a1 1 0 01-1.414 0z"
+                    clip-rule="evenodd"
+                  />
+                </svg>
+                <svg
+                  v-else
+                  xmlns="http://www.w3.org/2000/svg"
+                  class="h-4 w-4"
+                  viewBox="0 0 20 20"
+                  fill="currentColor"
+                >
+                  <path
+                    fill-rule="evenodd"
+                    d="M16.707 5.293a1 1 0 010 1.414l-8 8a1 1 0 01-1.414 0l-4-4a1 1 0 011.414-1.414L8 12.586l7.293-7.293a1 1 0 011.414 0z"
+                    clip-rule="evenodd"
+                  />
+                </svg>
+              </template>
+            </UiButton>
           </div>
         </div>
       </transition>
