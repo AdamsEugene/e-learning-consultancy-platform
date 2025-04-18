@@ -293,16 +293,16 @@ const stopResize = () => {
             <!-- Selection checkbox -->
             <th v-if="selectable" class="ui-table__checkbox-cell">
               <div class="inline-flex items-center justify-center">
-                <input
-                  type="checkbox"
-                  :checked="isAllSelected"
+                <UiCheckbox
+                  :model-value="isAllSelected"
                   :indeterminate="
                     tableData.length > 0 &&
                     !isAllSelected &&
                     selectedRowsCount > 0
                   "
-                  class="ui-table__checkbox"
-                  @change="table.toggleAllRows"
+                  size="sm"
+                  color="primary"
+                  @update:model-value="table.toggleAllRows"
                 />
               </div>
             </th>
@@ -398,12 +398,12 @@ const stopResize = () => {
             <!-- Selection checkbox -->
             <td v-if="selectable" class="ui-table__checkbox-cell">
               <div class="inline-flex items-center justify-center">
-                <input
-                  type="checkbox"
-                  :checked="table.isSelected(row)"
-                  class="ui-table__checkbox"
+                <UiCheckbox
+                  :model-value="table.isSelected(row)"
+                  size="sm"
+                  color="primary"
+                  @update:model-value="table.toggleRowSelection(row)"
                   @click.stop
-                  @change="table.toggleRowSelection(row)"
                 />
               </div>
             </td>
@@ -650,62 +650,6 @@ const stopResize = () => {
   width: 3rem;
   padding: 0.75rem !important;
   vertical-align: middle;
-}
-
-/* Checkbox styling */
-.ui-table__checkbox {
-  appearance: none;
-  width: 1.25rem;
-  height: 1.25rem;
-  border: 2px solid #d1d5db;
-  border-radius: 0.375rem;
-  background-color: white;
-  cursor: pointer;
-  transition: all 0.2s ease-in-out;
-  position: relative;
-}
-
-.ui-table__checkbox:checked {
-  background-color: #4f46e5;
-  border-color: #4f46e5;
-}
-
-.ui-table__checkbox:checked::after {
-  content: "";
-  position: absolute;
-  left: 50%;
-  top: 50%;
-  transform: translate(-50%, -50%);
-  width: 0.75rem;
-  height: 0.75rem;
-  background-image: url("data:image/svg+xml,%3Csvg xmlns='http://www.w3.org/2000/svg' viewBox='0 0 20 20' fill='white'%3E%3Cpath fill-rule='evenodd' d='M16.707 5.293a1 1 0 010 1.414l-8 8a1 1 0 01-1.414 0l-4-4a1 1 0 011.414-1.414L8 12.586l7.293-7.293a1 1 0 011.414 0z' clip-rule='evenodd'/%3E%3C/svg%3E");
-}
-
-.ui-table__checkbox:indeterminate {
-  background-color: #4f46e5;
-  border-color: #4f46e5;
-}
-
-.ui-table__checkbox:indeterminate::after {
-  content: "";
-  position: absolute;
-  left: 50%;
-  top: 50%;
-  transform: translate(-50%, -50%);
-  width: 0.625rem;
-  height: 0.125rem;
-  background-color: white;
-  border-radius: 0.0625rem;
-}
-
-.ui-table__checkbox:hover:not(:checked):not(:indeterminate) {
-  border-color: #6b7280;
-}
-
-.ui-table__checkbox:focus {
-  outline: 2px solid transparent;
-  outline-offset: 2px;
-  box-shadow: 0 0 0 2px #e5e7eb, 0 0 0 4px #4f46e5;
 }
 
 /* Row selection styles */
