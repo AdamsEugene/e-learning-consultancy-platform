@@ -8,9 +8,6 @@ interface Props {
   position?: "left" | "right";
   closeOnClickOutside?: boolean;
   closeOnEscape?: boolean;
-  showCloseButton?: boolean;
-  showFooter?: boolean;
-  footerText?: string;
   preventScroll?: boolean;
   zIndex?: number;
   resizable?: boolean;
@@ -24,9 +21,6 @@ const props = withDefaults(defineProps<Props>(), {
   position: "right",
   closeOnClickOutside: true,
   closeOnEscape: true,
-  showCloseButton: true,
-  showFooter: true,
-  footerText: "",
   preventScroll: true,
   zIndex: 50,
   resizable: false,
@@ -198,7 +192,7 @@ onUnmounted(() => {
     <Transition name="drawer-fade">
       <div
         v-if="isOpen"
-        class="fixed inset-0 bg-black bg-opacity-50 z-40"
+        class="fixed inset-0 backdrop-blur-sm bg-black/30 z-40"
         :style="{ zIndex: zIndex }"
         @click="closeOnClickOutside && closeDrawer()"
       />
@@ -210,7 +204,7 @@ onUnmounted(() => {
       <div
         v-if="isOpen"
         ref="drawerRef"
-        class="fixed top-0 h-full bg-white shadow-xl z-50 overflow-hidden flex flex-col"
+        class="fixed top-0 h-full bg-white/90 backdrop-blur-md shadow-xl z-50 overflow-hidden flex flex-col"
         :class="[
           position === 'right' ? 'right-0' : 'left-0',
           'w-full sm:w-auto',
@@ -223,14 +217,14 @@ onUnmounted(() => {
         <!-- Resize handle -->
         <div
           v-if="resizable"
-          class="absolute top-0 bottom-0 w-1 cursor-col-resize bg-gray-200 hover:bg-gray-300 transition-colors"
+          class="absolute top-0 bottom-0 w-1 cursor-col-resize bg-gray-200/50 hover:bg-indigo-300 transition-colors"
           :class="[position === 'right' ? 'left-0' : 'right-0']"
           @mousedown="startResize"
         />
 
         <!-- Header -->
         <div
-          class="flex items-center justify-between p-4 border-b border-gray-200"
+          class="flex items-center justify-between p-4 border-b border-gray-200/50"
         >
           <div class="flex-1">
             <slot name="header">
@@ -242,7 +236,7 @@ onUnmounted(() => {
             <slot name="header-actions" />
 
             <button
-              v-if="showCloseButton"
+              v-if="$slots['header-actions'] || title"
               class="text-gray-400 hover:text-gray-500 focus:outline-none"
               aria-label="Close drawer"
               @click="closeDrawer"
@@ -270,12 +264,9 @@ onUnmounted(() => {
         </div>
 
         <!-- Footer -->
-        <div v-if="showFooter" class="border-t border-gray-200 p-4">
+        <div v-if="$slots.footer" class="border-t border-gray-200/50 p-4">
           <slot name="footer">
             <div class="flex items-center justify-between">
-              <div v-if="footerText" class="text-sm text-gray-500">
-                {{ footerText }}
-              </div>
               <div class="flex items-center space-x-2">
                 <slot name="footer-actions">
                   <button
@@ -297,7 +288,7 @@ onUnmounted(() => {
 <style scoped>
 .drawer-fade-enter-active,
 .drawer-fade-leave-active {
-  transition: opacity 0.3s ease;
+  transition: opacity 0.4s cubic-bezier(0.4, 0, 0.2, 1);
 }
 
 .drawer-fade-enter-from,
@@ -309,15 +300,20 @@ onUnmounted(() => {
 .drawer-slide-right-leave-active,
 .drawer-slide-left-enter-active,
 .drawer-slide-left-leave-active {
-  transition: transform 0.3s ease;
+  transition: transform 0.4s cubic-bezier(0.4, 0, 0.2, 1),
+    opacity 0.3s cubic-bezier(0.4, 0, 0.2, 1);
 }
 
-.drawer-slide-right-enter-from {
+.drawer-slide-right-enter-from,
+.drawer-slide-left-enter-from {
   transform: translateX(100%);
+  opacity: 0;
 }
 
-.drawer-slide-right-leave-to {
+.drawer-slide-right-leave-to,
+.drawer-slide-left-leave-to {
   transform: translateX(100%);
+  opacity: 0;
 }
 
 .drawer-slide-left-enter-from {
@@ -326,5 +322,33 @@ onUnmounted(() => {
 
 .drawer-slide-left-leave-to {
   transform: translateX(-100%);
+}
+
+/* Add glass effect to the drawer */
+.drawer-slide-right-enter-active div,
+.drawer-slide-left-enter-active div {
+  backdrop-filter: blur(8px);
+  -webkit-backdrop-filter: blur(8px);
+}
+
+/* Add subtle shadow animation */
+@keyframes shadowPulse {
+  0% {
+    box-shadow: 0 4px 6px -1px rgba(0, 0, 0, 0.1),
+      0 2px 4px -1px rgba(0, 0, 0, 0.06);
+  }
+  50% {
+    box-shadow: 0 10px 15px -3px rgba(0, 0, 0, 0.1),
+      0 4px 6px -2px rgba(0, 0, 0, 0.05);
+  }
+  100% {
+    box-shadow: 0 4px 6px -1px rgba(0, 0, 0, 0.1),
+      0 2px 4px -1px rgba(0, 0, 0, 0.06);
+  }
+}
+
+.drawer-slide-right-enter-active div,
+.drawer-slide-left-enter-active div {
+  animation: shadowPulse 2s infinite;
 }
 </style>
