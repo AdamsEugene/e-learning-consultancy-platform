@@ -20,8 +20,6 @@ interface Props {
   active?: boolean;
 
   // Icon props
-  leftIcon?: string;
-  rightIcon?: string;
   iconOnly?: boolean;
 
   // Animation props
@@ -45,8 +43,6 @@ const props = withDefaults(defineProps<Props>(), {
   loading: false,
   disabled: false,
   active: false,
-  leftIcon: "",
-  rightIcon: "",
   iconOnly: false,
   animated: true,
   ripple: true,
@@ -328,7 +324,18 @@ const spinnerColorClass = computed(() => {
       :class="{ 'opacity-0': loading }"
       class="relative flex items-center justify-center gap-2 transition-opacity duration-200"
     >
+      <!-- Left Icon Slot -->
+      <div v-if="$slots.leftIcon" class="flex-shrink-0">
+        <slot name="leftIcon" />
+      </div>
+
+      <!-- Default Slot (Button Text) -->
       <slot />
+
+      <!-- Right Icon Slot -->
+      <div v-if="$slots.rightIcon" class="flex-shrink-0">
+        <slot name="rightIcon" />
+      </div>
     </div>
 
     <!-- Ripple Container -->

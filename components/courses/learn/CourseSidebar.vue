@@ -1,4 +1,4 @@
-<!-- components/courses/CourseSidebar.vue -->
+<!-- components/courses/learn/CourseSidebar.vue -->
 <script setup lang="ts">
 import type { Course, CourseLesson, CourseSection } from "~/types/courseTemp";
 
@@ -7,6 +7,9 @@ interface Props {
   currentLesson?: CourseLesson | null;
   courseProgress?: number;
   isSmallScreen?: boolean;
+  defaultWidth?: number;
+  minWidth?: number;
+  maxWidth?: number;
 }
 
 // Props
@@ -15,10 +18,17 @@ const props = withDefaults(defineProps<Props>(), {
   currentLesson: null,
   courseProgress: 0,
   isSmallScreen: false,
+  defaultWidth: 320,
+  minWidth: 250,
+  maxWidth: 500,
 });
 
 // Emits
 const emit = defineEmits(["navigate", "close"]);
+
+// Sidebar width state
+const sidebarWidth = ref(props.defaultWidth);
+const sidebarRef = ref<HTMLElement | null>(null);
 
 // Expanded sections tracking
 const expandedSections = ref(new Set());
@@ -69,25 +79,30 @@ const getSectionProgress = (section: CourseSection) => {
 <!-- eslint-disable vue/html-self-closing -->
 <template>
   <div
-    class="bg-white border-r border-gray-200 overflow-y-auto flex-shrink-0 transition-all duration-300 h-full"
-    :class="
-      isSmallScreen ? 'fixed inset-0 z-30 w-4/5 max-w-sm' : 'w-80 sticky top-0'
-    "
+    ref="sidebarRef"
+    class="bg-white border-r border-gray-200 overflow-y-auto flex-shrink-0 transition-all duration-300 h-full relative"
+    :class="[
+      isSmallScreen ? 'fixed inset-0 z-30 w-4/5 max-w-sm' : 'sticky top-0',
+    ]"
+    :style="!isSmallScreen ? `width: ${sidebarWidth}px` : ''"
   >
     <!-- Sidebar header with close button for mobile -->
     <div
       class="p-4 border-b border-gray-200 sticky top-0 bg-white z-10 flex justify-between items-center"
     >
       <h2 class="text-lg font-bold">Course Content</h2>
-      <button
+      <UiButton
         v-if="isSmallScreen"
-        class="text-gray-500 hover:text-gray-700 p-1 rounded hover:bg-gray-100"
+        variant="ghost"
+        color="gray"
+        size="sm"
+        icon-only
         aria-label="Close menu"
         @click="closeSidebar"
       >
         <svg
           xmlns="http://www.w3.org/2000/svg"
-          class="h-6 w-6"
+          class="h-5 w-5"
           fill="none"
           viewBox="0 0 24 24"
           stroke="currentColor"
@@ -99,7 +114,7 @@ const getSectionProgress = (section: CourseSection) => {
             d="M6 18L18 6M6 6l12 12"
           />
         </svg>
-      </button>
+      </UiButton>
     </div>
 
     <!-- Course progress bar -->
@@ -172,7 +187,7 @@ const getSectionProgress = (section: CourseSection) => {
           v-if="expandedSections.has(section.id)"
           class="space-y-1 pl-4 pr-2 mt-1 mb-3 overflow-hidden transition-all duration-300"
         >
-          <button
+          <UiButton
             v-for="lesson in section.lessons"
             :key="lesson.id"
             class="w-full px-3 py-2 rounded-lg flex items-center text-left transition-colors relative group"
@@ -181,6 +196,8 @@ const getSectionProgress = (section: CourseSection) => {
                 ? 'bg-indigo-600 text-white'
                 : 'text-gray-700 hover:bg-gray-100',
             ]"
+            variant="ghost"
+            color="gray"
             @click="navigateToLesson(lesson)"
           >
             <!-- Lesson completion status -->
@@ -287,7 +304,7 @@ const getSectionProgress = (section: CourseSection) => {
               v-if="lesson.id === currentLesson?.id"
               class="absolute -left-4 top-1/2 transform -translate-y-1/2 w-1 h-8 bg-indigo-600 rounded-r"
             />
-          </button>
+          </UiButton>
         </div>
       </div>
     </div>

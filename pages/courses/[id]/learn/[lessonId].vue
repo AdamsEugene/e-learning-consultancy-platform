@@ -29,6 +29,7 @@ const activeTab = ref<"content" | "resources" | "notes" | "discussions">(
 );
 const courseProgress = ref(0);
 const isNotesPanelOpen = ref(false);
+const sidebarWidth = ref(320); // Default sidebar width
 
 // Notes functionality
 const notes = ref<Note[]>([]);
@@ -576,14 +577,22 @@ onBeforeUnmount(() => {
   window.removeEventListener("beforeunload", saveProgress);
   window.removeEventListener("resize", checkScreenSize);
 });
+
+// Handle sidebar resize
+const handleSidebarResize = (dimensions: { width: number; height: number }) => {
+  sidebarWidth.value = dimensions.width;
+};
 </script>
 
 <template>
   <div class="bg-white text-gray-900 min-h-screen flex flex-col">
     <!-- Fixed mobile sidebar toggle button -->
-    <button
+    <UiButton
       v-if="isSmallScreen && !isSidebarOpen"
-      class="fixed bottom-4 left-4 z-30 p-3 bg-indigo-600 text-white rounded-full shadow-lg hover:bg-indigo-700 transition-colors focus:outline-none"
+      variant="solid"
+      color="primary"
+      size="lg"
+      class="fixed bottom-4 left-4 z-30 rounded-full shadow-lg"
       aria-label="Open course menu"
       @click="toggleSidebar()"
     >
@@ -601,7 +610,7 @@ onBeforeUnmount(() => {
           d="M4 6h16M4 12h16M4 18h7"
         />
       </svg>
-    </button>
+    </UiButton>
 
     <!-- Floating notes button -->
     <CoursesLearnFloatingNotesButton
@@ -671,10 +680,13 @@ onBeforeUnmount(() => {
           </div>
 
           <!-- Notes button -->
-          <button
-            class="text-gray-600 hover:text-indigo-600 transition-colors p-2 relative"
+          <UiButton
+            variant="ghost"
+            color="primary"
+            size="md"
+            class="relative"
             :class="{
-              'bg-indigo-50 text-indigo-600 rounded-lg': isNotesPanelOpen,
+              'bg-indigo-50 text-indigo-600': isNotesPanelOpen,
             }"
             aria-label="Toggle notes"
             @click="toggleNotesPanel()"
@@ -699,13 +711,15 @@ onBeforeUnmount(() => {
             >
               {{ notes.length }}
             </span>
-          </button>
+          </UiButton>
 
           <!-- Toggle sidebar button -->
-          <button
-            class="text-gray-600 hover:text-indigo-600 transition-colors p-2"
+          <UiButton
+            variant="ghost"
+            color="primary"
+            size="md"
             :class="{
-              'bg-indigo-50 text-indigo-600 rounded-lg': isSidebarOpen,
+              'bg-indigo-50 text-indigo-600': isSidebarOpen,
             }"
             aria-label="Toggle course content"
             @click="toggleSidebar()"
@@ -724,7 +738,7 @@ onBeforeUnmount(() => {
                 d="M4 6h16M4 12h16M4 18h7"
               />
             </svg>
-          </button>
+          </UiButton>
         </div>
       </div>
     </header>
@@ -762,12 +776,14 @@ onBeforeUnmount(() => {
         <p class="text-gray-600 mb-4">
           There was an error loading this lesson. Please try again.
         </p>
-        <button
-          class="px-4 py-2 bg-indigo-600 text-white rounded-lg hover:bg-indigo-700 transition-colors"
+        <UiButton
+          variant="solid"
+          color="primary"
+          size="md"
           @click="fetchCourseData"
         >
           Retry
-        </button>
+        </UiButton>
       </div>
     </div>
 
@@ -780,8 +796,10 @@ onBeforeUnmount(() => {
         :current-lesson="currentLesson"
         :course-progress="courseProgress"
         :is-small-screen="isSmallScreen"
+        :default-width="sidebarWidth"
         @navigate="navigateToLesson"
         @close="toggleSidebar(false)"
+        @resize="handleSidebarResize"
       />
 
       <!-- Overlay for mobile sidebar -->
