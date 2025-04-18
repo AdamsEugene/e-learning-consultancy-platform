@@ -1,6 +1,5 @@
 <!-- components/courses/AssignmentComponent.vue -->
 <script setup lang="ts">
-import { ref, computed, onMounted } from "vue";
 import { marked } from "marked"; // Import the markdown parser
 
 // TypeScript interfaces
@@ -376,29 +375,33 @@ onMounted(() => {
 
           <div class="mt-8 flex justify-between">
             <div />
-            <button
-              class="bg-indigo-600 hover:bg-indigo-700 text-white px-6 py-2 rounded-lg font-medium transition-all duration-300 transform hover:scale-105 hover:shadow-lg flex items-center"
+            <UiButton
+              variant="solid"
+              color="primary"
+              size="lg"
               @click="nextStep"
               @mouseenter="buttonHover = true"
               @mouseleave="buttonHover = false"
             >
               Continue to Submission
-              <svg
-                xmlns="http://www.w3.org/2000/svg"
-                class="h-5 w-5 ml-2 transition-transform duration-300"
-                :class="{ 'translate-x-1': buttonHover }"
-                fill="none"
-                viewBox="0 0 24 24"
-                stroke="currentColor"
-              >
-                <path
-                  stroke-linecap="round"
-                  stroke-linejoin="round"
-                  stroke-width="2"
-                  d="M14 5l7 7m0 0l-7 7m7-7H3"
-                />
-              </svg>
-            </button>
+              <template #suffix>
+                <svg
+                  xmlns="http://www.w3.org/2000/svg"
+                  class="h-5 w-5 transition-transform duration-300"
+                  :class="{ 'translate-x-1': buttonHover }"
+                  fill="none"
+                  viewBox="0 0 24 24"
+                  stroke="currentColor"
+                >
+                  <path
+                    stroke-linecap="round"
+                    stroke-linejoin="round"
+                    stroke-width="2"
+                    d="M14 5l7 7m0 0l-7 7m7-7H3"
+                  />
+                </svg>
+              </template>
+            </UiButton>
           </div>
         </div>
 
@@ -426,8 +429,9 @@ onMounted(() => {
               @dragleave="handleDragLeave"
               @drop="handleDrop"
             >
-              <input
+              <UiInput
                 ref="fileInput"
+                v-model="formData.fileName"
                 type="file"
                 accept=".html,.htm"
                 class="hidden"
@@ -485,102 +489,48 @@ onMounted(() => {
 
           <!-- Comments section -->
           <div class="mb-6">
-            <label class="block text-gray-700 mb-2 font-medium"
-              >Comments <span class="text-red-500">*</span></label
-            >
-            <div class="relative">
-              <textarea
-                v-model="formData.comments"
-                rows="4"
-                placeholder="Share your thoughts about the assignment and the process you followed..."
-                class="w-full px-3 py-2 border rounded-lg transition-all duration-300"
-                :class="[
-                  isFormFocused.comments
-                    ? 'border-indigo-500 ring-2 ring-indigo-200'
-                    : 'border-gray-300 focus:ring-2 focus:ring-indigo-200 focus:border-indigo-500',
-                ]"
-                @focus="setFocus('comments', true)"
-                @blur="setFocus('comments', false)"
-              />
-              <div
-                class="absolute top-0 left-0 w-1 h-full bg-indigo-500 rounded-l-lg transition-all duration-300"
-                :class="{
-                  'opacity-100': isFormFocused.comments,
-                  'opacity-0': !isFormFocused.comments,
-                }"
-              />
-            </div>
+            <UiTextarea
+              v-model="formData.comments"
+              label="Comments"
+              required
+              :rows="4"
+              placeholder="Share your thoughts about the assignment and the process you followed..."
+              @focus="setFocus('comments', true)"
+              @blur="setFocus('comments', false)"
+            />
           </div>
 
           <!-- Challenges faced -->
           <div class="mb-6">
-            <label class="block text-gray-700 mb-2 font-medium"
-              >Challenges Faced
-              <span class="text-gray-500 text-sm font-normal"
-                >(Optional)</span
-              ></label
-            >
-            <div class="relative">
-              <textarea
-                v-model="formData.challengesFaced"
-                rows="3"
-                placeholder="Describe any challenges you encountered while completing the assignment..."
-                class="w-full px-3 py-2 border rounded-lg transition-all duration-300"
-                :class="[
-                  isFormFocused.challengesFaced
-                    ? 'border-indigo-500 ring-2 ring-indigo-200'
-                    : 'border-gray-300 focus:ring-2 focus:ring-indigo-200 focus:border-indigo-500',
-                ]"
-                @focus="setFocus('challengesFaced', true)"
-                @blur="setFocus('challengesFaced', false)"
-              />
-              <div
-                class="absolute top-0 left-0 w-1 h-full bg-indigo-500 rounded-l-lg transition-all duration-300"
-                :class="{
-                  'opacity-100': isFormFocused.challengesFaced,
-                  'opacity-0': !isFormFocused.challengesFaced,
-                }"
-              />
-            </div>
+            <UiTextarea
+              v-model="formData.challengesFaced"
+              label="Challenges Faced"
+              optional
+              :rows="3"
+              placeholder="Describe any challenges you encountered while completing the assignment..."
+              @focus="setFocus('challengesFaced', true)"
+              @blur="setFocus('challengesFaced', false)"
+            />
           </div>
 
           <!-- Solutions implemented -->
           <div class="mb-6">
-            <label class="block text-gray-700 mb-2 font-medium"
-              >Solutions Implemented
-              <span class="text-gray-500 text-sm font-normal"
-                >(Optional)</span
-              ></label
-            >
-            <div class="relative">
-              <textarea
-                v-model="formData.solutionsImplemented"
-                rows="3"
-                placeholder="Explain how you solved the challenges mentioned above..."
-                class="w-full px-3 py-2 border rounded-lg transition-all duration-300"
-                :class="[
-                  isFormFocused.solutionsImplemented
-                    ? 'border-indigo-500 ring-2 ring-indigo-200'
-                    : 'border-gray-300 focus:ring-2 focus:ring-indigo-200 focus:border-indigo-500',
-                ]"
-                @focus="setFocus('solutionsImplemented', true)"
-                @blur="setFocus('solutionsImplemented', false)"
-              />
-              <div
-                class="absolute top-0 left-0 w-1 h-full bg-indigo-500 rounded-l-lg transition-all duration-300"
-                :class="{
-                  'opacity-100': isFormFocused.solutionsImplemented,
-                  'opacity-0': !isFormFocused.solutionsImplemented,
-                }"
-              />
-            </div>
+            <UiTextarea
+              v-model="formData.solutionsImplemented"
+              label="Solutions Implemented"
+              optional
+              :rows="3"
+              placeholder="Explain how you solved the challenges mentioned above..."
+              @focus="setFocus('solutionsImplemented', true)"
+              @blur="setFocus('solutionsImplemented', false)"
+            />
           </div>
 
           <!-- Additional resources checkbox with custom styling -->
           <div class="mb-8">
             <label class="flex items-center group cursor-pointer">
               <div class="relative flex items-center">
-                <input
+                <UiCheckbox
                   v-model="formData.additionalResources"
                   type="checkbox"
                   class="sr-only"
@@ -617,49 +567,52 @@ onMounted(() => {
 
           <!-- Form navigation -->
           <div class="flex justify-between">
-            <button
-              class="px-6 py-2 border border-gray-300 rounded-lg transition-all duration-300 hover:bg-gray-50 hover:border-gray-400 flex items-center"
+            <UiButton
+              variant="outline"
+              color="gray"
+              size="md"
               @click="prevStep"
             >
-              <svg
-                xmlns="http://www.w3.org/2000/svg"
-                class="h-4 w-4 mr-1"
-                viewBox="0 0 20 20"
-                fill="currentColor"
-              >
-                <path
-                  fill-rule="evenodd"
-                  d="M9.707 14.707a1 1 0 01-1.414 0l-4-4a1 1 0 010-1.414l4-4a1 1 0 011.414 1.414L7.414 9H15a1 1 0 110 2H7.414l2.293 2.293a1 1 0 010 1.414z"
-                  clip-rule="evenodd"
-                />
-              </svg>
+              <template #prefix>
+                <svg
+                  xmlns="http://www.w3.org/2000/svg"
+                  class="h-4 w-4"
+                  viewBox="0 0 20 20"
+                  fill="currentColor"
+                >
+                  <path
+                    fill-rule="evenodd"
+                    d="M9.707 14.707a1 1 0 01-1.414 0l-4-4a1 1 0 010-1.414l4-4a1 1 0 011.414 1.414L7.414 9H15a1 1 0 110 2H7.414l2.293 2.293a1 1 0 010 1.414z"
+                    clip-rule="evenodd"
+                  />
+                </svg>
+              </template>
               Back
-            </button>
+            </UiButton>
 
-            <button
-              class="px-6 py-2 rounded-lg font-medium transition-all duration-300 flex items-center"
-              :class="[
-                isFormValid
-                  ? 'bg-indigo-600 hover:bg-indigo-700 text-white hover:shadow-lg transform hover:scale-105'
-                  : 'bg-gray-300 text-gray-500 cursor-not-allowed',
-              ]"
+            <UiButton
+              variant="solid"
+              color="primary"
+              size="md"
               :disabled="!isFormValid"
               @click="submitAssignment"
             >
               Submit Assignment
-              <svg
-                xmlns="http://www.w3.org/2000/svg"
-                class="h-4 w-4 ml-1"
-                viewBox="0 0 20 20"
-                fill="currentColor"
-              >
-                <path
-                  fill-rule="evenodd"
-                  d="M10 18a8 8 0 100-16 8 8 0 000 16zm3.707-9.293a1 1 0 00-1.414-1.414L9 10.586 7.707 9.293a1 1 0 00-1.414 1.414l2 2a1 1 0 001.414 0l4-4z"
-                  clip-rule="evenodd"
-                />
-              </svg>
-            </button>
+              <template #suffix>
+                <svg
+                  xmlns="http://www.w3.org/2000/svg"
+                  class="h-4 w-4"
+                  viewBox="0 0 20 20"
+                  fill="currentColor"
+                >
+                  <path
+                    fill-rule="evenodd"
+                    d="M10 18a8 8 0 100-16 8 8 0 000 16zm3.707-9.293a1 1 0 00-1.414-1.414L9 10.586 7.707 9.293a1 1 0 00-1.414 1.414l2 2a1 1 0 001.414 0l4-4z"
+                    clip-rule="evenodd"
+                  />
+                </svg>
+              </template>
+            </UiButton>
           </div>
         </div>
 
@@ -748,102 +701,52 @@ onMounted(() => {
             </div>
 
             <!-- Completed state -->
-            <div v-else-if="submissionStatus.completed" class="animate-fade-in">
-              <!-- Confetti effect -->
-              <div v-if="confetti" class="confetti-container">
-                <div
-                  v-for="n in 50"
-                  :key="n"
-                  class="confetti"
-                  :style="{
-                    '--delay': `${Math.random() * 5}s`,
-                    '--rotation': `${Math.random() * 360}deg`,
-                    '--position': `${Math.random() * 100}%`,
-                    '--size': `${Math.random() * 0.6 + 0.4}rem`,
-                    '--color': `hsl(${Math.floor(
-                      Math.random() * 360
-                    )}, 70%, 60%)`,
-                  }"
-                />
+            <div v-else-if="submissionStatus.completed" class="text-center">
+              <div
+                class="w-20 h-20 mx-auto mb-6 bg-green-100 rounded-full flex items-center justify-center"
+              >
+                <svg
+                  xmlns="http://www.w3.org/2000/svg"
+                  class="h-12 w-12 text-green-500"
+                  fill="none"
+                  viewBox="0 0 24 24"
+                  stroke="currentColor"
+                >
+                  <path
+                    stroke-linecap="round"
+                    stroke-linejoin="round"
+                    stroke-width="2"
+                    d="M9 12l2 2 4-4m6 2a9 9 0 11-18 0 9 9 0 0118 0z"
+                  />
+                </svg>
               </div>
+              <h3 class="text-2xl font-bold mb-2">Assignment Submitted!</h3>
+              <p class="text-gray-600 mb-8">
+                Your work has been successfully submitted for review.
+              </p>
 
-              <div class="text-center mb-8 success-content">
-                <div
-                  class="inline-flex items-center justify-center h-24 w-24 rounded-full bg-green-100 text-green-500 mb-4 animate-bounce-once"
-                >
+              <UiButton
+                variant="solid"
+                color="primary"
+                size="lg"
+                @click="completeAssignment"
+              >
+                Continue to Next Lesson
+                <template #suffix>
                   <svg
                     xmlns="http://www.w3.org/2000/svg"
-                    class="h-16 w-16"
-                    fill="none"
-                    viewBox="0 0 24 24"
-                    stroke="currentColor"
-                  >
-                    <path
-                      stroke-linecap="round"
-                      stroke-linejoin="round"
-                      stroke-width="2"
-                      d="M9 12l2 2 4-4m6 2a9 9 0 11-18 0 9 9 0 0118 0z"
-                    />
-                  </svg>
-                </div>
-                <h3 class="text-2xl font-bold mb-2 success-title">
-                  Assignment Submitted Successfully!
-                </h3>
-                <p class="text-gray-600 mb-8 success-message">
-                  Your assignment has been submitted and will be reviewed by
-                  your instructor. You'll receive feedback within 2-3 business
-                  days.
-                </p>
-
-                <div
-                  class="max-w-md mx-auto bg-gray-50 rounded-lg p-4 mb-8 border border-gray-200 shadow-sm success-details"
-                >
-                  <h4 class="font-medium text-gray-700 mb-2">
-                    Submission Details
-                  </h4>
-                  <div
-                    class="flex justify-between text-sm border-b border-gray-200 py-2"
-                  >
-                    <span class="text-gray-500">File:</span>
-                    <span class="text-gray-700 font-medium">{{
-                      formData.fileName
-                    }}</span>
-                  </div>
-                  <div
-                    class="flex justify-between text-sm border-b border-gray-200 py-2"
-                  >
-                    <span class="text-gray-500">Submitted On:</span>
-                    <span class="text-gray-700 font-medium">{{
-                      new Date().toLocaleString()
-                    }}</span>
-                  </div>
-                  <div class="flex justify-between text-sm py-2">
-                    <span class="text-gray-500">Submission ID:</span>
-                    <span class="text-gray-700 font-medium"
-                      >ASG-{{ Math.floor(10000 + Math.random() * 90000) }}</span
-                    >
-                  </div>
-                </div>
-
-                <button
-                  class="bg-indigo-600 hover:bg-indigo-700 text-white px-8 py-3 rounded-lg font-medium transition-all duration-300 transform hover:scale-105 hover:shadow-lg flex items-center mx-auto success-button"
-                  @click="completeAssignment"
-                >
-                  Complete & Continue
-                  <svg
-                    xmlns="http://www.w3.org/2000/svg"
-                    class="h-5 w-5 ml-2"
+                    class="h-5 w-5"
                     viewBox="0 0 20 20"
                     fill="currentColor"
                   >
                     <path
                       fill-rule="evenodd"
-                      d="M10.293 5.293a1 1 0 011.414 0l4 4a1 1 0 010 1.414l-4 4a1 1 0 01-1.414-1.414L12.586 11H5a1 1 0 110-2h7.586l-2.293-2.293a1 1 0 010-1.414z"
+                      d="M10.293 3.293a1 1 0 011.414 0l6 6a1 1 0 010 1.414l-6 6a1 1 0 01-1.414-1.414L14.586 11H3a1 1 0 110-2h11.586l-4.293-4.293a1 1 0 010-1.414z"
                       clip-rule="evenodd"
                     />
                   </svg>
-                </button>
-              </div>
+                </template>
+              </UiButton>
             </div>
 
             <!-- Error state -->
@@ -867,7 +770,7 @@ onMounted(() => {
                 There was an error submitting your assignment. Please try again.
               </p>
               <div class="flex justify-center space-x-4">
-                <button
+                <UiButton
                   class="px-6 py-2 border border-gray-300 rounded-lg hover:bg-gray-50 transition-colors flex items-center"
                   @click="prevStep"
                 >
@@ -884,8 +787,8 @@ onMounted(() => {
                     />
                   </svg>
                   Back
-                </button>
-                <button
+                </UiButton>
+                <UiButton
                   class="bg-indigo-600 hover:bg-indigo-700 text-white px-6 py-2 rounded-lg font-medium transition-colors shadow-sm flex items-center"
                   @click="submitAssignment"
                 >
@@ -902,7 +805,7 @@ onMounted(() => {
                     />
                   </svg>
                   Try Again
-                </button>
+                </UiButton>
               </div>
             </div>
           </div>
