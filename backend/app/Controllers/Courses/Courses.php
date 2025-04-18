@@ -13,6 +13,9 @@ class Courses extends LoadController {
     public $allLessons = ['id', 'title', 'duration', 'videoUrl', 'type'];
     public $acceptedLessonTypes = ["video", "quiz", "assignment", "resource"];
 
+    public $defaultStatus = 'Unpublished';
+    public $statusList = ['Unpublished', 'Under Review', 'Published', 'Archived'];
+
     /**
      * List courses
      * 
@@ -22,9 +25,7 @@ class Courses extends LoadController {
 
         // set the default status of the course if no status is set
         if(empty($this->payload['data'])) {
-            $this->payload['data'] = [
-                'status' => ['Published', 'Draft', 'Archived', 'Under Review', 'Unpublished']
-            ];
+            $this->payload['data'] = ['status' => $this->statusList];
         }
 
         // get courses
@@ -164,7 +165,11 @@ class Courses extends LoadController {
         }
 
         // set the default status of the course to unpublished
-        $this->payload['status'] = 'Unpublished';
+        $this->payload['status'] = $this->payload['status'] ?? $this->defaultStatus;
+        
+        if(!is_admin($this->currentUser)) {
+            $this->payload['status'] = $this->defaultStatus;
+        }
 
         // create course
         $courseId = $this->coursesModel->createRecord($this->payload);
@@ -226,6 +231,26 @@ class Courses extends LoadController {
      */
     public function update() {
 
+    }
+
+    /**
+     * Update course status
+     * 
+     * @return void
+     */
+    public function statuses() {
+
+        // confirm if the course exists
+        $course = $this->coursesModel->getRecord($this->mainRawId);
+        if(empty($course)) {
+            return Routing::notFound();
+        }
+
+        // update the status of the course
+        $this->coursesModel->updateRecord($this->mainRawId, ['status' => $this->payload['status']]);
+
+        // return response
+        return Routing::success('Course status updated successfully');
     }
 
     /**

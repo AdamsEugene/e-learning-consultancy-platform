@@ -11,6 +11,7 @@ class CoursesValidation {
                 "offset" => "permit_empty|integer",
                 "search" => "permit_empty|string|max_length[255]",
                 "data" => "permit_empty|is_array",
+                "status" => "permit_empty|string|in_list[Published,Draft,Archived,Under Review,Unpublished]",
             ]
         ],
         'create' => [
@@ -29,13 +30,22 @@ class CoursesValidation {
                 "originalPrice" => "permit_empty|integer",
                 "price" => "required|integer",
                 "sections" => "permit_empty",
+                "status" => "permit_empty|string|in_list[Published,Draft,Archived,Under Review,Unpublished]",
                 "instructors" => "permit_empty",
                 "features" => "permit_empty",
                 "description" => "permit_empty",
                 "course_duration" => "permit_empty|integer",
                 "what_you_will_learn" => "permit_empty",
                 "requirements" => "permit_empty",
-                "status" => "permit_empty|string",
+            ]
+        ],
+        'statuses:course_id' => [
+            'method' => 'PUT',
+            'authenticate' => true,
+            'isAdmin' => true,
+            'payload' => [
+                "course_id" => "required|string|max_length[255]",
+                "status" => "required|string|in_list[Published,Draft,Archived,Under Review,Unpublished]"
             ]
         ],
         'view:course_id' => [
@@ -66,7 +76,7 @@ class CoursesValidation {
                 "course_duration" => "permit_empty|integer",
                 "what_you_will_learn" => "permit_empty",
                 "requirements" => "permit_empty",
-                "status" => "permit_empty|string",
+                "status" => "permit_empty|string|in_list[Published,Draft,Archived,Under Review,Unpublished]",
             ]
         ],
         'delete:course_id' => [

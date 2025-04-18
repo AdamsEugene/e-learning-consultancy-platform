@@ -78,7 +78,6 @@ class CoursesModel extends Model
             ) FROM {$this->userTable} u WHERE u.id = {$this->table}.created_by LIMIT 1) as created_by,
             c.name as category_name, c.name_slug as category_slug")
             ->join("{$this->categoriesTable} c", "c.id = {$this->table}.category_id", 'left');
-            // ->join("{$this->userTable} u", "u.id = {$this->table}.created_by", 'left');
 
         // search
         if (!empty($search)) {

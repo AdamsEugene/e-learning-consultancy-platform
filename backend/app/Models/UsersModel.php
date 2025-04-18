@@ -58,10 +58,13 @@ class UsersModel extends Model {
 
         // search
         if(!empty($search)) {
+            $query->groupStart();
+            $query->like('phone', $search);
             // search in phone, email, username, full_name
-            foreach (['phone', 'email', 'username', 'firstname', 'lastname', 'user_type'] as $where) {
+            foreach (['email', 'username', 'firstname', 'lastname', 'user_type'] as $where) {
                 $query->orLike($where, $search);
             }
+            $query->groupEnd();
         }
 
         if(!empty($status)) {

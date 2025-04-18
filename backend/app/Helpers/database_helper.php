@@ -122,7 +122,7 @@ $databases = [
         what_you_will_learn TEXT DEFAULT '',
         requirements TEXT DEFAULT '',
         created_by INTEGER DEFAULT 0,
-        status VARCHAR(20) DEFAULT 'Published',
+        status VARCHAR(20) DEFAULT 'Unpublished',
         created_at DATETIME DEFAULT CURRENT_TIMESTAMP,
         updated_at DATETIME DEFAULT CURRENT_TIMESTAMP
     );
