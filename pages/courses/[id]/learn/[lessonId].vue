@@ -623,6 +623,7 @@ onBeforeUnmount(() => {
       @save="saveNote"
       @delete="deleteNote"
       @update:note-content="noteContent = $event"
+      @update:is-open="isNotesPanelOpen = $event"
     />
 
     <!-- Header -->

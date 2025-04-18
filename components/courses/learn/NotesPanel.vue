@@ -1,17 +1,12 @@
 <!-- components/courses/NotesPanel.vue -->
 <script setup lang="ts">
-import {
-  ref,
-  computed,
-  watch,
-  nextTick,
-  onMounted,
-  onBeforeUnmount,
-} from "vue";
+import { ref, computed, watch, nextTick, onMounted } from "vue";
 import type { Note } from "~/types/courseTemp";
+import Drawer from "~/components/ui/Drawer.vue";
 
-// Define Note interface if not imported from types
-
+// =============================================
+// INTERFACES
+// =============================================
 interface Props {
   isOpen?: boolean;
   notes?: Note[];
@@ -19,194 +14,61 @@ interface Props {
   notesSaved?: boolean;
   courseId: number | string;
   lessonId: number | string;
-  width?: number; // Configurable panel width
+  width?: string; // Configurable panel width
   position?: "left" | "right"; // Panel position
   theme?: "light" | "dark" | "indigo"; // Theme options
 }
 
-// Props with defaults
+// =============================================
+// PROPS
+// =============================================
 const props = withDefaults(defineProps<Props>(), {
   isOpen: false,
   notes: () => [],
   noteContent: "",
   notesSaved: false,
-  width: 384, // Default width (96 * 4 = 384px)
+  width: "384px", // Default width (96 * 4 = 384px)
   position: "right", // Default position
   theme: "indigo", // Default theme
 });
 
-// Emits with proper typing
+// =============================================
+// EMITS
+// =============================================
 const emit = defineEmits<{
   (e: "close" | "save"): void;
-  (e: "delete" | "update:noteContent", payload: string): void;
-  (e: "resize", width: number): void;
+  (e: "delete" | "update:noteContent" | "resize", payload: string): void;
+  (e: "update:isOpen", payload: boolean): void;
 }>();
 
+// =============================================
+// STATES
+// =============================================
 // Local state for note content
 const localNoteContent = ref(props.noteContent);
 
 // UI state variables
 const isEditorFocused = ref(false);
-const isResizing = ref(false);
-const startX = ref(0);
-const startWidth = ref(props.width);
-const panelWidth = ref(props.width);
 const noteSavedAnimation = ref(false);
 const deleteConfirmation = ref<string | null>(null);
 const searchQuery = ref("");
 const isSorting = ref(false);
 const sortBy = ref<"newest" | "oldest">("newest");
 const isSearchFocused = ref(false);
-const panelMaximized = ref(false);
 const theme = ref(props.theme);
+const drawerWidth = ref(props.width);
 
-// Watch for changes in props
-watch(
-  () => props.noteContent,
-  (newValue) => {
-    localNoteContent.value = newValue;
-  }
-);
-
-watch(
-  () => props.notesSaved,
-  (newValue) => {
-    if (newValue) {
-      noteSavedAnimation.value = true;
-      setTimeout(() => {
-        noteSavedAnimation.value = false;
-      }, 3000);
-    }
-  }
-);
-
-// Handle note content update
-const updateNoteContent = (event: Event) => {
-  const target = event.target as HTMLTextAreaElement;
-  localNoteContent.value = target.value;
-  emit("update:noteContent", target.value);
-};
-
-// Save the current note
-const saveNote = () => {
-  if (canSaveNote.value) {
-    emit("save");
-
-    // Clear text area after saving if needed
-    // localNoteContent.value = '';
-    // emit('update:noteContent', '');
-  }
-};
-
-// Delete a note with confirmation
-const confirmDelete = (noteId: string) => {
-  deleteConfirmation.value = noteId;
-};
-
-const cancelDelete = () => {
-  deleteConfirmation.value = null;
-};
-
-const deleteNote = (noteId: string) => {
-  deleteConfirmation.value = null;
-  emit("delete", noteId);
-};
-
-// Handle keyboard shortcuts
-const handleKeyDown = (event: KeyboardEvent) => {
-  // Save on Ctrl+Enter or Cmd+Enter
-  if ((event.ctrlKey || event.metaKey) && event.key === "Enter") {
-    event.preventDefault();
-    saveNote();
-  }
-};
-
-// Close the panel
-const closePanel = () => {
-  emit("close");
-};
-
-// Toggle panel maximization
-const toggleMaximize = () => {
-  panelMaximized.value = !panelMaximized.value;
-};
-
-// Format timestamp to readable date
-const formatTimestamp = (timestamp: number): string => {
-  const date = new Date(timestamp);
-
-  // Get today's date without time
-  const today = new Date();
-  today.setHours(0, 0, 0, 0);
-
-  // Get yesterday's date
-  const yesterday = new Date(today);
-  yesterday.setDate(yesterday.getDate() - 1);
-
-  // Check if date is today
-  if (date.setHours(0, 0, 0, 0) === today.getTime()) {
-    return `Today at ${date.toLocaleTimeString([], {
-      hour: "2-digit",
-      minute: "2-digit",
-    })}`;
-  }
-
-  // Check if date is yesterday
-  if (date.setHours(0, 0, 0, 0) === yesterday.getTime()) {
-    return `Yesterday at ${date.toLocaleTimeString([], {
-      hour: "2-digit",
-      minute: "2-digit",
-    })}`;
-  }
-
-  // Otherwise show full date
-  return date.toLocaleDateString([], {
-    year: "numeric",
-    month: "short",
-    day: "numeric",
-    hour: "2-digit",
-    minute: "2-digit",
-  });
-};
-
-// Resize handlers
-const startResize = (event: MouseEvent) => {
-  isResizing.value = true;
-  startX.value = event.clientX;
-  startWidth.value = panelWidth.value;
-  document.addEventListener("mousemove", handleResize);
-  document.addEventListener("mouseup", stopResize);
-};
-
-const handleResize = (event: MouseEvent) => {
-  if (!isResizing.value) return;
-
-  const delta =
-    props.position === "right"
-      ? startX.value - event.clientX
-      : event.clientX - startX.value;
-
-  const newWidth = Math.max(320, Math.min(800, startWidth.value + delta));
-  panelWidth.value = newWidth;
-  emit("resize", newWidth);
-};
-
-const stopResize = () => {
-  isResizing.value = false;
-  document.removeEventListener("mousemove", handleResize);
-  document.removeEventListener("mouseup", stopResize);
-};
-
-// Theme toggling
-const toggleTheme = () => {
-  if (theme.value === "light") {
-    theme.value = "dark";
-  } else if (theme.value === "dark") {
-    theme.value = "indigo";
-  } else {
-    theme.value = "light";
-  }
-};
+// =============================================
+// COMPUTED PROPERTIES
+// =============================================
+// Computed property for v-model binding
+const isOpenComputed = computed({
+  get: () => props.isOpen,
+  set: (value) => {
+    console.log("Setting isOpen to:", value);
+    emit("update:isOpen", value);
+  },
+});
 
 // Filtered and sorted notes
 const filteredNotes = computed(() => {
@@ -230,32 +92,6 @@ const filteredNotes = computed(() => {
   });
 
   return filtered;
-});
-
-// Toggle sort order
-const toggleSortOrder = () => {
-  isSorting.value = true;
-  sortBy.value = sortBy.value === "newest" ? "oldest" : "newest";
-
-  setTimeout(() => {
-    isSorting.value = false;
-  }, 300);
-};
-
-// Computed styles based on the panel's state
-const panelStyle = computed(() => {
-  const width = panelMaximized.value ? "100%" : `${panelWidth.value}px`;
-  const transform = props.isOpen
-    ? "translateX(0)"
-    : props.position === "right"
-    ? "translateX(100%)"
-    : "translateX(-100%)";
-
-  return {
-    width,
-    transform,
-    [props.position]: "0",
-  };
 });
 
 // Check if we can save the note (non-empty content)
@@ -309,12 +145,120 @@ const themeClasses = computed(() => {
   }
 });
 
-// Clean up event listeners on unmount
-onBeforeUnmount(() => {
-  document.removeEventListener("mousemove", handleResize);
-  document.removeEventListener("mouseup", stopResize);
-});
+// =============================================
+// METHODS
+// =============================================
+// Handle note content update
+const updateNoteContent = (event: Event) => {
+  const target = event.target as HTMLTextAreaElement;
+  localNoteContent.value = target.value;
+  emit("update:noteContent", target.value);
+};
 
+// Save the current note
+const saveNote = () => {
+  if (canSaveNote.value) {
+    emit("save");
+  }
+};
+
+// Delete a note with confirmation
+const confirmDelete = (noteId: string) => {
+  deleteConfirmation.value = noteId;
+};
+
+const cancelDelete = () => {
+  deleteConfirmation.value = null;
+};
+
+const deleteNote = (noteId: string) => {
+  deleteConfirmation.value = null;
+  emit("delete", noteId);
+};
+
+// Handle keyboard shortcuts
+const handleKeyDown = (event: KeyboardEvent) => {
+  // Save on Ctrl+Enter or Cmd+Enter
+  if ((event.ctrlKey || event.metaKey) && event.key === "Enter") {
+    event.preventDefault();
+    saveNote();
+  }
+};
+
+// Close the panel
+const closePanel = () => {
+  emit("close");
+  emit("update:isOpen", false);
+};
+
+// Handle drawer resize
+const handleResize = (width: string) => {
+  drawerWidth.value = width;
+  emit("resize", width);
+};
+
+// Theme toggling
+const toggleTheme = () => {
+  if (theme.value === "light") {
+    theme.value = "dark";
+  } else if (theme.value === "dark") {
+    theme.value = "indigo";
+  } else {
+    theme.value = "light";
+  }
+};
+
+// Toggle sort order
+const toggleSortOrder = () => {
+  isSorting.value = true;
+  sortBy.value = sortBy.value === "newest" ? "oldest" : "newest";
+
+  setTimeout(() => {
+    isSorting.value = false;
+  }, 300);
+};
+
+// Format timestamp to readable date
+const formatTimestamp = (timestamp: number): string => {
+  const date = new Date(timestamp);
+
+  // Get today's date without time
+  const today = new Date();
+  today.setHours(0, 0, 0, 0);
+
+  // Get yesterday's date
+  const yesterday = new Date(today);
+  yesterday.setDate(yesterday.getDate() - 1);
+
+  // Check if date is today
+  if (date.setHours(0, 0, 0, 0) === today.getTime()) {
+    return `Today at ${date.toLocaleTimeString([], {
+      hour: "2-digit",
+      minute: "2-digit",
+    })}`;
+  }
+
+  // Check if date is yesterday
+  if (date.setHours(0, 0, 0, 0) === yesterday.getTime()) {
+    return `Yesterday at ${date.toLocaleTimeString([], {
+      hour: "2-digit",
+      minute: "2-digit",
+    })}`;
+  }
+
+  // Otherwise show full date
+  return date.toLocaleDateString([], {
+    year: "numeric",
+    month: "short",
+    day: "numeric",
+    hour: "2-digit",
+    minute: "2-digit",
+  });
+};
+
+// =============================================
+// EFFECTS
+// =============================================
 // Focus the editor on mount if panel is open
 onMounted(() => {
   if (props.isOpen) {
@@ -326,32 +270,46 @@ onMounted(() => {
     });
   }
 });
+
+// =============================================
+// WATCHERS
+// =============================================
+// Watch for changes in props
+watch(
+  () => props.noteContent,
+  (newValue) => {
+    localNoteContent.value = newValue;
+  }
+);
+
+watch(
+  () => props.notesSaved,
+  (newValue) => {
+    if (newValue) {
+      noteSavedAnimation.value = true;
+      setTimeout(() => {
+        noteSavedAnimation.value = false;
+      }, 3000);
+    }
+  }
+);
 </script>
 
-<!-- eslint-disable vue/html-self-closing -->
-<!-- eslint-disable vue/no-v-html -->
 <template>
-  <div
-    class="fixed top-0 bottom-0 overflow-hidden shadow-xl z-40 border transition-all duration-300 ease-in-out"
-    :class="[themeClasses.panel, panelMaximized ? 'left-0 right-0' : '']"
-    :style="panelStyle"
+  <Drawer
+    :model-value="isOpenComputed"
+    @update:model-value="(value) => emit('update:isOpen', value)"
+    :width="drawerWidth"
+    :position="position"
+    :resizable="true"
+    :min-width="'320px'"
+    :max-width="'800px'"
+    :show-footer="false"
+    @resize="handleResize"
+    @close="closePanel"
   >
-    <!-- Resize handle -->
-    <div
-      v-if="!panelMaximized"
-      class="absolute top-0 bottom-0 w-1 cursor-ew-resize z-50 hover:bg-indigo-500 transition-colors"
-      :class="{ 'opacity-50': isResizing }"
-      :style="{ [position === 'right' ? 'left' : 'right']: '0' }"
-      @mousedown="startResize"
-    />
-
-    <!-- Panel header -->
-    <div
-      :class="[
-        'px-4 py-3 flex justify-between items-center shadow-md',
-        themeClasses.header,
-      ]"
-    >
+    <!-- Header slot -->
+    <template #header>
       <div class="flex items-center space-x-2">
         <svg
           xmlns="http://www.w3.org/2000/svg"
@@ -370,111 +328,56 @@ onMounted(() => {
         </svg>
         <h3 class="font-bold">Lesson Notes</h3>
       </div>
+    </template>
 
-      <div class="flex items-center space-x-2">
-        <!-- Theme toggle -->
-        <button
-          class="p-1.5 rounded-full transition-colors focus:outline-none"
-          :class="themeClasses.icon"
-          @click="toggleTheme"
+    <!-- Header actions slot -->
+    <template #header-actions>
+      <!-- Theme toggle -->
+      <button
+        class="p-1.5 rounded-full transition-colors focus:outline-none"
+        :class="themeClasses.icon"
+        @click="toggleTheme"
+      >
+        <svg
+          v-if="theme === 'light'"
+          xmlns="http://www.w3.org/2000/svg"
+          class="h-5 w-5"
+          viewBox="0 0 20 20"
+          fill="currentColor"
         >
-          <svg
-            v-if="theme === 'light'"
-            xmlns="http://www.w3.org/2000/svg"
-            class="h-5 w-5"
-            viewBox="0 0 20 20"
-            fill="currentColor"
-          >
-            <path
-              d="M17.293 13.293A8 8 0 016.707 2.707a8.001 8.001 0 1010.586 10.586z"
-            />
-          </svg>
-          <svg
-            v-else-if="theme === 'dark'"
-            xmlns="http://www.w3.org/2000/svg"
-            class="h-5 w-5"
-            viewBox="0 0 20 20"
-            fill="currentColor"
-          >
-            <path
-              fill-rule="evenodd"
-              d="M10 2a1 1 0 011 1v1a1 1 0 11-2 0V3a1 1 0 011-1zm4 8a4 4 0 11-8 0 4 4 0 018 0zm-.464 4.95l.707.707a1 1 0 001.414-1.414l-.707-.707a1 1 0 00-1.414 1.414zm2.12-10.607a1 1 0 010 1.414l-.706.707a1 1 0 11-1.414-1.414l.707-.707a1 1 0 011.414 0zM17 11a1 1 0 100-2h-1a1 1 0 100 2h1zm-7 4a1 1 0 011 1v1a1 1 0 11-2 0v-1a1 1 0 011-1zM5.05 6.464A1 1 0 106.465 5.05l-.708-.707a1 1 0 00-1.414 1.414l.707.707zm1.414 8.486l-.707.707a1 1 0 01-1.414-1.414l.707-.707a1 1 0 011.414 1.414zM4 11a1 1 0 100-2H3a1 1 0 000 2h1z"
-              clip-rule="evenodd"
-            />
-          </svg>
-          <svg
-            v-else
-            xmlns="http://www.w3.org/2000/svg"
-            class="h-5 w-5"
-            viewBox="0 0 20 20"
-            fill="currentColor"
-          >
-            <path
-              d="M4 2a2 2 0 00-2 2v11a3 3 0 106 0V4a2 2 0 00-2-2H4zm1 14a1 1 0 100-2 1 1 0 000 2zm5-1.757l4.9-4.9a2 2 0 000-2.828L13.485 5.1a2 2 0 00-2.828 0L10 5.757v8.486zM16 18H9.071l6-6H16a2 2 0 012 2v2a2 2 0 01-2 2z"
-            />
-          </svg>
-        </button>
-
-        <!-- Maximize/Minimize -->
-        <button
-          class="p-1.5 rounded-full transition-colors focus:outline-none"
-          :class="themeClasses.icon"
-          @click="toggleMaximize"
+          <path
+            d="M17.293 13.293A8 8 0 016.707 2.707a8.001 8.001 0 1010.586 10.586z"
+          />
+        </svg>
+        <svg
+          v-else-if="theme === 'dark'"
+          xmlns="http://www.w3.org/2000/svg"
+          class="h-5 w-5"
+          viewBox="0 0 20 20"
+          fill="currentColor"
         >
-          <svg
-            v-if="panelMaximized"
-            xmlns="http://www.w3.org/2000/svg"
-            class="h-5 w-5"
-            viewBox="0 0 20 20"
-            fill="currentColor"
-          >
-            <path
-              fill-rule="evenodd"
-              d="M5 10a1 1 0 011-1h8a1 1 0 110 2H6a1 1 0 01-1-1z"
-              clip-rule="evenodd"
-            />
-          </svg>
-          <svg
-            v-else
-            xmlns="http://www.w3.org/2000/svg"
-            class="h-5 w-5"
-            viewBox="0 0 20 20"
-            fill="currentColor"
-          >
-            <path
-              fill-rule="evenodd"
-              d="M3 4a1 1 0 011-1h4a1 1 0 010 2H6.414l2.293 2.293a1 1 0 11-1.414 1.414L5 6.414V8a1 1 0 01-2 0V4zm9 1a1 1 0 010-2h4a1 1 0 011 1v4a1 1 0 01-2 0V6.414l-2.293 2.293a1 1 0 11-1.414-1.414L13.586 5H12zm-9 7a1 1 0 012 0v1.586l2.293-2.293a1 1 0 111.414 1.414L6.414 15H8a1 1 0 010 2H4a1 1 0 01-1-1v-4zm13-1a1 1 0 011 1v4a1 1 0 01-1 1h-4a1 1 0 010-2h1.586l-2.293-2.293a1 1 0 111.414-1.414L15 13.586V12a1 1 0 011-1z"
-              clip-rule="evenodd"
-            />
-          </svg>
-        </button>
-
-        <!-- Close Button -->
-        <button
-          class="p-1.5 rounded-full transition-colors focus:outline-none"
-          :class="themeClasses.icon"
-          @click="closePanel"
+          <path
+            fill-rule="evenodd"
+            d="M10 2a1 1 0 011 1v1a1 1 0 11-2 0V3a1 1 0 011-1zm4 8a4 4 0 11-8 0 4 4 0 018 0zm-.464 4.95l.707.707a1 1 0 001.414-1.414l-.707-.707a1 1 0 00-1.414 1.414zm2.12-10.607a1 1 0 010 1.414l-.706.707a1 1 0 11-1.414-1.414l.707-.707a1 1 0 011.414 0zM17 11a1 1 0 100-2h-1a1 1 0 100 2h1zm-7 4a1 1 0 011 1v1a1 1 0 11-2 0v-1a1 1 0 011-1zM5.05 6.464A1 1 0 106.465 5.05l-.708-.707a1 1 0 00-1.414 1.414l.707.707zm1.414 8.486l-.707.707a1 1 0 01-1.414-1.414l.707-.707a1 1 0 011.414 1.414zM4 11a1 1 0 100-2H3a1 1 0 000 2h1z"
+            clip-rule="evenodd"
+          />
+        </svg>
+        <svg
+          v-else
+          xmlns="http://www.w3.org/2000/svg"
+          class="h-5 w-5"
+          viewBox="0 0 20 20"
+          fill="currentColor"
         >
-          <svg
-            xmlns="http://www.w3.org/2000/svg"
-            class="h-5 w-5"
-            fill="none"
-            viewBox="0 0 24 24"
-            stroke="currentColor"
-          >
-            <path
-              stroke-linecap="round"
-              stroke-linejoin="round"
-              stroke-width="2"
-              d="M6 18L18 6M6 6l12 12"
-            />
-          </svg>
-        </button>
-      </div>
-    </div>
+          <path
+            d="M4 2a2 2 0 00-2 2v11a3 3 0 106 0V4a2 2 0 00-2-2H4zm1 14a1 1 0 100-2 1 1 0 000 2zm5-1.757l4.9-4.9a2 2 0 000-2.828L13.485 5.1a2 2 0 00-2.828 0L10 5.757v8.486zM16 18H9.071l6-6H16a2 2 0 012 2v2a2 2 0 01-2 2z"
+          />
+        </svg>
+      </button>
+    </template>
 
-    <!-- Panel content -->
-    <div class="flex flex-col h-[calc(100%-3.5rem)]">
+    <!-- Default slot (body content) -->
+    <div class="flex flex-col h-full">
       <!-- Search bar -->
       <div class="p-3 border-b" :class="themeClasses.divider">
         <div class="relative">
@@ -762,7 +665,7 @@ onMounted(() => {
         </div>
       </div>
     </div>
-  </div>
+  </Drawer>
 </template>
 
 <style scoped>
