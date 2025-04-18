@@ -1,15 +1,26 @@
 <!-- pages/courses/[id]/learn/index.vue -->
 <script setup lang="ts">
-import { onMounted } from "vue";
+import { onMounted, inject } from "vue";
 import { useRoute } from "vue-router";
 import { useCourse } from "~/composables/useCourse";
+
+interface LoadingState {
+  isLoading: boolean;
+  loadingText: string;
+  loadingOverlay: boolean;
+  showLoading: (text?: string, overlay?: boolean) => void;
+  hideLoading: () => void;
+}
 
 const route = useRoute();
 const courseId = Number(route.params.id);
 
+// Get loading state
+const loading = inject<LoadingState>("loading");
+
 const {
   course,
-  loading,
+  loading: courseLoading,
   error,
   activeTab,
   faqs,
@@ -27,23 +38,26 @@ const {
   formatLessonType,
 } = useCourse(courseId);
 
-onMounted(() => {
-  fetchCourseData();
+onMounted(async () => {
+  loading?.showLoading("Loading course content...", true);
+  await fetchCourseData();
+  loading?.hideLoading();
 });
 </script>
 
 <!-- eslint-disable vue/html-self-closing -->
 <template>
   <div class="bg-white min-h-screen">
+    <!-- Global loading screen -->
+    <CommonGlobalLoading />
+
     <!-- Loading state -->
-    <div
-      v-if="loading"
-      class="flex-grow flex items-center justify-center py-20"
-    >
-      <div
-        class="animate-spin rounded-full h-12 w-12 border-t-2 border-b-2 border-indigo-600"
-      />
-    </div>
+    <CommonLoadingScreen
+      v-if="courseLoading"
+      text="Loading course content..."
+      size="lg"
+      full-screen
+    />
 
     <!-- Error state -->
     <div
