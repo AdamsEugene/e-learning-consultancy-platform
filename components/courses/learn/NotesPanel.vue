@@ -56,7 +56,7 @@ const isSorting = ref(false);
 const sortBy = ref<"newest" | "oldest">("newest");
 const isSearchFocused = ref(false);
 const theme = ref(props.theme);
-const drawerWidth = ref(props.width);
+const drawerWidth = ref("400px");
 
 // =============================================
 // COMPUTED PROPERTIES
@@ -297,14 +297,11 @@ watch(
 
 <template>
   <Drawer
-    :model-value="isOpenComputed"
-    @update:model-value="(value) => emit('update:isOpen', value)"
+    v-model="isOpenComputed"
+    v-scroll-lock="isOpenComputed"
     :width="drawerWidth"
-    :position="position"
-    :resizable="true"
-    :min-width="'320px'"
-    :max-width="'800px'"
-    :show-footer="false"
+    resizable
+    position="right"
     @resize="handleResize"
     @close="closePanel"
   >

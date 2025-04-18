@@ -1,6 +1,4 @@
 <script setup lang="ts">
-import { ref, watch, onMounted, onUnmounted, computed } from "vue";
-
 interface Props {
   modelValue: boolean;
   title?: string;
@@ -8,7 +6,6 @@ interface Props {
   position?: "left" | "right";
   closeOnClickOutside?: boolean;
   closeOnEscape?: boolean;
-  preventScroll?: boolean;
   zIndex?: number;
   resizable?: boolean;
   minWidth?: string;
@@ -21,7 +18,6 @@ const props = withDefaults(defineProps<Props>(), {
   position: "right",
   closeOnClickOutside: true,
   closeOnEscape: true,
-  preventScroll: true,
   zIndex: 50,
   resizable: false,
   minWidth: "300px",
@@ -36,15 +32,14 @@ const emit = defineEmits<{
 
 const isOpen = ref(props.modelValue);
 const drawerRef = ref<HTMLElement | null>(null);
-const bodyScrollLocked = ref(false);
+const currentWidth = ref(props.width);
 const isResizing = ref(false);
 const startX = ref(0);
 const startWidth = ref(0);
-const currentWidth = ref(props.width);
 
 // Computed property for the drawer width
 const drawerWidth = computed(() => {
-  return isResizing.value ? currentWidth.value : props.width;
+  return currentWidth.value;
 });
 
 // Watch for modelValue changes
@@ -54,14 +49,8 @@ watch(
     isOpen.value = newValue;
     if (newValue) {
       emit("open");
-      if (props.preventScroll) {
-        lockBodyScroll();
-      }
     } else {
       emit("close");
-      if (props.preventScroll) {
-        unlockBodyScroll();
-      }
     }
   }
 );
@@ -81,37 +70,9 @@ const handleKeydown = (e: KeyboardEvent) => {
   }
 };
 
-// Handle click outside
-const handleClickOutside = (e: MouseEvent) => {
-  if (
-    props.closeOnClickOutside &&
-    drawerRef.value &&
-    !drawerRef.value.contains(e.target as Node) &&
-    isOpen.value
-  ) {
-    closeDrawer();
-  }
-};
-
 // Close drawer
 const closeDrawer = () => {
   isOpen.value = false;
-};
-
-// Lock body scroll
-const lockBodyScroll = () => {
-  if (!bodyScrollLocked.value) {
-    document.body.style.overflow = "hidden";
-    bodyScrollLocked.value = true;
-  }
-};
-
-// Unlock body scroll
-const unlockBodyScroll = () => {
-  if (bodyScrollLocked.value) {
-    document.body.style.overflow = "";
-    bodyScrollLocked.value = false;
-  }
 };
 
 // Start resizing
@@ -125,7 +86,6 @@ const startResize = (e: MouseEvent) => {
   if (drawerRef.value) {
     const rect = drawerRef.value.getBoundingClientRect();
     startWidth.value = rect.width;
-    currentWidth.value = `${startWidth.value}px`;
   }
 
   // Add event listeners for mouse move and mouse up
@@ -173,17 +133,12 @@ const stopResize = () => {
 // Lifecycle hooks
 onMounted(() => {
   document.addEventListener("keydown", handleKeydown);
-  document.addEventListener("mousedown", handleClickOutside);
 });
 
 onUnmounted(() => {
   document.removeEventListener("keydown", handleKeydown);
-  document.removeEventListener("mousedown", handleClickOutside);
   document.removeEventListener("mousemove", handleResize);
   document.removeEventListener("mouseup", stopResize);
-  if (bodyScrollLocked.value) {
-    unlockBodyScroll();
-  }
 });
 </script>
 
@@ -204,6 +159,8 @@ onUnmounted(() => {
       <div
         v-if="isOpen"
         ref="drawerRef"
+        v-click-outside="closeOnClickOutside ? closeDrawer : undefined"
+        v-scroll-lock="isOpen"
         class="fixed top-0 h-full bg-white/90 backdrop-blur-md shadow-xl z-50 overflow-hidden flex flex-col"
         :class="[
           position === 'right' ? 'right-0' : 'left-0',
