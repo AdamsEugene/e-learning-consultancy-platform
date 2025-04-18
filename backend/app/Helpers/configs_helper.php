@@ -57,7 +57,8 @@ function getLevels() {
     return [
         "Beginner",
         "Intermediate",
-        "Advanced"
+        "Advanced",
+        "All Levels"
     ];
 }
 ?>

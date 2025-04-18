@@ -164,6 +164,18 @@ function convertDateToTimestamp($dateString) {
 }
 
 /**
+ * Convert seconds to hours and minutes
+ * 
+ * @param int $seconds
+ * @return string
+ */
+function convertSecondsToHoursAndMinutes($seconds = 0) {
+    $hours = floor($seconds / 3600);
+    $minutes = floor(($seconds % 3600) / 60);
+    return $hours . 'h ' . $minutes . 'm';
+}
+
+/**
  * Checks for a correctly formatted email address
  *
  * @param string|null $str

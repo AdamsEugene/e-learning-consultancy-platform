@@ -15,6 +15,9 @@ class Users extends LoadController {
      */
     public function list() {
 
+        // set the default data
+        $data = [];
+
         // get the user ids
         $userIds = $this->payload['user_ids'] ?? [];
 
@@ -23,13 +26,19 @@ class Users extends LoadController {
             $userIds = [$this->currentUser['id']];
         }
 
+        if(!empty($this->payload['user_type']) && in_array($this->payload['user_type'], ['Student', 'Instructor'])) {
+            $userIds = [];
+            $data['user_type'] = $this->payload['user_type'];
+        }
+
         // get the users
         $users = $this->usersModel->findUsers(
             $this->payload['limit'] ?? $this->defaultLimit, 
             $this->payload['offset'] ?? 0,
             $this->payload['search'] ?? null,
             stringToArray($this->payload['status'] ?? 'active'),
-            stringToArray($userIds)
+            stringToArray($userIds),
+            $data
         );
 
         // return the success message

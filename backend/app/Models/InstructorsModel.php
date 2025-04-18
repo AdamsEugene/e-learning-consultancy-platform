@@ -8,6 +8,7 @@ class InstructorsModel extends Model {
 
     protected $table;
     protected $userTable;
+    protected $coursesTable;
     protected $primaryKey = 'id';
     protected $allowedFields = ['course_id', 'instructor_id', 'created_at', 'updated_at'];
 
@@ -32,8 +33,10 @@ class InstructorsModel extends Model {
      */
     public function getRecords($limit = 100, $offset = 0, $data = []) {
         try {
-            $query = $this->select("{$this->table}.*, u.firstname, u.lastname, u.email, u.phone, u.image")
-                        ->join("{$this->userTable} u", 'u.id = instructors.instructor_id', 'left');
+            $query = $this->select("{$this->table}.*, u.firstname, u.lastname, u.email, u.phone, u.image, 
+                            (SELECT COUNT(*) FROM {$this->coursesTable} 
+                                WHERE created_by = u.id AND status = 'Published'
+                        ) as courseCount")->join("{$this->userTable} u", "u.id = {$this->table}.instructor_id", 'left');
 
             if(isset($data['course_id'])) {
                 $query->where('course_id', $data['course_id']);

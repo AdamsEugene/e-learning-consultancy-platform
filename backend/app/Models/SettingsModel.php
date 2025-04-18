@@ -9,7 +9,7 @@ class SettingsModel extends Model
 {
     protected $settingsTable;
     protected $sitesTable;
-    protected $table = 'app_settings';
+    protected $table;
     protected $ipBlockingTable;
     protected $primaryKey = 'id';
     protected $allowedFields = ['options', 'settings_values', 'idsite'];

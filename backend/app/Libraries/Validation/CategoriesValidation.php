@@ -25,6 +25,7 @@ class CategoriesValidation {
                 "description" => "permit_empty|string|max_length[255]",
                 "image" => "permit_empty|string|max_length[255]",
                 "status" => "permit_empty|string|max_length[255]",
+                "parent_id" => "permit_empty|integer",
             ]
         ],
         'update:id' => [
@@ -37,6 +38,7 @@ class CategoriesValidation {
                 "description" => "permit_empty|string|max_length[255]",
                 "image" => "permit_empty|string|max_length[255]",
                 "status" => "permit_empty|string|max_length[255]",
+                "parent_id" => "permit_empty|integer",
             ]
         ],
         'delete:id' => [

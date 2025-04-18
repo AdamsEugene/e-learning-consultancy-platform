@@ -20,6 +20,7 @@ class UsersValidation {
                 "offset" => "permit_empty|integer",
                 "search" => "permit_empty|string",
                 "status" => "permit_empty|string",
+                "user_type" => "permit_empty|string|max_length[255]|in_list[Client,Student,Consultant,Instructor,Admin]"
             ]
         ],
         'delete:user_id' => [
@@ -44,7 +45,7 @@ class UsersValidation {
                 "lastname" => "required|string|max_length[255]",
                 "email" => "required|string|max_length[255]",
                 "phone" => "permit_empty|string|max_length[255]",
-                "user_type" => "permit_empty|string|max_length[255]|in_list[Client|Student|Consultant|Instructor|Admin]",
+                "user_type" => "permit_empty|string|max_length[255]|in_list[Client,Student,Consultant,Instructor,Admin]",
                 "password" => "required|valid_password|max_length[255]",
                 "password_confirm" => "required|valid_password|max_length[255]|matches[password]",
             ]
@@ -72,7 +73,7 @@ class UsersValidation {
                 "preferences" => "permit_empty|is_array|max_length[5]",
                 "social_links" => "permit_empty|is_array|max_length[5]",
                 "skills" => "permit_empty|string|max_length[500]",
-                "user_type" => "permit_empty|string|max_length[255|in_list[Client|Student|Consultant|Instructor|Admin]"
+                "user_type" => "permit_empty|string|max_length[255|in_list[Client,Student,Consultant,Instructor,Admin]"
             ]
         ]
     ];

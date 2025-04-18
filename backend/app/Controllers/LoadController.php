@@ -12,7 +12,7 @@ use App\Models\TagsModel;
 use App\Models\CoursesModel;
 use App\Models\InstructorsModel;
 use App\Models\ReviewsModel;
-
+use App\Models\WishlistModel;
 class LoadController extends BaseController
 {
     public $restrictedDomain = ['e-learning.com', 'e-learning.com'];
@@ -26,6 +26,7 @@ class LoadController extends BaseController
     protected $coursesModel;
     protected $instructorsModel;
     protected $reviewsModel;
+    protected $wishlistModel;
 
     public function __construct($model = [])
     {
@@ -38,6 +39,13 @@ class LoadController extends BaseController
         if(empty($this->cacheObject)) {
             $this->cacheObject = new Caching();
         }
+
+        // get the last name of the class that has been called and trigger the model
+        $childClass = get_called_class();
+        $getLastName = explode('\\', $childClass);
+        $triggeredModel = $getLastName[count($getLastName) - 1];
+
+        $this->triggerModel(strtolower($triggeredModel));
     }
 
     /**
@@ -47,23 +55,30 @@ class LoadController extends BaseController
      * @return void
      */
     public function triggerModel($model) {
-        if(in_array('categories', $model)) {
+
+        $models = stringToArray($model);
+
+        if(in_array('categories', $models)) {
             $this->categoriesModel = new CategoriesModel();
         }
 
-        if(in_array('tags', $model)) {
+        if(in_array('tags', $models)) {
             $this->tagsModel = new TagsModel();
         }
 
-        if(in_array('courses', $model)) {
+        if(in_array('courses', $models)) {
             $this->coursesModel = new CoursesModel();
         }
 
-        if(in_array('instructors', $model)) {
+        if(in_array('instructors', $models)) {
             $this->instructorsModel = new InstructorsModel();
         }
 
-        if(in_array('reviews', $model)) {
+        if(in_array('wishlist', $models)) {
+            $this->wishlistModel = new WishlistModel();
+        }
+
+        if(in_array('reviews', $models)) {
             $this->reviewsModel = new ReviewsModel();
         }
     }

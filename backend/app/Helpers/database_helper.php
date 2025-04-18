@@ -11,6 +11,7 @@ $databases = [
         name_slug VARCHAR(255) NOT NULL,
         description TEXT,
         image TEXT,
+        parent_id INTEGER DEFAULT 0,
         preferred_order INTEGER DEFAULT 0,
         courses_count INTEGER DEFAULT 0,
         created_by INTEGER DEFAULT 0,
@@ -101,21 +102,27 @@ $databases = [
     "CREATE TABLE IF NOT EXISTS courses (
         id INTEGER PRIMARY KEY AUTOINCREMENT,
         title VARCHAR(255) NOT NULL,
+        subtitle VARCHAR(255) DEFAULT '',
         title_slug VARCHAR(255) NOT NULL,
         rating INTEGER DEFAULT 0,
-        enrolled_students INTEGER DEFAULT 0,
+        reviewCount INTEGER DEFAULT 0,
+        enrollmentCount INTEGER DEFAULT 0,
+        image TEXT DEFAULT '',
+        thumbnail TEXT DEFAULT '',
         tags TEXT DEFAULT '',
         level VARCHAR(255) DEFAULT '',
         category_id INTEGER DEFAULT 0,
+        subcategory_id INTEGER DEFAULT 0,
         course_type VARCHAR(255) DEFAULT 'free',
-        initial_price INTEGER DEFAULT 0,
-        final_price INTEGER DEFAULT 0,
-        course_overview TEXT DEFAULT '',
-        course_description TEXT DEFAULT '',
+        originalPrice INTEGER DEFAULT 0,
+        price INTEGER DEFAULT 0,
+        features TEXT DEFAULT '',
+        description TEXT DEFAULT '',
         course_duration INTEGER DEFAULT 0,
-        description TEXT,
+        what_you_will_learn TEXT DEFAULT '',
+        requirements TEXT DEFAULT '',
         created_by INTEGER DEFAULT 0,
-        status VARCHAR(20) DEFAULT 'Published',
+        status VARCHAR(20) DEFAULT 'Unpublished',
         created_at DATETIME DEFAULT CURRENT_TIMESTAMP,
         updated_at DATETIME DEFAULT CURRENT_TIMESTAMP
     );
@@ -145,10 +152,10 @@ $databases = [
     "CREATE TABLE IF NOT EXISTS courses_content (
         id INTEGER PRIMARY KEY AUTOINCREMENT,
         course_id INTEGER DEFAULT 0,
-        section_title VARCHAR(255) DEFAULT '',
-        section_content TEXT DEFAULT '',
-        section_duration INTEGER DEFAULT 0,
-        lessons_count INTEGER DEFAULT 0,
+        title VARCHAR(255) DEFAULT '',
+        lessons TEXT DEFAULT '',
+        totalDuration INTEGER DEFAULT 0,
+        totalLessons INTEGER DEFAULT 0,
         created_at DATETIME DEFAULT CURRENT_TIMESTAMP,
         updated_at DATETIME DEFAULT CURRENT_TIMESTAMP
     );
@@ -158,9 +165,9 @@ $databases = [
         course_id INTEGER DEFAULT 0,
         user_id INTEGER DEFAULT 0,
         rating INTEGER DEFAULT 0,
-        review TEXT DEFAULT '',
-        likes_count INTEGER DEFAULT 0,
-        dislikes_count INTEGER DEFAULT 0,
+        content TEXT DEFAULT '',
+        helpfulCount INTEGER DEFAULT 0,
+        dislikesCount INTEGER DEFAULT 0,
         created_at DATETIME DEFAULT CURRENT_TIMESTAMP,
         updated_at DATETIME DEFAULT CURRENT_TIMESTAMP
     );
@@ -182,18 +189,26 @@ $databases = [
     );
     CREATE INDEX IF NOT EXISTS idx_courses_enrollments_course_id ON courses_enrollments (course_id);
     CREATE INDEX IF NOT EXISTS idx_courses_enrollments_user_id ON courses_enrollments (user_id);
-    CREATE INDEX IF NOT EXISTS idx_courses_enrollments_status ON courses_enrollments (status);"
+    CREATE INDEX IF NOT EXISTS idx_courses_enrollments_status ON courses_enrollments (status);",
+    "CREATE TABLE IF NOT EXISTS wishlist (
+        id INTEGER PRIMARY KEY AUTOINCREMENT,
+        user_id INTEGER DEFAULT 0,
+        course_id INTEGER DEFAULT 0,
+        created_at DATETIME DEFAULT CURRENT_TIMESTAMP,
+        updated_at DATETIME DEFAULT CURRENT_TIMESTAMP
+    );"
 ];
 
 $alterTables = [
-    // "ALTER TABLE courses ADD COLUMN course_type VARCHAR(255) DEFAULT 'free';",
-    // "ALTER TABLE courses ADD COLUMN course_duration INTEGER DEFAULT 0;",
+    // "ALTER TABLE users ADD COLUMN image TEXT DEFAULT '';",
+    // "ALTER TABLE courses ADD COLUMN image TEXT DEFAULT '';",
+    // "ALTER TABLE courses ADD COLUMN thumbnail TEXT DEFAULT '';",
 ];
 
 function createDatabaseStructure() {
     global $databases, $alterTables;
     $db = \Config\Database::connect();
-    // $db->query("drop table courses");
+    // $db->query("drop table courses_content");
     foreach(array_merge($databases, $alterTables) as $query) {
         try {
             if(empty($query)) continue;

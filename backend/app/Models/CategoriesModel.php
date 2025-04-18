@@ -7,23 +7,39 @@ use CodeIgniter\Database\Exceptions\DatabaseException;
 
 class CategoriesModel extends Model {
 
-    protected $table = 'categories';
-    protected $allowedFields = ['name', 'description', 'image', 'created_by', 'created_at', 'updated_at', 'courses_count', 'status', 'name_slug'];
+    protected $table;
+    protected $coursesTable;
+    protected $primaryKey = 'id';
+    protected $allowedFields = ['name', 'description', 'parent_id', 'image', 'created_by', 'created_at', 'updated_at', 'courses_count', 'status', 'name_slug'];
     
     public function __construct() {
         parent::__construct();
         $this->table = DbTables::$categoriesTable;
+        $this->coursesTable = DbTables::$coursesTable;
     }
     
     /**
      * Get all categories
      * 
      * @param array $status
+     * @param array $data
      * @return array
      */
-    public function getRecords($status = ['active']) {
+    public function getRecords($status = ['active'], $data = []) {
         try {
-            return $this->whereIn('status', $status)->orderBy('preferred_order', 'ASC')->findAll();
+            // get query
+            $query = $this->db->table("{$this->table} c")
+                ->select("c.*, (SELECT COUNT(*) FROM {$this->coursesTable} a WHERE a.category_id = c.id AND a.status != 'Deleted') as courses_count")
+                ->whereIn('c.status', $status)
+                ->groupBy('c.id')
+                ->orderBy('c.preferred_order', 'ASC');
+
+            // search by category ids
+            if(!empty($data['category_ids'])) {
+                $query->whereIn('id', $data['category_ids']);
+            }
+
+            return $query->get()->getResultArray();
         } catch(DatabaseException $e) {
             return [];
         }
