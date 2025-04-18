@@ -100,7 +100,7 @@ function formatCourseResponse($courses = []) {
     foreach($courses as $key => $value) {
 
         // format the course response
-        foreach(['tags', 'features', 'description', 'requirements'] as $field) {
+        foreach(['tags', 'features', 'description', 'requirements', 'created_by'] as $field) {
             if(!empty($value[$field])) {
                 $list = json_decode($value[$field], true);
                 $value[$field] = empty($list) ? html_entity_decode($value[$field]) : $list;

@@ -72,9 +72,13 @@ class CoursesModel extends Model
      */
     public function getRecords($limit = 10, $offset = 0, $search = null, $data = []) {
         // get query
-        $query = $this->select("{$this->table}.*, c.name as category_name, c.name_slug as category_slug")
-            ->join("{$this->categoriesTable} c", "c.id = {$this->table}.category_id", 'left')
-            ->join("{$this->userTable} u", "u.id = {$this->table}.created_by", 'left');
+        $query = $this->select("{$this->table}.*, 
+            (SELECT JSON_OBJECT(
+                'id', u.id, 'firstname', u.firstname, 'lastname', u.lastname, 'email', u.email
+            ) FROM {$this->userTable} u WHERE u.id = {$this->table}.created_by LIMIT 1) as created_by,
+            c.name as category_name, c.name_slug as category_slug")
+            ->join("{$this->categoriesTable} c", "c.id = {$this->table}.category_id", 'left');
+            // ->join("{$this->userTable} u", "u.id = {$this->table}.created_by", 'left');
 
         // search
         if (!empty($search)) {
