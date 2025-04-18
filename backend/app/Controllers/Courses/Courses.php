@@ -246,6 +246,21 @@ class Courses extends LoadController {
             return Routing::notFound();
         }
 
+        // confirm if the status is valid
+        if($course['status'] == $this->payload['status']) {
+            return Routing::error('Course is already in this status.');
+        }
+
+        // if the incoming status is published, increment the courses count
+        if(($this->payload['status'] == 'Published')) {
+            $this->usersModel->db->query("UPDATE users SET courses_count = (courses_count + 1) WHERE id = ? LIMIT 1", [$course['created_by']]);
+        }
+
+        // if the course is published and the status is not unpublished, decrement the courses count
+        if($course['status'] == 'Published' && $this->payload['status'] !== 'Published') {
+            $this->usersModel->db->query("UPDATE users SET courses_count = (courses_count - 1) WHERE id = ? LIMIT 1", [$course['created_by']]);
+        }
+
         // update the status of the course
         $this->coursesModel->updateRecord($this->mainRawId, ['status' => $this->payload['status']]);
 
