@@ -1,17 +1,28 @@
 <!-- pages/courses/[id].vue -->
 <script setup lang="ts">
-import { onMounted } from "vue";
+import { onMounted, inject } from "vue";
 import { useRoute } from "vue-router";
 import { useCourseDetails } from "~/composables/useCourseDetails";
+
+interface LoadingState {
+  isLoading: boolean;
+  loadingText: string;
+  loadingOverlay: boolean;
+  showLoading: (text?: string, overlay?: boolean) => void;
+  hideLoading: () => void;
+}
 
 // Get course ID from route
 const route = useRoute();
 const courseId = Number(route.params.id);
 
+// Get loading state
+const loading = inject<LoadingState>("loading");
+
 // Use the course details composable
 const {
   course,
-  loading,
+  loading: courseLoading,
   error,
   activeTab,
   fetchCourseData,
@@ -27,22 +38,22 @@ const {
 } = useCourseDetails(courseId);
 
 // Load data when component mounts
-onMounted(() => {
-  fetchCourseData();
+onMounted(async () => {
+  loading?.showLoading("Loading course details...", true);
+  await fetchCourseData();
+  loading?.hideLoading();
 });
 </script>
 
 <template>
   <div class="bg-gray-50 min-h-screen">
     <!-- Loading state -->
-    <div v-if="loading" class="container mx-auto py-16 px-4">
-      <div class="flex flex-col items-center justify-center py-12">
-        <div
-          class="animate-spin rounded-full h-16 w-16 border-t-2 border-b-2 border-indigo-600 mb-4"
-        />
-        <p class="text-gray-600">Loading course details...</p>
-      </div>
-    </div>
+    <CommonLoadingScreen
+      v-if="courseLoading"
+      text="Loading course details..."
+      size="lg"
+      full-screen
+    />
 
     <!-- Error state -->
     <div v-else-if="error" class="container mx-auto py-16 px-4">
