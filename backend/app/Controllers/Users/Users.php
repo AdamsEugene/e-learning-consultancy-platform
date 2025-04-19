@@ -110,9 +110,17 @@ class Users extends LoadController {
      */
     public function update() {
 
-        // check if the user id is set
-        $users = $this->usersModel->findById($this->payload['user_id']);
+        // user id
+        $userId = $this->currentUser['user_id'];
 
+        if(is_admin($this->currentUser)) {
+            $userId = $this->payload['user_id'];
+        }
+        
+        // check if the user id is set
+        $users = $this->usersModel->findById($userId);
+
+        // if the user is not found, return not found
         if(empty($users)) {
             return Routing::notFound();
         }
@@ -146,10 +154,18 @@ class Users extends LoadController {
             $this->submittedPayload['password'] = $hashPassword;
         }
 
-        foreach(['social_links', 'preferences'] as $item) {
+        foreach(['social_links'] as $item) {
             if(isset($this->submittedPayload[$item])) {
                 $this->submittedPayload[$item] = json_encode($this->submittedPayload[$item]);
             }
+        }
+
+        if(!empty($users['preferences']) && !empty($this->submittedPayload['preferences'])) {
+            $existingPreferences = json_decode($users['preferences'], true);
+            foreach($this->submittedPayload['preferences'] as $key => $value) {
+                $existingPreferences[$key] = $value;
+            }
+            $this->submittedPayload['preferences'] = json_encode($existingPreferences);
         }
 
         // update the user information

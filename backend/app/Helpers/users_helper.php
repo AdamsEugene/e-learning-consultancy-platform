@@ -41,6 +41,8 @@ function formatUserResponse($user, bool $single = false, $simpleData = false) {
                 'timezone', 'website', 'company', 'language', 'last_login', 'permissions', 'admin_access', 'date_registered'] as $item) {
                 $result[$key][$item] = $value[$item];
             }
+            $result[$key]['preferences'] = json_decode($value['preferences'], true);
+            $result[$key]['preferences'] = empty($result[$key]['preferences']) ? [] : $result[$key]['preferences'];
         }
     }
 
