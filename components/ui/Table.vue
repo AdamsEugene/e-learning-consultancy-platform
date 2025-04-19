@@ -420,6 +420,14 @@ const hasActiveFilter = (columnKey: string): boolean => {
     (filter: FilterConfig) => filter.key === columnKey && filter.value
   );
 };
+
+// Computed property for the current filter column
+const currentFilterColumn = computed(() => {
+  if (!activeFilterColumn.value) return null;
+  return visibleColumns.value.find(
+    (col) => col.key === activeFilterColumn.value
+  );
+});
 </script>
 
 <template>
@@ -694,7 +702,7 @@ const hasActiveFilter = (columnKey: string): boolean => {
       >
         <div class="ui-table__filter-popup-header">
           <span class="ui-table__filter-popup-title">
-            Filter {{ activeFilterColumn }}
+            Filter {{ currentFilterColumn?.label }}
           </span>
           <button
             class="ui-table__filter-popup-close"
@@ -710,12 +718,58 @@ const hasActiveFilter = (columnKey: string): boolean => {
           </button>
         </div>
         <div class="ui-table__filter-popup-content">
-          <input
-            v-model="filterValues[activeFilterColumn]"
-            type="text"
-            class="ui-table__filter-input"
-            :placeholder="`Filter by ${activeFilterColumn}...`"
-          />
+          <template v-if="currentFilterColumn">
+            <!-- Text filter -->
+            <template
+              v-if="
+                !currentFilterColumn.type || currentFilterColumn.type === 'text'
+              "
+            >
+              <input
+                v-model="filterValues[activeFilterColumn]"
+                type="text"
+                class="ui-table__filter-input"
+                :placeholder="`Filter by ${currentFilterColumn.label}...`"
+              />
+            </template>
+
+            <!-- Number filter -->
+            <template v-else-if="currentFilterColumn.type === 'number'">
+              <input
+                v-model="filterValues[activeFilterColumn]"
+                type="number"
+                class="ui-table__filter-input"
+                :placeholder="`Filter by ${currentFilterColumn.label}...`"
+              />
+            </template>
+
+            <!-- Select filter -->
+            <template v-else-if="currentFilterColumn.type === 'select'">
+              <select
+                v-model="filterValues[activeFilterColumn]"
+                class="ui-table__filter-input"
+              >
+                <option value="">All</option>
+                <option
+                  v-for="option in currentFilterColumn.options"
+                  :key="option"
+                  :value="option"
+                >
+                  {{ option }}
+                </option>
+              </select>
+            </template>
+
+            <!-- Date filter -->
+            <template v-else-if="currentFilterColumn.type === 'date'">
+              <input
+                v-model="filterValues[activeFilterColumn]"
+                type="date"
+                class="ui-table__filter-input"
+                :placeholder="`Filter by ${currentFilterColumn.label}...`"
+              />
+            </template>
+          </template>
         </div>
         <div class="ui-table__filter-popup-footer">
           <button
