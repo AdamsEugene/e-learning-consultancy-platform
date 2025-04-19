@@ -583,6 +583,12 @@ watch(
         </div>
       </div>
     </div>
+
+    <template #backdrop>
+      <div class="flex items-center justify-center h-full">
+        <h1>Add notes here</h1>
+      </div>
+    </template>
   </UiDrawer>
 </template>
 

@@ -156,9 +156,11 @@ onUnmounted(() => {
       <div
         v-if="isOpen"
         class="fixed inset-0 backdrop-blur-sm bg-black/30 z-40"
-        :style="{ zIndex: zIndex }"
+        :style="{ zIndex: zIndex,  width: `calc(100% - ${drawerWidth})` }"
         @click="closeOnClickOutside && closeDrawer()"
-      />
+      >
+        <slot name="backdrop" />
+      </div>
     </Transition>
 
     <!-- Drawer panel -->
