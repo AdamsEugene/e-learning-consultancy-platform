@@ -3,10 +3,15 @@
 namespace App\Controllers\Courses;
 
 use App\Controllers\LoadController;
+use App\Controllers\Courses\Enrollments;
 
 use App\Libraries\Routing;
 
 class Courses extends LoadController {
+
+    // do update course
+    public $doUpdateCourse = false;
+    public $recordInfo = [];
 
     // get all the sections
     public $allSections = ['id', 'title', 'lessons', 'totalDuration'];
@@ -69,7 +74,7 @@ class Courses extends LoadController {
         // get course sections
         $created_by = empty($course['id']) ? [] : formatUserResponse([$this->usersModel->findById($course['created_by'])], true, true);
         $instructors = empty($course['id']) ? [] : $this->instructorsModel->getRecords(100, 0, ['course_id' => $course['id']]);
-        $reviews = empty($course['id']) ? [] : $this->reviewsModel->getRecordByCourseId(100, 0, ['course_id' => $course['id']]);
+        $reviews = empty($course['id']) ? [] : $this->reviewsModel->getRecordByCourseId(100, 0, ['course_id' => $course['id'], 'entityType' => 'Course']);
         $sections = empty($course['id']) ? [] : $this->coursesModel->getSections(['course_id' => $course['id']]);
 
         // return response
@@ -93,26 +98,32 @@ class Courses extends LoadController {
         $this->triggerModel(['categories', 'instructors', 'tags']);
 
         // confirm if the category set exists
-        $category = $this->categoriesModel->getRecords(['active'], ['category_ids' => [$this->payload['category_id'], $this->payload['subcategory_id'] ?? 0]]);
-        if(empty($category)) {
-            return Routing::error('Category not found');
+        if(isset($this->payload['category_id']) || isset($this->payload['subcategory_id'])) {
+            $category = $this->categoriesModel->getRecords(['active'], ['category_ids' => [$this->payload['category_id'], $this->payload['subcategory_id'] ?? 0]]);
+            if(empty($category)) {
+                return Routing::error('Category not found');
+            }
         }
 
         // compare the price and the original price
-        if(!empty($this->payload['originalPrice']) && $this->payload['price'] > $this->payload['originalPrice']) {
-            return Routing::error('Price cannot be greater than the original price');
+        if(!empty($this->payload['price'])) {
+            if(!empty($this->payload['originalPrice']) && $this->payload['price'] > $this->payload['originalPrice']) {
+                return Routing::error('Price cannot be greater than the original price');
+            }
         }
 
-        // create a title slug
-        $this->payload['title_slug'] = url_title($this->payload['title'], '-', true);
+        if(!empty($this->payload['title'])) {
+            // create a title slug
+            $this->payload['title_slug'] = url_title($this->payload['title'], '-', true);
 
-        // create the slug
-        $create_slug = url_title($this->payload['title'], '-', true);
+            // create the slug
+            $create_slug = url_title($this->payload['title'], '-', true);
 
-        // check if the slug already exists
-        $check_slug = $this->coursesModel->getRecordBySlug($create_slug);
-        if(!empty($check_slug)) {
-            $this->payload['title_slug'] = $create_slug . '-' . random_string('alnum', 5);
+            // check if the slug already exists
+            $check_slug = $this->coursesModel->getRecordBySlug($create_slug);
+            if(!empty($check_slug)) {
+                $this->payload['title_slug'] = $create_slug . '-' . random_string('alnum', 5);
+            }
         }
 
         // convert the payload to json if it is an array
@@ -123,7 +134,7 @@ class Courses extends LoadController {
         }
 
         // check if the price is 0
-        if($this->payload['price'] == 0) {
+        if(isset($this->payload['price']) &&$this->payload['price'] == 0) {
             $this->payload['course_type'] = 'free';
         }
         
@@ -133,7 +144,9 @@ class Courses extends LoadController {
         }
 
         // set the created by
-        $this->payload['created_by'] = $this->currentUser['user_id'];
+        if(!$this->doUpdateCourse) {
+            $this->payload['created_by'] = $this->currentUser['user_id'];
+        }
 
         // get the tags
         if(!empty($this->payload['tags'])) {
@@ -172,14 +185,19 @@ class Courses extends LoadController {
         }
 
         // set the default status of the course to unpublished
-        $this->payload['status'] = $this->payload['status'] ?? $this->defaultStatus;
+        $this->payload['status'] = $this->payload['status'] ?? ($this->recordInfo['status'] ?? $this->defaultStatus);
         
         if(!is_admin($this->currentUser)) {
-            $this->payload['status'] = $this->defaultStatus;
+            $this->payload['status'] = $this->recordInfo['status'] ?? $this->defaultStatus;
         }
 
         // create course
-        $courseId = $this->coursesModel->createRecord($this->payload);
+        if($this->doUpdateCourse) {
+            $this->coursesModel->updateRecord($this->uniqueId, $this->payload);
+            $courseId = $this->uniqueId;
+        } else {
+            $courseId = $this->coursesModel->createRecord($this->payload);
+        }
 
         // get instructor id
         $instructor_id = $this->currentUser['user_id'];
@@ -202,10 +220,12 @@ class Courses extends LoadController {
             }
         }
         // insert the course instructors
-        $this->instructorsModel->createRecord([
-            'course_id' => $courseId,
-            'instructor_id' => $instructor_id
-        ]);
+        if(!$this->doUpdateCourse || $this->doUpdateCourse && !empty($this->payload['instructor_id'])) {
+            $this->instructorsModel->createRecord([
+                'course_id' => $courseId,
+                'instructor_id' => $instructor_id
+            ]);
+        }
 
         // get the instructors
         if(!empty($this->payload['instructors'])) {
@@ -225,7 +245,7 @@ class Courses extends LoadController {
         $this->payload['course_id'] = $courseId;
 
         return Routing::created([
-            'data' => 'Course created successfully',
+            'data' => $this->doUpdateCourse ? 'Course updated successfully' : 'Course created successfully',
             'record' => $this->view($courseId)['data']
         ]);
         
@@ -237,6 +257,33 @@ class Courses extends LoadController {
      * @return void
      */
     public function update() {
+
+        // do update course
+        $this->doUpdateCourse = true;
+
+        // get the record infomation
+        $this->recordInfo = $this->coursesModel->getRecord($this->uniqueId);
+
+        if(empty($this->recordInfo)) {
+            return Routing::notFound();
+        }
+
+        return $this->create();
+    }
+
+    /**
+     * Enroll in a course
+     * 
+     * @return void
+     */
+    public function enroll() {
+
+        // create a new instance of the enrollments controller
+        $enrolObject = new Enrollments();
+        $enrolObject->setProps($this->payload, $this->uniqueId, $this->currentUser, $this->coursesModel);
+
+        // return the response and procesing the request
+        return $enrolObject->enroll();
 
     }
 

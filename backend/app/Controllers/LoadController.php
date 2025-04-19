@@ -13,6 +13,7 @@ use App\Models\CoursesModel;
 use App\Models\InstructorsModel;
 use App\Models\ReviewsModel;
 use App\Models\WishlistModel;
+use App\Models\EnrollmentsModel;
 class LoadController extends BaseController
 {
     public $restrictedDomain = ['e-learning.com', 'e-learning.com'];
@@ -27,6 +28,7 @@ class LoadController extends BaseController
     protected $instructorsModel;
     protected $reviewsModel;
     protected $wishlistModel;
+    protected $enrollmentsModel;
 
     public function __construct($model = [])
     {
@@ -55,31 +57,25 @@ class LoadController extends BaseController
      * @return void
      */
     public function triggerModel($model) {
-
         $models = stringToArray($model);
-
-        if(in_array('categories', $models)) {
-            $this->categoriesModel = new CategoriesModel();
-        }
-
-        if(in_array('tags', $models)) {
-            $this->tagsModel = new TagsModel();
-        }
-
-        if(in_array('courses', $models)) {
-            $this->coursesModel = new CoursesModel();
-        }
-
-        if(in_array('instructors', $models)) {
-            $this->instructorsModel = new InstructorsModel();
-        }
-
-        if(in_array('wishlist', $models)) {
-            $this->wishlistModel = new WishlistModel();
-        }
-
-        if(in_array('reviews', $models)) {
-            $this->reviewsModel = new ReviewsModel();
+        
+        // Define a mapping of model names to their corresponding model classes
+        $modelMap = [
+            'categories' => CategoriesModel::class,
+            'tags' => TagsModel::class,
+            'courses' => CoursesModel::class,
+            'instructors' => InstructorsModel::class,
+            'wishlist' => WishlistModel::class,
+            'reviews' => ReviewsModel::class,
+            'enrollments' => EnrollmentsModel::class
+        ];
+        
+        // Loop through the requested models and initialize them
+        foreach ($models as $modelName) {
+            if (isset($modelMap[$modelName])) {
+                $propertyName = $modelName . 'Model';
+                $this->{$propertyName} = !empty($this->{$propertyName}) ? $this->{$propertyName} : new $modelMap[$modelName]();
+            }
         }
     }
 

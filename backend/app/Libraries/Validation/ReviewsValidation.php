@@ -11,6 +11,7 @@ class ReviewsValidation {
                 'offset' => 'permit_empty|integer',
                 'search' => 'permit_empty|string',
                 'data' => 'permit_empty',
+                'entityType' => 'permit_empty|string|in_list[Course,Instructor]',
             ]
         ],
         'create' => [
@@ -22,6 +23,7 @@ class ReviewsValidation {
                 'helpfulCount' => 'required|integer|less_than_equal_to[5]',
                 'dislikesCount' => 'permit_empty|integer|less_than_equal_to[5]',
                 'content' => 'required|string',
+                'entityType' => 'permit_empty|string|in_list[Course,Instructor]',
             ]
         ],
         'delete:review_id' => [

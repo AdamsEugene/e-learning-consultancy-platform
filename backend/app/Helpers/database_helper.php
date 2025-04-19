@@ -166,6 +166,7 @@ $databases = [
         user_id INTEGER DEFAULT 0,
         rating INTEGER DEFAULT 0,
         content TEXT DEFAULT '',
+        entityType VARCHAR(255) DEFAULT 'Course',
         helpfulCount INTEGER DEFAULT 0,
         dislikesCount INTEGER DEFAULT 0,
         created_at DATETIME DEFAULT CURRENT_TIMESTAMP,
@@ -202,7 +203,7 @@ $databases = [
 $alterTables = [
     // "ALTER TABLE users ADD COLUMN image TEXT DEFAULT '';",
     // "ALTER TABLE courses ADD COLUMN image TEXT DEFAULT '';",
-    // "ALTER TABLE courses ADD COLUMN thumbnail TEXT DEFAULT '';",
+    "ALTER TABLE courses_reviews ADD COLUMN entityType VARCHAR(255) DEFAULT 'Course';",
 ];
 
 function createDatabaseStructure() {
