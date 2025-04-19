@@ -7,8 +7,6 @@ import type {
   FilterConfig,
   PaginationConfig,
 } from "~/types/table";
-import { ref, computed, watch, inject } from "vue";
-import type { Ref } from "vue";
 
 interface TableInstance {
   data: Ref<TableRow[]>;
@@ -308,12 +306,40 @@ const openFilterPopup = (column: TableColumn, event: MouseEvent) => {
 
   const target = event.currentTarget as HTMLElement;
   const rect = target.getBoundingClientRect();
+  const viewportWidth = window.innerWidth;
+  const viewportHeight = window.innerHeight;
+
+  // Default popup dimensions
+  const popupWidth = 250;
+  const popupHeight = 200;
+
+  // Calculate initial position
+  let top = rect.bottom + window.scrollY;
+  let left = rect.left + window.scrollX;
+
+  // Check if popup would go off the right edge
+  if (left + popupWidth > viewportWidth) {
+    left = viewportWidth - popupWidth - 10; // 10px padding from edge
+  }
+
+  // Check if popup would go off the bottom edge
+  if (top + popupHeight > viewportHeight + window.scrollY) {
+    // Position above the filter icon instead
+    top = rect.top + window.scrollY - popupHeight;
+  }
+
+  // Ensure popup doesn't go off the left edge
+  if (left < 0) {
+    left = 10; // 10px padding from edge
+  }
+
+  // Ensure popup doesn't go off the top edge
+  if (top < window.scrollY) {
+    top = window.scrollY + 10; // 10px padding from top
+  }
 
   activeFilterColumn.value = column.key;
-  filterPopupPosition.value = {
-    top: rect.bottom + window.scrollY,
-    left: rect.left + window.scrollX,
-  };
+  filterPopupPosition.value = { top, left };
 };
 
 const closeFilterPopup = () => {
@@ -427,6 +453,25 @@ const currentFilterColumn = computed(() => {
   return visibleColumns.value.find(
     (col) => col.key === activeFilterColumn.value
   );
+});
+
+// Add click outside handler
+const handleClickOutside = (event: MouseEvent) => {
+  const target = event.target as HTMLElement;
+  if (
+    !target.closest(".ui-table__filter-popup") &&
+    !target.closest(".ui-table__filter-indicator")
+  ) {
+    closeFilterPopup();
+  }
+};
+
+onMounted(() => {
+  document.addEventListener("click", handleClickOutside);
+});
+
+onBeforeUnmount(() => {
+  document.removeEventListener("click", handleClickOutside);
 });
 </script>
 
@@ -951,6 +996,9 @@ const currentFilterColumn = computed(() => {
   box-shadow: 0 4px 6px -1px rgba(0, 0, 0, 0.1),
     0 2px 4px -1px rgba(0, 0, 0, 0.06);
   overflow: hidden;
+  transition: opacity 0.15s ease-in-out;
+  max-height: calc(100vh - 20px);
+  overflow-y: auto;
 }
 
 .ui-table__filter-popup-header {
@@ -1204,5 +1252,23 @@ const currentFilterColumn = computed(() => {
 .ui-table__filter-clear-all:hover {
   background-color: #f3f4f6;
   border-color: #9ca3af;
+}
+
+/* Add styles for scrollbar in filter popup */
+.ui-table__filter-popup::-webkit-scrollbar {
+  width: 6px;
+}
+
+.ui-table__filter-popup::-webkit-scrollbar-track {
+  background: #f1f1f1;
+}
+
+.ui-table__filter-popup::-webkit-scrollbar-thumb {
+  background: #888;
+  border-radius: 3px;
+}
+
+.ui-table__filter-popup::-webkit-scrollbar-thumb:hover {
+  background: #555;
 }
 </style>
