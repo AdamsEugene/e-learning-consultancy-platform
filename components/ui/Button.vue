@@ -4,7 +4,7 @@ interface Props {
    * Button variant
    * @default 'primary'
    */
-  variant:
+  variant?:
     | "primary"
     | "secondary"
     | "tertiary"
@@ -18,19 +18,19 @@ interface Props {
    * Button size
    * @default 'md'
    */
-  size: "sm" | "md" | "lg" | "xl";
+  size?: "sm" | "md" | "lg" | "xl";
 
   /**
    * Icon position (when using icon + text)
    * @default 'left'
    */
-  iconPosition: "left" | "right" | "only";
+  iconPosition?: "left" | "right" | "only";
 
   /**
    * Button visual state
    * @default 'default'
    */
-  state: "default" | "hover" | "active" | "disabled";
+  state?: "default" | "hover" | "active" | "disabled";
 
   /**
    * Badge text or count to display
@@ -114,10 +114,12 @@ const props = withDefaults(defineProps<Props>(), {
   loading: false,
   active: false,
   fullWidth: false,
-  ripple: true,
+  ripple: false,
   elevated: false,
   outlined: false,
   rounded: false,
+  badge: undefined,
+  customClass: undefined,
 });
 
 const emit = defineEmits<{
@@ -206,7 +208,7 @@ const iconOnlyClasses = computed(() => {
 const variantClasses = computed(() => {
   // Base classes common to all variants
   const baseClasses =
-    "relative overflow-hidden transition-all duration-200 focus:outline-none focus:ring-2 focus:ring-offset-2";
+    "relative overflow-hidden transition-all duration-200 focus:outline-none focus:ring-2";
 
   // Classes for disabled state (override all other states)
   if (props.disabled) {
@@ -368,24 +370,22 @@ const buttonClasses = computed(() => {
       class="flex items-center"
     >
       <!-- Left icon slot -->
-      <slot
-        v-if="iconPosition === 'left' || iconPosition === 'only'"
-        name="icon"
-      />
+      <slot v-if="$slots['icon-left'] || $slots['icon']" name="icon-left" />
 
       <!-- Text content (hidden for icon-only buttons) -->
       <span
-        v-if="iconPosition !== 'only'"
         :class="{
-          'ml-2': iconPosition === 'left',
-          'mr-2': iconPosition === 'right',
+          'ml-2': $slots['icon-left'] && iconPosition !== 'only',
+          'mr-2': $slots['icon-right'] && iconPosition !== 'only',
         }"
       >
         <slot />
       </span>
 
+      <!-- <slot/> -->
+
       <!-- Right icon slot -->
-      <slot v-if="iconPosition === 'right'" name="icon-right">
+      <slot v-if="$slots['icon-right'] || $slots['icon']" name="icon-right">
         <slot name="icon" />
       </slot>
     </span>

@@ -28,8 +28,8 @@ definePageMeta({
 
     <h2 class="text-2xl font-bold mb-4">Icon Buttons</h2>
     <div class="flex flex-wrap items-center gap-4">
-      <UiButton iconPosition="left">
-        <template #icon>
+      <UiButton icon-position="left">
+        <template #icon-left>
           <svg
             xmlns="http://www.w3.org/2000/svg"
             class="h-5 w-5"
@@ -46,9 +46,9 @@ definePageMeta({
         Left Icon
       </UiButton>
 
-      <UiButton iconPosition="right">
+      <UiButton icon-position="right">
         Right Icon
-        <template #icon>
+        <template #icon-right>
           <svg
             xmlns="http://www.w3.org/2000/svg"
             class="h-5 w-5"
@@ -64,7 +64,7 @@ definePageMeta({
         </template>
       </UiButton>
 
-      <UiButton iconPosition="only" aria-label="Add item">
+      <UiButton icon-position="only" aria-label="Add item">
         <template #icon>
           <svg
             xmlns="http://www.w3.org/2000/svg"
@@ -75,6 +75,38 @@ definePageMeta({
             <path
               fill-rule="evenodd"
               d="M10 5a1 1 0 011 1v3h3a1 1 0 110 2h-3v3a1 1 0 11-2 0v-3H6a1 1 0 110-2h3V6a1 1 0 011-1z"
+              clip-rule="evenodd"
+            />
+          </svg>
+        </template>
+      </UiButton>
+
+      <UiButton icon-position="left">
+        <template #icon-left>
+          <svg
+            xmlns="http://www.w3.org/2000/svg"
+            class="h-5 w-5"
+            viewBox="0 0 20 20"
+            fill="currentColor"
+          >
+            <path
+              fill-rule="evenodd"
+              d="M15.707 15.707a1 1 0 01-1.414 0l-5-5a1 1 0 010-1.414l5-5a1 1 0 111.414 1.414L11.414 10l4.293 4.293a1 1 0 010 1.414z"
+              clip-rule="evenodd"
+            />
+          </svg>
+        </template>
+        Both Icons
+        <template #icon-right>
+          <svg
+            xmlns="http://www.w3.org/2000/svg"
+            class="h-5 w-5"
+            viewBox="0 0 20 20"
+            fill="currentColor"
+          >
+            <path
+              fill-rule="evenodd"
+              d="M10.293 5.293a1 1 0 011.414 0l4 4a1 1 0 010 1.414l-4 4a1 1 0 01-1.414-1.414L12.586 11H5a1 1 0 110-2h7.586l-2.293-2.293a1 1 0 010-1.414z"
               clip-rule="evenodd"
             />
           </svg>
@@ -101,8 +133,8 @@ definePageMeta({
     <h2 class="text-2xl font-bold mb-4">Buttons with Badges</h2>
     <div class="flex flex-wrap items-center gap-4">
       <UiButton badge="3">Notifications</UiButton>
-      <UiButton badge="New" badgeVariant="success">Updates</UiButton>
-      <UiButton badge="!" badgeVariant="danger" iconPosition="only">
+      <UiButton badge="New" badge-variant="success">Updates</UiButton>
+      <UiButton badge="!" badge-variant="danger" icon-position="only">
         <template #icon>
           <svg
             xmlns="http://www.w3.org/2000/svg"
@@ -122,14 +154,14 @@ definePageMeta({
 
     <h2 class="text-2xl font-bold mb-4">Full Width Button</h2>
     <div class="max-w-md">
-      <UiButton fullWidth>Submit Form</UiButton>
+      <UiButton full-width>Submit Form</UiButton>
     </div>
 
     <h2 class="text-2xl font-bold mb-4">Common UI Patterns</h2>
     <div class="flex flex-wrap items-center gap-4">
       <!-- Form submit button -->
-      <UiButton variant="primary" type="submit">
-        <template #icon>
+      <UiButton variant="primary" type="submit" icon-position="left">
+        <template #icon-left>
           <svg
             xmlns="http://www.w3.org/2000/svg"
             class="h-5 w-5"
@@ -147,8 +179,8 @@ definePageMeta({
       </UiButton>
 
       <!-- Delete button -->
-      <UiButton variant="danger" outlined>
-        <template #icon>
+      <UiButton variant="danger" outlined icon-position="left">
+        <template #icon-left>
           <svg
             xmlns="http://www.w3.org/2000/svg"
             class="h-5 w-5"
@@ -166,8 +198,14 @@ definePageMeta({
       </UiButton>
 
       <!-- Filters button with badge -->
-      <UiButton variant="ghost" badge="3" badgeVariant="info">
-        <template #icon>
+      <UiButton
+        variant="ghost"
+        badge="3"
+        badge-variant="info"
+        icon-left
+        icon-right
+      >
+        <template #icon-left>
           <svg
             xmlns="http://www.w3.org/2000/svg"
             class="h-5 w-5"
@@ -182,6 +220,20 @@ definePageMeta({
           </svg>
         </template>
         Filters
+        <template #icon-right>
+          <svg
+            xmlns="http://www.w3.org/2000/svg"
+            class="h-5 w-5"
+            viewBox="0 0 20 20"
+            fill="currentColor"
+          >
+            <path
+              fill-rule="evenodd"
+              d="M5.293 7.293a1 1 0 011.414 0L10 10.586l3.293-3.293a1 1 0 111.414 1.414l-4 4a1 1 0 01-1.414 0l-4-4a1 1 0 010-1.414z"
+              clip-rule="evenodd"
+            />
+          </svg>
+        </template>
       </UiButton>
     </div>
   </div>

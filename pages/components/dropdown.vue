@@ -1,137 +1,199 @@
 <script setup lang="ts">
-import type { DropdownMenuItem } from "#ui/types";
+import type { FormDropdownItem } from "~/components/ui/Dropdown.vue";
 
 definePageMeta({
   layout: "components",
 });
 
-// Basic dropdown items
-const basicItems: DropdownMenuItem[] = [
-  { label: "Edit", icon: "i-heroicons-pencil" },
-  { label: "Delete", icon: "i-heroicons-trash", color: "error" },
-  { type: "separator" },
-  { label: "View Details", href: "/details" },
-];
+// Simple dropdown example data
+const simpleItems = ref<FormDropdownItem[]>([
+  { id: 1, name: "Option 1" },
+  { id: 2, name: "Option 2" },
+  { id: 3, name: "Option 3" },
+  { id: 4, name: "Option 4", disabled: true },
+]);
+const selectedSimpleItem = ref<FormDropdownItem | null>(null);
 
-// Variants
-const variants = ["solid", "outline", "ghost", "link"] as const;
-const variantItems = variants.map((variant) => ({
-  label: variant.charAt(0).toUpperCase() + variant.slice(1),
-  icon: "i-heroicons-check",
-}));
+// Countries dropdown example data
+const countries = ref<FormDropdownItem[]>([
+  { id: "us", name: "United States" },
+  { id: "ca", name: "Canada" },
+  { id: "mx", name: "Mexico" },
+  { id: "uk", name: "United Kingdom" },
+  { id: "fr", name: "France" },
+  { id: "de", name: "Germany" },
+  { id: "jp", name: "Japan" },
+  { id: "au", name: "Australia" },
+  { id: "br", name: "Brazil" },
+  { id: "in", name: "India" },
+  { id: "cn", name: "China" },
+]);
+const selectedCountry = ref<FormDropdownItem | null>(null);
 
-// Colors
-const colors = [
-  "primary",
-  "secondary",
-  "success",
-  "error",
-  "warning",
-  "info",
-  "neutral",
-] as const;
-const colorItems: DropdownMenuItem[] = colors.map((color) => ({
-  label: color.charAt(0).toUpperCase() + color.slice(1),
-  icon: "i-heroicons-check",
-  color,
-}));
+// Tags multi-select example data
+const tags = ref<FormDropdownItem[]>([
+  { id: 1, name: "Frontend" },
+  { id: 2, name: "Backend" },
+  { id: 3, name: "Design" },
+  { id: 4, name: "DevOps" },
+  { id: 5, name: "Mobile" },
+  { id: 6, name: "AI/ML" },
+  { id: 7, name: "Database" },
+  { id: 8, name: "Security" },
+]);
+const selectedTags = ref<FormDropdownItem[]>([]);
 
-// Sizes
-const sizes = ["sm", "md", "lg"] as const;
-const sizeItems: DropdownMenuItem[] = sizes.map((size) => ({
-  label: size.toUpperCase(),
-  icon: "i-heroicons-check",
-}));
+// Required field example
+const selectedRequired = ref<FormDropdownItem | null>(null);
 
-// Disabled items
-const disabledItems: DropdownMenuItem[] = [
-  { label: "Enabled Item", icon: "i-heroicons-check" },
-  { label: "Disabled Item", icon: "i-heroicons-x-mark", disabled: true },
-];
+// Projects example with add button
+const projects = ref<FormDropdownItem[]>([
+  { id: 1, name: "Website Redesign" },
+  { id: 2, name: "Mobile App Development" },
+  { id: 3, name: "E-commerce Platform" },
+]);
+const selectedProject = ref<FormDropdownItem | null>(null);
 
-// Placements
-const placements = ["top", "right", "bottom", "left"] as const;
-const placementItems: DropdownMenuItem[] = placements.map((placement) => ({
-  label: placement.charAt(0).toUpperCase() + placement.slice(1),
-  icon: "i-heroicons-check",
-}));
+// User profile dropdown
+const userOptions = ref<FormDropdownItem[]>([
+  { id: "settings", name: "Account Settings" },
+  { id: "billing", name: "Billing & Payments" },
+  { id: "teams", name: "Teams & Organizations" },
+  { id: "help", name: "Help & Support" },
+]);
+
+// Helper functions
+const removeTag = (tag: FormDropdownItem) => {
+  selectedTags.value = selectedTags.value.filter((t) => t.id !== tag.id);
+};
+
+const handleAddProject = () => {
+  alert("Add new project clicked!");
+  // In a real app, you might open a modal here
+};
 </script>
 
 <template>
-  <div class="space-y-8">
-    <div class="space-y-4">
-      <h2 class="text-2xl font-bold">Dropdown</h2>
-      <p class="text-gray-600 dark:text-gray-400">
-        A dropdown menu that appears when clicking a trigger button.
-      </p>
+  <div class="space-y-8 p-6 max-w-3xl mx-auto">
+    <h1 class="text-2xl font-bold text-gray-900">Dropdown Examples</h1>
+
+    <!-- Basic dropdown -->
+    <div class="mb-6">
+      <h2 class="text-lg font-medium mb-3">Basic Dropdown</h2>
+      <UiDropdown
+        label="Select an option"
+        :items="simpleItems"
+        :selected-item="selectedSimpleItem"
+        :select-item="(item: any) => (selectedSimpleItem = item)"
+      />
     </div>
 
-    <!-- Basic Dropdown -->
-    <div class="space-y-4">
-      <h3 class="text-lg font-medium">Basic</h3>
-      <div class="flex items-center gap-4">
-        <UDropdownMenu :items="basicItems">
-          <UButton>Actions</UButton>
-        </UDropdownMenu>
-      </div>
+    <!-- Dropdown with search -->
+    <div class="mb-6">
+      <h2 class="text-lg font-medium mb-3">With Search</h2>
+      <UiDropdown
+        label="Country"
+        placeholder="Select a country"
+        :items="countries"
+        :selected-item="selectedCountry"
+        :select-item="(item: any) => (selectedCountry = item)"
+        with-search
+      />
     </div>
 
-    <!-- Variants -->
-    <div class="space-y-4">
-      <h3 class="text-lg font-medium">Variants</h3>
-      <div class="flex items-center gap-4">
-        <UDropdownMenu
-          v-for="variant in variants"
-          :key="variant"
-          :items="variantItems"
+    <!-- Multiple selection dropdown -->
+    <div class="mb-6">
+      <h2 class="text-lg font-medium mb-3">Multiple Selection</h2>
+      <UiDropdown
+        label="Select tags"
+        placeholder="Select one or more tags"
+        :items="tags"
+        :selected-item="selectedTags"
+        :select-item="(items: any) => (selectedTags = items)"
+        multiple
+        with-search
+      />
+      <div v-if="selectedTags.length > 0" class="mt-2 flex flex-wrap gap-2">
+        <div
+          v-for="tag in selectedTags"
+          :key="tag.id"
+          class="bg-indigo-100 text-indigo-800 text-xs font-medium px-2.5 py-0.5 rounded-full flex items-center"
         >
-          <UButton :variant="variant">{{ variant }}</UButton>
-        </UDropdownMenu>
+          {{ tag.name }}
+          <button
+            class="ml-1 text-indigo-600 hover:text-indigo-800"
+            @click="removeTag(tag)"
+          >
+            ×
+          </button>
+        </div>
       </div>
     </div>
 
-    <!-- Colors -->
-    <div class="space-y-4">
-      <h3 class="text-lg font-medium">Colors</h3>
-      <div class="flex items-center gap-4">
-        <UDropdownMenu v-for="color in colors" :key="color" :items="colorItems">
-          <UButton :color="color">{{ color }}</UButton>
-        </UDropdownMenu>
-      </div>
+    <!-- Custom styles and error state -->
+    <div class="mb-6">
+      <h2 class="text-lg font-medium mb-3">With Error State</h2>
+      <UiDropdown
+        label="Required field"
+        placeholder="Please select an option"
+        :items="simpleItems"
+        :selected-item="selectedRequired"
+        :select-item="(item: any) => (selectedRequired = item)"
+        error="This field is required"
+      />
     </div>
 
-    <!-- Sizes -->
-    <div class="space-y-4">
-      <h3 class="text-lg font-medium">Sizes</h3>
-      <div class="flex items-center gap-4">
-        <UDropdownMenu v-for="size in sizes" :key="size" :items="sizeItems">
-          <UButton :size="size">{{ size }}</UButton>
-        </UDropdownMenu>
-      </div>
+    <!-- Disabled state -->
+    <div class="mb-6">
+      <h2 class="text-lg font-medium mb-3">Disabled State</h2>
+      <UiDropdown
+        label="Unavailable options"
+        placeholder="Currently unavailable"
+        :items="simpleItems"
+        :selected-item="null"
+        disabled
+      />
     </div>
 
-    <!-- Disabled Items -->
-    <div class="space-y-4">
-      <h3 class="text-lg font-medium">Disabled Items</h3>
-      <div class="flex items-center gap-4">
-        <UDropdownMenu :items="disabledItems">
-          <UButton>Disabled Items</UButton>
-        </UDropdownMenu>
-      </div>
+    <!-- Loading state -->
+    <div class="mb-6">
+      <h2 class="text-lg font-medium mb-3">Loading State</h2>
+      <UiDropdown
+        label="Loading items..."
+        placeholder="Please wait..."
+        :items="[]"
+        :selected-item="null"
+        loading
+      />
     </div>
 
-    <!-- Placements -->
-    <div class="space-y-4">
-      <h3 class="text-lg font-medium">Placements</h3>
-      <div class="flex items-center gap-4">
-        <UDropdownMenu
-          v-for="placement in placements"
-          :key="placement"
-          :items="placementItems"
-          :content="{ side: placement }"
-        >
-          <UButton>{{ placement }}</UButton>
-        </UDropdownMenu>
+    <!-- With action button -->
+    <div class="mb-6">
+      <h2 class="text-lg font-medium mb-3">With Add Button</h2>
+      <UiDropdown
+        label="Projects"
+        placeholder="Select a project"
+        :items="projects"
+        :selected-item="selectedProject"
+        :select-item="(item: any) => (selectedProject = item)"
+        with-search
+        show-add-button
+        @add-item="handleAddProject"
+      />
+    </div>
+
+    <!-- User profile dropdown -->
+    <div class="mb-6">
+      <h2 class="text-lg font-medium mb-3">Profile Dropdown</h2>
+      <div class="flex justify-end">
+        <UiDropdown
+          :items="userOptions"
+          user-name="Jane Smith"
+          user-email="jane.smith@example.com"
+          show-profile
+          for-profile
+          class-name="w-60"
+        />
       </div>
     </div>
   </div>
