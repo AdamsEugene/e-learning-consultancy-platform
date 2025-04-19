@@ -16,7 +16,7 @@ class EnrollmentsModel extends Model {
 
     public function __construct() {
         parent::__construct();
-        $this->table = DbTables::$coursesEnrollmentsTable;
+        $this->table = DbTables::$enrollmentsTable;
         foreach(DbTables::initTables() as $key) {
             if (property_exists($this, $key)) {
                 $this->{$key} = DbTables::${$key};
@@ -48,8 +48,21 @@ class EnrollmentsModel extends Model {
             return $query->get($limit, $offset)->getResultArray();
 
         } catch(DatabaseException $e) {
-            print $e->getMessage();
             return [];
+        }
+    }
+
+    /**
+     * Create a record
+     * 
+     * @param array $data
+     * @return int
+     */
+    public function createRecord($data) {
+        try {
+            return $this->db->table($this->table)->insert($data);
+        } catch(DatabaseException $e) {
+            return false;
         }
     }
 

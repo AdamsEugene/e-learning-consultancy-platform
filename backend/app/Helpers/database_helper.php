@@ -15,7 +15,7 @@ $databases = [
         preferred_order INTEGER DEFAULT 0,
         coursesCount INTEGER DEFAULT 0,
         created_by INTEGER DEFAULT 0,
-        status VARCHAR(255) DEFAULT 'active',
+        status VARCHAR(255) DEFAULT 'Active',
         created_at DATETIME DEFAULT CURRENT_TIMESTAMP,
         updated_at DATETIME DEFAULT CURRENT_TIMESTAMP
     );",
@@ -25,7 +25,7 @@ $databases = [
         name_slug VARCHAR(255) NOT NULL,
         description TEXT,
         color VARCHAR(255) DEFAULT '#000000',
-        status VARCHAR(255) DEFAULT 'active',
+        status VARCHAR(255) DEFAULT 'Active',
         created_at DATETIME DEFAULT CURRENT_TIMESTAMP,
         updated_at DATETIME DEFAULT CURRENT_TIMESTAMP
     );",
@@ -37,7 +37,7 @@ $databases = [
         firstname VARCHAR(255) NOT NULL,
         lastname VARCHAR(255) NOT NULL,
         image TEXT DEFAULT '',
-        status VARCHAR(255) DEFAULT 'active',
+        status VARCHAR(255) DEFAULT 'Active',
         description TEXT DEFAULT '',
         two_factor_setup VARCHAR(255) DEFAULT 'no',
         twofactor_secret VARCHAR(255) DEFAULT '',
@@ -173,18 +173,19 @@ $databases = [
         created_at DATETIME DEFAULT CURRENT_TIMESTAMP,
         updated_at DATETIME DEFAULT CURRENT_TIMESTAMP
     );
-    CREATE INDEX IF NOT EXISTS idx_courses_reviews_course_id ON courses_reviews (course_id);
+    CREATE INDEX IF NOT EXISTS idx_courses_reviews_record_id ON courses_reviews (record_id);
     CREATE INDEX IF NOT EXISTS idx_courses_reviews_user_id ON courses_reviews (user_id);",
     "CREATE TABLE IF NOT EXISTS courses_enrollments (
         id INTEGER PRIMARY KEY AUTOINCREMENT,
         course_id INTEGER DEFAULT 0,
         user_id INTEGER DEFAULT 0,
-        amount_payable INTEGER DEFAULT 0,
-        amount_offered INTEGER DEFAULT 0,
-        lessons_count INTEGER DEFAULT 0,
-        lessons_completed INTEGER DEFAULT 0,
-        current_lesson INTEGER DEFAULT 0,
-        next_lesson INTEGER DEFAULT 0,
+        amountPayable INTEGER DEFAULT 0,
+        amountOffered INTEGER DEFAULT 0,
+        lessonsCount INTEGER DEFAULT 0,
+        sectionsCount INTEGER DEFAULT 0,
+        lessonsCompleted INTEGER DEFAULT 0,
+        currentLesson INTEGER DEFAULT 0,
+        nextLesson INTEGER DEFAULT 0,
         status VARCHAR(255) DEFAULT 'Pending',
         created_at DATETIME DEFAULT CURRENT_TIMESTAMP,
         updated_at DATETIME DEFAULT CURRENT_TIMESTAMP
@@ -198,7 +199,9 @@ $databases = [
         course_id INTEGER DEFAULT 0,
         created_at DATETIME DEFAULT CURRENT_TIMESTAMP,
         updated_at DATETIME DEFAULT CURRENT_TIMESTAMP
-    );"
+    );
+    CREATE INDEX IF NOT EXISTS idx_wishlist_course_id ON wishlist (course_id);
+    CREATE INDEX IF NOT EXISTS idx_wishlist_user_id ON wishlist (user_id);"
 ];
 
 $alterTables = [

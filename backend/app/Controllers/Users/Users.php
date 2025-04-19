@@ -7,6 +7,7 @@ use App\Libraries\Routing;
 
 class Users extends LoadController {
 
+    public $softDelete = false;
 
     /**
      * List users
@@ -36,7 +37,7 @@ class Users extends LoadController {
             $this->payload['limit'] ?? $this->defaultLimit, 
             $this->payload['offset'] ?? 0,
             $this->payload['search'] ?? null,
-            stringToArray($this->payload['status'] ?? 'active'),
+            stringToArray($this->payload['status'] ?? 'Active'),
             stringToArray($userIds),
             $data
         );
@@ -184,17 +185,10 @@ class Users extends LoadController {
      * @return array
      */
     public function deactivate() {
+        
+        $this->softDelete = true;
 
-        // check if the user id is set
-        $users = $this->usersModel->findById($this->payload['user_id']);
-
-        if(empty($users)) {
-            return Routing::notFound();
-        }
-
-        // run a series of db queries to deactivate the user
-
-        // also set the account for deletion in 30 days
+        return $this->delete();
     }
 
     /**
@@ -207,15 +201,46 @@ class Users extends LoadController {
         // check if the user id is set
         $users = $this->usersModel->findById($this->payload['user_id']);
 
+        // if the user is not found, return not found
         if(empty($users)) {
             return Routing::notFound();
         }
 
         // delete the user
-        $this->usersModel->updateRecord($this->payload['user_id'], ['status' => 'deleted']);
+        $status = $this->softDelete ? 'Inactive' : 'Deleted';
+        $this->usersModel->updateRecord($this->payload['user_id'], ['status' => $status]);
+        
+        // update the status of the courses
+        $status = $this->softDelete ? 'Suspended' : 'Deleted';
+
+        // update the status of the courses
+        $this->coursesModel->updateRecordQuery(['status' => $status], ['created_by' => $this->payload['user_id']]);
 
         // return the success message
         return Routing::success('The user has been deleted successfully');
+    }
+
+    /**
+     * Reactivate a user
+     * 
+     * @return array
+     */
+    public function reactivate() {
+
+        // check if the user id is set
+        $users = $this->usersModel->findById($this->payload['user_id'], ['Deleted', 'Inactive']);
+
+        // if the user is not found, return not found
+        if(empty($users)) {
+            return Routing::notFound();
+        }
+
+        // delete the user
+        $this->usersModel->updateRecord($this->payload['user_id'], ['status' => 'Active']);
+        $this->coursesModel->updateRecordQuery(['status' => 'Unpublished'], ['created_by' => $this->payload['user_id']]);
+
+        // return the success message
+        return Routing::success('The user has been reactivated successfully');
     }
 
 }

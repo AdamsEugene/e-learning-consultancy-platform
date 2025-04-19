@@ -190,6 +190,22 @@ class CoursesModel extends Model
     }
 
     /**
+     * Update a course record using a query
+     * 
+     * @param array $data
+     * @param array $where
+     * 
+     * @return bool
+     */
+    public function updateRecordQuery($data, $where) {
+        try {
+            return $this->db->table($this->table)->where($where)->update($data);
+        } catch (DatabaseException $e) {
+            return false;
+        }
+    }
+
+    /**
      * Delete a course record
      * 
      * @param int $id

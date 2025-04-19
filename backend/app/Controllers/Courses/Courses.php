@@ -12,6 +12,7 @@ class Courses extends LoadController {
     // do update course
     public $doUpdateCourse = false;
     public $recordInfo = [];
+    public $minified = false;
 
     // get all the sections
     public $allSections = ['id', 'title', 'lessons', 'totalDuration'];
@@ -73,13 +74,13 @@ class Courses extends LoadController {
 
         // get course sections
         $created_by = empty($course['id']) ? [] : formatUserResponse([$this->usersModel->findById($course['created_by'])], true, true);
-        $instructors = empty($course['id']) ? [] : $this->instructorsModel->getRecords(100, 0, ['course_id' => $course['id']]);
-        $reviews = empty($course['id']) ? [] : $this->reviewsModel->getRecordByCourseId(100, 0, ['record_id' => $course['id'], 'entityType' => 'Course']);
+        $instructors = empty($course['id']) || $this->minified ? [] : $this->instructorsModel->getRecords(100, 0, ['course_id' => $course['id']]);
+        $reviews = empty($course['id']) || $this->minified ? [] : $this->reviewsModel->getRecordByCourseId(100, 0, ['record_id' => $course['id'], 'entityType' => 'Course']);
         $sections = empty($course['id']) ? [] : $this->coursesModel->getSections(['course_id' => $course['id']]);
 
         // return response
         return Routing::success([
-            'course' => empty($course) ? [] : formatCourseResponse([$course]),
+            'course' => empty($course) ? [] : formatCourseResponse([$course], false, true,),
             'created_by' => empty($created_by) ? [] : $created_by,
             'instructors' => empty($instructors) ? [] : $instructors,
             'reviews' => empty($reviews) ? [] : $reviews,
@@ -287,8 +288,18 @@ class Courses extends LoadController {
         $enrolObject = new Enrollments();
         $enrolObject->setProps($this->payload, $this->uniqueId, $this->currentUser, $this->coursesModel);
 
+        $this->minified = true;
+        $courseData = $this->view();
+
+        if($courseData['statusCode'] !== 200) {
+            return $courseData;
+        }
+
+        // get the course data
+        $courseData = $courseData['data'];
+
         // return the response and procesing the request
-        return $enrolObject->enroll();
+        return $enrolObject->enroll($courseData);
 
     }
 

@@ -92,6 +92,8 @@ class Wishlist extends LoadController {
      */
     public function create() {
 
+        $this->triggerModel('courses');
+
         // get the payload
         $payload = ['course_id' => $this->payload['course_id']];
 

@@ -422,7 +422,7 @@ class Auth extends LoadController {
 
         // get the cache
         $cacheData = empty($this->routingInfo['force_invalidate']) ? $this->cacheObject->handle('auth', 'validateToken', ['token' => $token]) : false;
-        
+
         // if the cache data is empty, get the record
         if(empty($cacheData)) {
 
@@ -439,7 +439,11 @@ class Auth extends LoadController {
             }
 
             // get the user record
-            $getRecord = $this->usersModel->findByLogin($getRecord['login']);
+            $getRecord = $this->usersModel->findByLogin($getRecord['login'], ['Active']);
+
+            if(empty($getRecord)) {
+                return false;
+            }
 
         } else {
             $getRecord = $cacheData;

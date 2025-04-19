@@ -22,7 +22,7 @@ class Instructors extends LoadController {
             $this->payload['limit'] ?? $this->defaultLimit, 
             $this->payload['offset'] ?? 0,
             $this->payload['search'] ?? null,
-            stringToArray($this->payload['status'] ?? 'active'),
+            stringToArray($this->payload['status'] ?? 'Active'),
             [],
             $data
         );
@@ -41,8 +41,9 @@ class Instructors extends LoadController {
         $this->triggerModel('courses,reviews');
 
         // get the instructor
-        $instructor = $this->usersModel->findById($this->uniqueId, ['active'], ['user_type' => 'Instructor']);
+        $instructor = $this->usersModel->findById($this->uniqueId, ['Active'], ['user_type' => 'Instructor']);
 
+        // if the instructor is not found, return not found
         if(empty($instructor)) {
             return Routing::notFound();
         }

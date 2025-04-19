@@ -23,6 +23,7 @@ class UsersModel extends Model {
     protected $accountTable;
     protected $subscriptionTable;
     protected $teamsTable;
+    protected $coursesTable;
     protected $authTokenTable;
     protected $paginateObject;
     protected $allowedFields = [
@@ -51,7 +52,7 @@ class UsersModel extends Model {
      * @param string|null $search
      * @return array
      */
-    public function findUsers(?int $limit = null, int $offset = 0, ?string $search = null, ?array $status = ['active'], ?array $userIds = [], ?array $data = [])
+    public function findUsers(?int $limit = null, int $offset = 0, ?string $search = null, ?array $status = ['Active'], ?array $userIds = [], ?array $data = [])
     {
         // get query
         $query = $this->limit($limit, $offset);
@@ -116,7 +117,7 @@ class UsersModel extends Model {
             return $this->db->table($this->table)
                             ->select('firstname, lastname, email, username, password')
                             ->where('admin_access', 1)
-                            ->whereIn('status', ['active'])
+                            ->whereIn('status', ['Active'])
                             ->where('permissions LIKE "%write%"')
                             ->get()
                             ->getResultArray();
@@ -145,7 +146,7 @@ class UsersModel extends Model {
      * @param int $id
      * @return array|null
      */
-    public function findById(int $id, array $status = ['active'], $data = [])
+    public function findById(int $id, array $status = ['Active'], $data = [])
     {
         try {
             $query = $this->where('id', $id)->whereIn('status', $status);
@@ -168,7 +169,7 @@ class UsersModel extends Model {
      * @param string $email
      * @return array|null
      */
-    public function findByEmail($email, array $status = ['active']) {
+    public function findByEmail($email, array $status = ['Active']) {
         try {
             return $this->where(['email' => $email])
                         ->whereIn('status', $status)
@@ -186,7 +187,7 @@ class UsersModel extends Model {
      * 
      * @return array|null
      */
-    public function quickFindByLogin($login, array $status = ['active']) {
+    public function quickFindByLogin($login, array $status = ['Active']) {
         return $this->where(['login' => $login])
                     ->whereIn('status', $status)
                     ->first();
@@ -198,13 +199,14 @@ class UsersModel extends Model {
      * @param string $login
      * @return array|null
      */
-    public function findByLogin($login, array $status = ['active']) {
+    public function findByLogin($login, array $status = ['Active']) {
         try {
             return $this->select("{$this->table}.*, {$this->table}.id as user_id")
                         ->where(["{$this->table}.username" => $login])
-                        ->whereIn("{$this->table}.status", $status)
+                        ->whereIn("{$this->table}.status", stringToArray($status))
                         ->first();
         } catch(DatabaseException $e) {
+            print $e->getMessage();
             return [];
         }
     }
@@ -218,7 +220,7 @@ class UsersModel extends Model {
      * 
      * @return array|null
      */
-    public function findByEmailOrLogin($email, $login, array $status = ['active']) {
+    public function findByEmailOrLogin($email, $login, array $status = ['Active']) {
         try {
             return $this->groupStart()->where(['email' => $email])
                         ->orWhere(['login' => $login])

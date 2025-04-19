@@ -31,6 +31,14 @@ class UsersValidation {
                 "user_id" => "required|integer"
             ]
         ],
+        'reactivate:user_id' => [
+            'method' => 'POST',
+            'authenticate' => true,
+            'isAdmin' => true,
+            'payload' => [
+                "user_id" => "required|integer"
+            ]
+        ],
         'view:user_id' => [
             'method' => 'GET',
             'authenticate' => true,

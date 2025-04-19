@@ -26,13 +26,22 @@ class Enrollments extends LoadController {
      * 
      * @return void
      */
-    public function enroll() {
+    public function enroll($courseData) {
 
         // get the course
-        $course = $this->coursesModel->getRecord($this->uniqueId);
+        $course = $courseData['course'];
+        $sections = $courseData['sections'];
 
-        if(empty($course)) {
-            return Routing::notFound();
+        // init variables
+        $sectionsCount = 0;
+        $lessonsCount = 0;
+
+        // count the sections and lessons
+        if(!empty($sections) && is_array($sections)) {
+            foreach($sections as $section) {
+                $sectionsCount++;
+                $lessonsCount += count($section['lessons']);
+            }
         }
         
         // check if the user is not already enrolled in the course
@@ -54,19 +63,20 @@ class Enrollments extends LoadController {
             'status' => $course['course_type'] == 'free' ? 'Enrolled' : 'Pending',
             'course_id' => $this->uniqueId,
             'user_id' => $this->currentUser['user_id'],
-            'amount_payable' => $finalPrice,
-            'amount_offered' => $course['price']
+            'amountPayable' => $finalPrice,
+            'lessonsCount' => $lessonsCount,
+            'sectionsCount' => $sectionsCount,
+            'amountOffered' => $course['price']
         ];
 
+        // insert the enrollment
+        $this->enrollmentsModel->createRecord($payload);
+
         if($payload['status'] == 'Enrolled')  {
-            $this->coursesModel->updateRecord(['enrollmentCount' => $course['enrollmentCount'] + 1], $this->uniqueId);
+            $this->coursesModel->updateRecord($this->uniqueId, ['enrollmentCount' => $course['enrollmentCount'] + 1]);
         }
 
-        return $payload;
-
-        // return $course;
-        
-        
+        return Routing::success('You have been enrolled in the course');
     }
 
 }

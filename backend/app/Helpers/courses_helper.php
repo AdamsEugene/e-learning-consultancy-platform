@@ -90,9 +90,10 @@ function validateCourseSections($sections = [], $allSections = [], $allLessons =
  * 
  * @param array $course
  * @param bool $minified
+ * @param bool $single
  * @return array
  */
-function formatCourseResponse($courses = [], $minified = false) {
+function formatCourseResponse($courses = [], $minified = false, $single = false) {
     
     // return empty array if no courses
     if(empty($courses)) return [];
@@ -117,7 +118,7 @@ function formatCourseResponse($courses = [], $minified = false) {
         $result[] = $value;
     }
 
-    return $result;
+    return $single ? $result[0] : $result;
 }
 
 /**
