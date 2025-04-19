@@ -550,11 +550,13 @@ onBeforeUnmount(() => {
                     <slot :name="`header-${column.key}`" :column="column">
                       {{ column.label }}
                     </slot>
+                  </div>
 
+                  <div class="flex items-center gap-1">
                     <!-- Sort indicator -->
                     <span
                       v-if="column.sortable && sortable"
-                      class="ui-table__sort-indicator cursor-pointer ml-1"
+                      class="ui-table__sort-indicator cursor-pointer mr-1"
                       :class="{
                         'ui-table__sort-indicator--asc':
                           sortingConfig.key === column.key &&
@@ -594,35 +596,35 @@ onBeforeUnmount(() => {
                         />
                       </svg>
                     </span>
-                  </div>
 
-                  <!-- Filter icon -->
-                  <span
-                    v-if="filterable && column.filterable !== false"
-                    class="ui-table__filter-indicator cursor-pointer"
-                    :class="{
-                      'ui-table__filter-indicator--active': hasActiveFilter(
-                        column.key
-                      ),
-                    }"
-                    @click.stop="openFilterPopup(column, $event)"
-                  >
-                    <svg
-                      class="h-4 w-4"
+                    <!-- Filter icon -->
+                    <span
+                      v-if="filterable && column.filterable !== false"
+                      class="ui-table__filter-indicator cursor-pointer"
                       :class="{
-                        'text-primary-600': hasActiveFilter(column.key),
-                        'text-gray-400': !hasActiveFilter(column.key),
+                        'ui-table__filter-indicator--active': hasActiveFilter(
+                          column.key
+                        ),
                       }"
-                      viewBox="0 0 20 20"
-                      fill="currentColor"
+                      @click.stop="openFilterPopup(column, $event)"
                     >
-                      <path
-                        fill-rule="evenodd"
-                        d="M3 3a1 1 0 011-1h12a1 1 0 011 1v3a1 1 0 01-.293.707L12 11.414V15a1 1 0 01-.293.707l-2 2A1 1 0 018 17v-5.586L3.293 6.707A1 1 0 013 6V3z"
-                        clip-rule="evenodd"
-                      />
-                    </svg>
-                  </span>
+                      <svg
+                        class="h-4 w-4"
+                        :class="{
+                          'text-primary-600': hasActiveFilter(column.key),
+                          'text-gray-400': !hasActiveFilter(column.key),
+                        }"
+                        viewBox="0 0 20 20"
+                        fill="currentColor"
+                      >
+                        <path
+                          fill-rule="evenodd"
+                          d="M3 3a1 1 0 011-1h12a1 1 0 011 1v3a1 1 0 01-.293.707L12 11.414V15a1 1 0 01-.293.707l-2 2A1 1 0 018 17v-5.586L3.293 6.707A1 1 0 013 6V3z"
+                          clip-rule="evenodd"
+                        />
+                      </svg>
+                    </span>
+                  </div>
                 </div>
 
                 <!-- Resize handle -->
