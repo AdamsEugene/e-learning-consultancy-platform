@@ -7,6 +7,10 @@ import type {
   FilterConfig,
   PaginationConfig,
 } from "~/types/table";
+import clickOutside from "~/directives/click-outside";
+
+// Register the click-outside directive
+const vClickOutside = clickOutside;
 
 interface TableInstance {
   data: Ref<TableRow[]>;
@@ -348,7 +352,7 @@ const closeFilterPopup = () => {
 
 const applyFilter = (column: TableColumn) => {
   const value = filterValues.value[column.key] || "";
-  if (value.trim()) {
+  if (typeof value === "string" && value.trim()) {
     tableRef.setFilter(column.key, value.trim());
   } else {
     tableRef.clearFilter(column.key);
@@ -455,23 +459,15 @@ const currentFilterColumn = computed(() => {
   );
 });
 
-// Add click outside handler
-const handleClickOutside = (event: MouseEvent) => {
-  const target = event.target as HTMLElement;
-  if (
-    !target.closest(".ui-table__filter-popup") &&
-    !target.closest(".ui-table__filter-indicator")
-  ) {
-    closeFilterPopup();
-  }
-};
+// Filter popup ref for click-outside directive
+const filterPopupRef = ref<HTMLElement | null>(null);
 
 onMounted(() => {
-  document.addEventListener("click", handleClickOutside);
+  // No need for click outside handler anymore
 });
 
 onBeforeUnmount(() => {
-  document.removeEventListener("click", handleClickOutside);
+  // No need for cleanup anymore
 });
 </script>
 
@@ -741,6 +737,8 @@ onBeforeUnmount(() => {
     <Teleport to="body">
       <div
         v-if="activeFilterColumn"
+        ref="filterPopupRef"
+        v-click-outside="closeFilterPopup"
         class="ui-table__filter-popup"
         :style="{
           top: `${filterPopupPosition.top}px`,
@@ -751,8 +749,10 @@ onBeforeUnmount(() => {
           <span class="ui-table__filter-popup-title">
             Filter {{ currentFilterColumn?.label }}
           </span>
-          <button
-            class="ui-table__filter-popup-close"
+          <UiButton
+            variant="ghost"
+            size="sm"
+            class="p-1"
             @click="closeFilterPopup"
           >
             <svg class="h-4 w-4" viewBox="0 0 20 20" fill="currentColor">
@@ -762,7 +762,7 @@ onBeforeUnmount(() => {
                 clip-rule="evenodd"
               />
             </svg>
-          </button>
+          </UiButton>
         </div>
         <div class="ui-table__filter-popup-content">
           <template v-if="currentFilterColumn">
@@ -772,21 +772,20 @@ onBeforeUnmount(() => {
                 !currentFilterColumn.type || currentFilterColumn.type === 'text'
               "
             >
-              <input
+              <UiInput
                 v-model="filterValues[activeFilterColumn]"
-                type="text"
-                class="ui-table__filter-input"
                 :placeholder="`Filter by ${currentFilterColumn.label}...`"
+                size="sm"
               />
             </template>
 
             <!-- Number filter -->
             <template v-else-if="currentFilterColumn.type === 'number'">
-              <input
+              <UiInput
                 v-model="filterValues[activeFilterColumn]"
                 type="number"
-                class="ui-table__filter-input"
                 :placeholder="`Filter by ${currentFilterColumn.label}...`"
+                size="sm"
               />
             </template>
 
@@ -794,7 +793,7 @@ onBeforeUnmount(() => {
             <template v-else-if="currentFilterColumn.type === 'select'">
               <select
                 v-model="filterValues[activeFilterColumn]"
-                class="ui-table__filter-input"
+                class="w-full px-3 py-2 text-sm border border-gray-300 rounded-md focus:outline-none focus:ring-2 focus:ring-primary-500 focus:border-primary-500"
               >
                 <option value="">All</option>
                 <option
@@ -809,18 +808,19 @@ onBeforeUnmount(() => {
 
             <!-- Date filter -->
             <template v-else-if="currentFilterColumn.type === 'date'">
-              <input
+              <UiInput
                 v-model="filterValues[activeFilterColumn]"
                 type="date"
-                class="ui-table__filter-input"
                 :placeholder="`Filter by ${currentFilterColumn.label}...`"
+                size="sm"
               />
             </template>
           </template>
         </div>
         <div class="ui-table__filter-popup-footer">
-          <button
-            class="ui-table__filter-popup-button ui-table__filter-popup-button--clear"
+          <UiButton
+            variant="outline"
+            size="sm"
             @click="
               clearFilter(
                 visibleColumns.find((col) => col.key === activeFilterColumn)!
@@ -828,9 +828,11 @@ onBeforeUnmount(() => {
             "
           >
             Clear
-          </button>
-          <button
-            class="ui-table__filter-popup-button ui-table__filter-popup-button--apply"
+          </UiButton>
+          <UiButton
+            variant="solid"
+            color="primary"
+            size="sm"
             @click="
               applyFilter(
                 visibleColumns.find((col) => col.key === activeFilterColumn)!
@@ -838,7 +840,7 @@ onBeforeUnmount(() => {
             "
           >
             Apply
-          </button>
+          </UiButton>
         </div>
       </div>
     </Teleport>
@@ -994,7 +996,7 @@ onBeforeUnmount(() => {
   z-index: 50;
   width: 250px;
   background-color: white;
-  border-radius: 0.375rem;
+  border-radius: 0.5rem;
   box-shadow: 0 4px 6px -1px rgba(0, 0, 0, 0.1),
     0 2px 4px -1px rgba(0, 0, 0, 0.06);
   overflow: hidden;
@@ -1017,21 +1019,8 @@ onBeforeUnmount(() => {
   color: #374151;
 }
 
-.ui-table__filter-popup-close {
-  color: #6b7280;
-  cursor: pointer;
-}
-
 .ui-table__filter-popup-content {
   padding: 1rem;
-}
-
-.ui-table__filter-input {
-  width: 100%;
-  padding: 0.5rem;
-  border: 1px solid #d1d5db;
-  border-radius: 0.25rem;
-  font-size: 0.875rem;
 }
 
 .ui-table__filter-popup-footer {
@@ -1041,26 +1030,6 @@ onBeforeUnmount(() => {
   padding: 0.75rem 1rem;
   background-color: #f9fafb;
   border-top: 1px solid #e5e7eb;
-}
-
-.ui-table__filter-popup-button {
-  padding: 0.375rem 0.75rem;
-  font-size: 0.875rem;
-  font-weight: 500;
-  border-radius: 0.25rem;
-  cursor: pointer;
-}
-
-.ui-table__filter-popup-button--clear {
-  color: #6b7280;
-  background-color: white;
-  border: 1px solid #d1d5db;
-}
-
-.ui-table__filter-popup-button--apply {
-  color: white;
-  background-color: #4f46e5;
-  border: 1px solid #4f46e5;
 }
 
 /* Resize handle */
