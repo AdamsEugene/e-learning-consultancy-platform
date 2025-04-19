@@ -98,6 +98,7 @@ const discussionText = ref("");
           v-for="tab in tabs"
           :key="tab.id"
           variant="ghost"
+          state="default"
           size="md"
           class="px-4 py-3 text-sm font-medium transition-colors flex items-center whitespace-nowrap"
           :class="
@@ -288,8 +289,8 @@ const discussionText = ref("");
             and start taking notes for this lesson.
           </p>
           <UiButton
-            variant="solid"
-            color="primary"
+            variant="primary"
+            state="default"
             size="md"
             @click="
               changeTab('content');
@@ -330,7 +331,7 @@ const discussionText = ref("");
             :rows="3"
           />
           <div class="mt-2 flex justify-end">
-            <UiButton variant="solid" color="primary" size="md">
+            <UiButton variant="primary" state="default" size="md">
               Post
             </UiButton>
           </div>
@@ -355,7 +356,7 @@ const discussionText = ref("");
                     <h4 class="font-medium">{{ thread.user.name }}</h4>
                     <p class="text-sm text-gray-500">{{ thread.timestamp }}</p>
                   </div>
-                  <UiButton variant="ghost" size="sm" color="gray">
+                  <UiButton variant="ghost" size="sm" state="default">
                     <template #prefix>
                       <svg
                         xmlns="http://www.w3.org/2000/svg"
@@ -376,7 +377,7 @@ const discussionText = ref("");
                 </div>
                 <p class="mt-2">{{ thread.content }}</p>
                 <div class="mt-3 flex items-center space-x-4">
-                  <UiButton variant="ghost" size="sm" color="gray">
+                  <UiButton variant="ghost" size="sm" state="default">
                     <template #prefix>
                       <svg
                         xmlns="http://www.w3.org/2000/svg"

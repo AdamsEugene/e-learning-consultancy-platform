@@ -279,8 +279,8 @@ watch(
       class="absolute inset-0 flex items-center justify-center"
     >
       <UiButton
-        variant="solid"
-        color="primary"
+        variant="ghost"
+        state="default"
         size="lg"
         class="rounded-full p-5 bg-opacity-75 hover:bg-opacity-100 transform hover:scale-110"
         @click="togglePlay"
@@ -334,7 +334,7 @@ watch(
           <!-- Play/Pause -->
           <UiButton
             variant="ghost"
-            color="white"
+            state="default"
             size="sm"
             icon-only
             @click="togglePlay"
@@ -370,7 +370,7 @@ watch(
           <!-- Skip back 10s -->
           <UiButton
             variant="ghost"
-            color="white"
+            state="default"
             size="sm"
             icon-only
             @click="skipBackward"
@@ -392,7 +392,7 @@ watch(
           <!-- Skip forward 10s -->
           <UiButton
             variant="ghost"
-            color="white"
+            state="default"
             size="sm"
             icon-only
             @click="skipForward"
@@ -434,7 +434,7 @@ watch(
         <!-- Fullscreen toggle -->
         <UiButton
           variant="ghost"
-          color="white"
+          state="default"
           size="sm"
           icon-only
           @click="toggleFullScreen"
