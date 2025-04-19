@@ -6,8 +6,29 @@ import {
   nextTick,
   onMounted,
   onBeforeUnmount,
+  Teleport,
 } from "vue";
 import type { Placement } from "@floating-ui/dom";
+import type { CSSProperties } from "vue";
+import UiButton from "./Button.vue";
+import clickOutside from "@/directives/click-outside";
+
+defineOptions({
+  name: "UiDropdown",
+});
+
+interface DropdownItem {
+  label: string;
+  icon?: string;
+  href?: string;
+  onClick?: () => void;
+  disabled?: boolean;
+  divider?: boolean;
+  danger?: boolean;
+  class?: string;
+  style?: Record<string, string>;
+  data?: Record<string, unknown>;
+}
 
 interface Props {
   // Core props
@@ -15,6 +36,7 @@ interface Props {
   placement?: Placement;
   offset?: number;
   width?: string | number;
+  items?: DropdownItem[];
 
   // Trigger button props
   label?: string;
@@ -42,6 +64,7 @@ const props = withDefaults(defineProps<Props>(), {
   closeOnScroll: true,
   appendTo: "body",
   icon: undefined,
+  items: () => [],
 });
 
 const emit = defineEmits<{
@@ -58,7 +81,7 @@ const arrowPosition = ref({ x: 0, y: 0 });
 const currentPlacement = ref(props.placement);
 
 // Computed
-const dropdownStyle = computed(() => {
+const dropdownStyle = computed<CSSProperties>(() => {
   return {
     position: "fixed",
     left: `${position.value.x}px`,
@@ -68,7 +91,7 @@ const dropdownStyle = computed(() => {
   };
 });
 
-const arrowStyle = computed(() => {
+const arrowStyle = computed<CSSProperties>(() => {
   const isTop = currentPlacement.value.includes("top");
   const isBottom = currentPlacement.value.includes("bottom");
   const isStart = currentPlacement.value.includes("start");
@@ -174,6 +197,18 @@ const handleResize = () => {
   }
 };
 
+const handleItemClick = (item: DropdownItem) => {
+  if (item.disabled) return;
+
+  if (item.onClick) {
+    item.onClick();
+  }
+
+  if (props.closeOnClick) {
+    close();
+  }
+};
+
 // Watchers
 watch(
   () => props.modelValue,
@@ -232,38 +267,69 @@ onBeforeUnmount(() => {
           v-if="isOpen"
           ref="dropdownRef"
           v-click-outside="close"
-          :style="{
-            position: 'fixed',
-            left: `${dropdownStyle.left}px`,
-            top: `${dropdownStyle.top}px`, 
-            width: dropdownStyle.width,
-            zIndex: dropdownStyle.zIndex
-          }"
+          :style="dropdownStyle"
           class="bg-white dark:bg-gray-800 rounded-lg shadow-lg border border-gray-200 dark:border-gray-700 overflow-hidden"
-          @click="closeOnClick ? close() : null"
         >
           <!-- Arrow -->
           <div
-            :style="{
-              position: 'absolute',
-              width: '12px',
-              height: '12px',
-              background: 'inherit',
-              visibility: 'visible',
-              transform: 'rotate(45deg)',
-              top: arrowStyle.top,
-              left: arrowStyle.left,
-              right: arrowStyle.right,
-              marginTop: arrowStyle.marginTop,
-              marginLeft: arrowStyle.marginLeft
-            }"
-            class="border border-gray-200 dark:border-gray-700 bg-white dark:bg-gray-800"
+            :style="arrowStyle"
+            class="bg-white dark:bg-gray-800 border-gray-200 dark:border-gray-700"
           />
 
-          <!-- Content -->
-          <div class="relative z-10">
-            <slot />
-          </div>
+          <!-- Default slot for custom content -->
+          <slot />
+
+          <!-- Items list -->
+          <template v-if="items.length > 0">
+            <div class="py-1">
+              <template v-for="(item, index) in items" :key="index">
+                <!-- Divider -->
+                <div
+                  v-if="item.divider"
+                  class="my-1 border-t border-gray-200 dark:border-gray-700"
+                />
+
+                <!-- Item -->
+                <template v-else>
+                  <a
+                    v-if="item.href"
+                    :href="item.href"
+                    class="flex items-center px-4 py-2 text-sm text-gray-700 dark:text-gray-200 hover:bg-gray-100 dark:hover:bg-gray-700"
+                    :class="{
+                      'opacity-50 cursor-not-allowed': item.disabled,
+                      'text-red-600 dark:text-red-400': item.danger,
+                    }"
+                    @click="handleItemClick(item)"
+                  >
+                    <span v-if="item.icon" class="mr-2">
+                      <slot :name="`icon-${item.icon}`">
+                        <i :class="item.icon" />
+                      </slot>
+                    </span>
+                    {{ item.label }}
+                  </a>
+                  <button
+                    v-else
+                    type="button"
+                    class="w-full flex items-center px-4 py-2 text-sm text-gray-700 dark:text-gray-200 hover:bg-gray-100 dark:hover:bg-gray-700"
+                    :class="{
+                      'opacity-50 cursor-not-allowed': item.disabled,
+                      'text-red-600 dark:text-red-400': item.danger,
+                    }"
+                    :disabled="item.disabled"
+                    @click="handleItemClick(item)"
+                  >
+                    <span v-if="item.icon" class="mr-2">
+                      <slot :name="`icon-${item.icon}`">
+                        <i :class="item.icon" />
+                      </slot>
+                    </span>
+                    {{ item.label }}
+                  </button>
+                </template>
+              </template>
+            </div>
+          </template>
         </div>
       </transition>
     </Teleport>
@@ -273,13 +339,13 @@ onBeforeUnmount(() => {
 <style scoped>
 .dropdown-enter-active,
 .dropdown-leave-active {
-  transition: all 0.3s cubic-bezier(0.4, 0, 0.2, 1);
+  transition: all 0.2s ease;
 }
 
 .dropdown-enter-from,
 .dropdown-leave-to {
   opacity: 0;
-  transform: translateY(-8px);
+  transform: scale(0.95);
 }
 
 /* Dark mode support */

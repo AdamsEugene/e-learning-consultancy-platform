@@ -18,69 +18,17 @@
           <nav class="bg-white rounded-lg shadow-sm p-4 sticky top-4">
             <h2 class="text-lg font-semibold text-gray-900 mb-4">Components</h2>
             <ul class="space-y-2">
-              <li>
+              <li v-for="item in navigationItems" :key="item.path">
                 <NuxtLink
-                  to="/components"
+                  :to="item.path"
                   class="block px-3 py-2 rounded-md text-sm font-medium"
                   :class="[
-                    $route.path === '/components'
+                    $route.path === item.path
                       ? 'bg-indigo-100 text-indigo-700'
                       : 'text-gray-700 hover:bg-gray-100',
                   ]"
                 >
-                  Overview
-                </NuxtLink>
-              </li>
-              <li>
-                <NuxtLink
-                  to="/components/table"
-                  class="block px-3 py-2 rounded-md text-sm font-medium"
-                  :class="[
-                    $route.path === '/components/table'
-                      ? 'bg-indigo-100 text-indigo-700'
-                      : 'text-gray-700 hover:bg-gray-100',
-                  ]"
-                >
-                  Table
-                </NuxtLink>
-              </li>
-              <li>
-                <NuxtLink
-                  to="/components/button"
-                  class="block px-3 py-2 rounded-md text-sm font-medium"
-                  :class="[
-                    $route.path === '/components/button'
-                      ? 'bg-indigo-100 text-indigo-700'
-                      : 'text-gray-700 hover:bg-gray-100',
-                  ]"
-                >
-                  Button
-                </NuxtLink>
-              </li>
-              <li>
-                <NuxtLink
-                  to="/components/form"
-                  class="block px-3 py-2 rounded-md text-sm font-medium"
-                  :class="[
-                    $route.path === '/components/form'
-                      ? 'bg-indigo-100 text-indigo-700'
-                      : 'text-gray-700 hover:bg-gray-100',
-                  ]"
-                >
-                  Form
-                </NuxtLink>
-              </li>
-              <li>
-                <NuxtLink
-                  to="/components/card"
-                  class="block px-3 py-2 rounded-md text-sm font-medium"
-                  :class="[
-                    $route.path === '/components/card'
-                      ? 'bg-indigo-100 text-indigo-700'
-                      : 'text-gray-700 hover:bg-gray-100',
-                  ]"
-                >
-                  Card
+                  {{ item.label }}
                 </NuxtLink>
               </li>
             </ul>
@@ -97,5 +45,17 @@
 </template>
 
 <script setup lang="ts">
-// Layout for components pages
+interface NavigationItem {
+  label: string;
+  path: string;
+}
+
+const navigationItems: NavigationItem[] = [
+  { label: "Overview", path: "/components" },
+  { label: "Table", path: "/components/table" },
+  { label: "Button", path: "/components/button" },
+  { label: "Dropdown", path: "/components/dropdown" },
+  { label: "Form", path: "/components/form" },
+  { label: "Card", path: "/components/card" },
+];
 </script>
