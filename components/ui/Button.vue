@@ -367,7 +367,7 @@ const buttonClasses = computed(() => {
     <!-- Button content (hidden during loading) -->
     <span
       :class="{ 'opacity-0': loading, 'flex items-center': true }"
-      class="flex items-center"
+      class="flex items-center w-full"
     >
       <!-- Left icon slot -->
       <slot v-if="$slots['icon-left'] || $slots['icon']" name="icon-left" />
@@ -378,6 +378,7 @@ const buttonClasses = computed(() => {
           'ml-2': $slots['icon-left'] && iconPosition !== 'only',
           'mr-2': $slots['icon-right'] && iconPosition !== 'only',
         }"
+        class="flex items-center w-full gap-2"
       >
         <slot />
       </span>

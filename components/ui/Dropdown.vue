@@ -388,11 +388,9 @@ defineExpose({
             class="mt-2 flex justify-between items-center"
           >
             <NuxtLink to="/settings">
-              <button
-                class="flex items-center gap-2 px-0 py-[2px] rounded-[12px] text-[#079455] font-inter text-[14px] font-semibold leading-5 hover:opacity-80 transition-opacity duration-200"
-              >
+              <UiButton variant="ghost" state="default">
                 Profile →
-              </button>
+              </UiButton>
             </NuxtLink>
           </div>
         </div>
@@ -407,13 +405,15 @@ defineExpose({
 
           <div
             v-else-if="filteredItems && filteredItems.length > 0"
-            class="space-y-1"
+            class="space-y-1 flex flex-col gap-1"
           >
-            <button
+            <UiButton
               v-for="item in filteredItems"
               :key="item.id"
               :disabled="item.disabled || item.clickable === false"
-              class="w-full px-3 py-2 rounded-lg text-left transition-colors duration-200 flex items-center gap-3"
+              variant="ghost"
+              state="default"
+              class="!flex !items-center gap-2 w-full"
               :class="[
                 isSelected(item)
                   ? 'bg-indigo-50 text-indigo-700'
@@ -486,7 +486,7 @@ defineExpose({
               >
                 {{ item.email }}
               </span>
-            </button>
+            </UiButton>
           </div>
 
           <!-- Empty state -->
