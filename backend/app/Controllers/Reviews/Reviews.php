@@ -48,14 +48,14 @@ class Reviews extends LoadController {
 
         // get the reviews
         $reviews = $this->reviewsModel->getRecords(1, 0, [
-            'course_id' => $this->payload['course_id'], 
+            'record_id' => $this->payload['record_id'], 
             'user_id' => $this->currentUser['user_id'],
             'entityType' => $this->payload['entityType']
         ]);
 
         // check if the user has already reviewed the course
         if(!empty($reviews)) {
-            return Routing::error('You have already reviewed this course');
+            return Routing::error('You have already reviewed this ' . $this->payload['entityType']);
         }
 
         // set the user id
@@ -64,8 +64,11 @@ class Reviews extends LoadController {
         // create the review
         $reviewId = $this->reviewsModel->createRecord($this->payload);
 
+        // table name to use
+        $tableName = $this->payload['entityType'] == 'Course' ? $this->coursesModel->table : $this->coursesModel->userTable;
+
         // increment the review count for the course
-        $this->coursesModel->db->query("UPDATE {$this->coursesModel->table} SET reviewCount = (reviewCount + 1) WHERE id = {$this->payload['course_id']}");
+        $this->coursesModel->db->query("UPDATE {$tableName} SET reviewCount = (reviewCount + 1) WHERE id = {$this->payload['record_id']}");
 
         // return the success message
         return Routing::created([

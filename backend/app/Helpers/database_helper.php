@@ -54,6 +54,7 @@ $databases = [
         job_title VARCHAR(255) DEFAULT '',
         skills TEXT DEFAULT '',
         rating INTEGER DEFAULT 0,
+        reviewCount INTEGER DEFAULT 0,
         students_count INTEGER DEFAULT 0,
         courses_count INTEGER DEFAULT 0,
         last_login DATETIME DEFAULT NULL,
@@ -162,7 +163,7 @@ $databases = [
     CREATE INDEX IF NOT EXISTS idx_courses_content_course_id ON courses_content (course_id);",
     "CREATE TABLE IF NOT EXISTS courses_reviews (
         id INTEGER PRIMARY KEY AUTOINCREMENT,
-        course_id INTEGER DEFAULT 0,
+        record_id INTEGER DEFAULT 0,
         user_id INTEGER DEFAULT 0,
         rating INTEGER DEFAULT 0,
         content TEXT DEFAULT '',
@@ -201,19 +202,15 @@ $databases = [
 ];
 
 $alterTables = [
-    // "ALTER TABLE users ADD COLUMN image TEXT DEFAULT '';",
-    // "ALTER TABLE courses ADD COLUMN image TEXT DEFAULT '';",
-    "ALTER TABLE courses_reviews ADD COLUMN entityType VARCHAR(255) DEFAULT 'Course';",
+    // "ALTER TABLE users ADD COLUMN reviewCount INTEGER DEFAULT 0;",
 ];
 
 function createDatabaseStructure() {
     global $databases, $alterTables;
     $db = \Config\Database::connect();
-    // $db->query("drop table courses_content");
     foreach(array_merge($databases, $alterTables) as $query) {
         try {
             if(empty($query)) continue;
-            // print $query . "\n\n\n";
             $db->query($query);
         } catch(DatabaseException $e) {
         }

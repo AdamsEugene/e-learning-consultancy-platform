@@ -170,8 +170,8 @@ function formatCourseReviews($reviews = []) {
         unset($value['updated_at']);
 
         // format the course
-        $value['course'] = json_decode($value['course'], true);
-        $value['user'] = json_decode($value['user'], true);
+        $value['entity'] = !empty($value['entity']) ? json_decode($value['entity'], true) : [];
+        $value['user'] = !empty($value['user']) ? json_decode($value['user'], true) : [];
 
         // format the user
         $result[] = $value;

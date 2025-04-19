@@ -10,7 +10,7 @@ class ReviewsModel extends Model {
     protected $primaryKey = 'id';
     protected $coursesTable;
     protected $userTable;
-    protected $allowedFields = ['course_id', 'user_id', 'rating', 'content', 'helpfulCount', 'dislikesCount'];
+    protected $allowedFields = ['record_id', 'user_id', 'rating', 'content', 'helpfulCount', 'dislikesCount', 'entityType'];
 
     public function __construct() {
         parent::__construct();
@@ -32,27 +32,48 @@ class ReviewsModel extends Model {
      */
     public function getRecords($limit = 10, $offset = 0, $data = [], $courseData = false) {
         try {
-            $query = $this->orderBy('created_at', 'DESC');
 
             if(!empty($courseData)) {
-                $query->select("{$this->table}.*, (SELECT JSON_OBJECT(
-                    'title', c.title, 'slug', c.title_slug, 'image', c.image, 
-                    'description', c.description, 'created_at', c.created_at,
-                    'reviewCount', c.reviewCount, 'price', c.price, 'originalPrice', c.originalPrice
-                ) FROM {$this->coursesTable} c WHERE c.id = {$this->table}.course_id LIMIT 1) as course,
+                $query = $this->select("{$this->table}.*, 
+                    CASE
+                        WHEN {$this->table}.entityType = 'Course' THEN JSON_OBJECT(
+                            'title', c.title,
+                            'slug', c.title_slug,
+                            'image', c.image,
+                            'description', c.description,
+                            'created_at', c.created_at,
+                            'reviewCount', c.reviewCount,
+                            'rating', c.rating,
+                            'price', c.price,
+                            'originalPrice', c.originalPrice
+                        )
+                        WHEN {$this->table}.entityType = 'Instructor' THEN JSON_OBJECT(
+                            'id', u.id, 'firstname', u.firstname, 
+                            'lastname', u.lastname, 
+                            'email', u.email,
+                            'reviewCount', u.reviewCount,
+                            'userType', u.user_type,
+                            'rating', u.rating
+                        )
+                    END AS entity,
                  (SELECT JSON_OBJECT(
                     'id', u.id, 'firstname', u.firstname, 'lastname', u.lastname, 'email', u.email
-                ) FROM {$this->userTable} u WHERE u.id = {$this->table}.user_id LIMIT 1) as user");
+                ) FROM {$this->userTable} u WHERE u.id = {$this->table}.user_id LIMIT 1) as user")
+                 ->join('courses c', "c.id = {$this->table}.record_id AND {$this->table}.entityType = 'Course'", 'left')
+                 ->join('users u', "u.id = {$this->table}.record_id AND {$this->table}.entityType = 'Instructor'", 'left');
+            } else {
+                $query = $this->orderBy('created_at', 'DESC');
             }
 
             if(!empty($data)) {
                 foreach($data as $key => $value) {
-                    $query->where($key, $value);
+                    $query->where("{$this->table}.{$key}", $value);
                 }
             }
-            return $query->findAll($limit, $offset);
+
+            $result = $query->findAll($limit, $offset);
+            return $result;
         } catch(DatabaseException $e) {
-            print $e->getMessage();
             return false;
         }
     }
@@ -66,7 +87,7 @@ class ReviewsModel extends Model {
      */
     public function getRecordByCourseId($limit = 10, $offset = 0, $data = []) {
         try {
-            $query = $this->where('course_id', $data['course_id']);
+            $query = $this->where('record_id', $data['record_id']);
 
             if(!empty($data)) {
                 foreach($data as $key => $value) {

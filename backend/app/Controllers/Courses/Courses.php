@@ -74,7 +74,7 @@ class Courses extends LoadController {
         // get course sections
         $created_by = empty($course['id']) ? [] : formatUserResponse([$this->usersModel->findById($course['created_by'])], true, true);
         $instructors = empty($course['id']) ? [] : $this->instructorsModel->getRecords(100, 0, ['course_id' => $course['id']]);
-        $reviews = empty($course['id']) ? [] : $this->reviewsModel->getRecordByCourseId(100, 0, ['course_id' => $course['id'], 'entityType' => 'Course']);
+        $reviews = empty($course['id']) ? [] : $this->reviewsModel->getRecordByCourseId(100, 0, ['record_id' => $course['id'], 'entityType' => 'Course']);
         $sections = empty($course['id']) ? [] : $this->coursesModel->getSections(['course_id' => $course['id']]);
 
         // return response

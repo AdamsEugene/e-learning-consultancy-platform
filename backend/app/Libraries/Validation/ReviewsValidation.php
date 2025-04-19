@@ -18,7 +18,7 @@ class ReviewsValidation {
             'method' => 'POST',
             'authenticate' => true,
             'payload' => [
-                'course_id' => 'required|integer',
+                'record_id' => 'required|integer',
                 'rating' => 'permit_empty|integer',
                 'helpfulCount' => 'required|integer|less_than_equal_to[5]',
                 'dislikesCount' => 'permit_empty|integer|less_than_equal_to[5]',
