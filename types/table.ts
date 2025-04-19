@@ -32,6 +32,10 @@ export interface TableColumn {
   align?: "left" | "center" | "right";
   /** Whether the column is fixed to the left or right */
   fixed?: "left" | "right";
+  /** Type of the column for filtering */
+  type?: "text" | "number" | "select" | "date";
+  /** Options for select type columns */
+  options?: string[];
 }
 
 /**

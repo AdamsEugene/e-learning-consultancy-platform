@@ -17,7 +17,7 @@ export function useTable<T extends TableRow>(
   }
 ) {
   // State
-  const data = ref<T[]>([]) as Ref<T[]>;
+  const data = ref<T[]>(options.initialData || []) as Ref<T[]>;
   const loading = ref(false);
   const error = ref<Error | null>(null);
   const columns = ref<TableColumn[]>(options.columns);
@@ -25,6 +25,15 @@ export function useTable<T extends TableRow>(
     options.defaultSort || { key: "", direction: null }
   );
   const filters = ref<FilterConfig[]>(options.defaultFilters || []);
+  const filterPopupState = ref<{
+    isOpen: boolean;
+    column: TableColumn | null;
+    position: { top: number; left: number } | null;
+  }>({
+    isOpen: false,
+    column: null,
+    position: null,
+  });
   const pagination = ref<PaginationConfig>({
     page: options.defaultPagination?.page || 1,
     perPage: options.defaultPagination?.perPage || 10,
@@ -185,18 +194,60 @@ export function useTable<T extends TableRow>(
   const setFilter = (key: string, value: string) => {
     const existingFilter = filters.value.find((filter) => filter.key === key);
     if (existingFilter) {
-      existingFilter.value = value;
-    } else {
+      if (value) {
+        existingFilter.value = value;
+      } else {
+        clearFilter(key);
+      }
+    } else if (value) {
       filters.value.push({ key, value });
+    }
+
+    if (options.fetchData) {
+      fetchData();
     }
   };
 
   const clearFilter = (key: string) => {
     filters.value = filters.value.filter((filter) => filter.key !== key);
+    if (options.fetchData) {
+      fetchData();
+    }
   };
 
   const clearAllFilters = () => {
     filters.value = [];
+    if (options.fetchData) {
+      fetchData();
+    }
+  };
+
+  const openFilterPopup = (column: TableColumn, event: MouseEvent) => {
+    if (!column.filterable) return;
+
+    const rect = (event.target as HTMLElement).getBoundingClientRect();
+    filterPopupState.value = {
+      isOpen: true,
+      column,
+      position: {
+        top: rect.bottom + window.scrollY,
+        left: rect.left + window.scrollX,
+      },
+    };
+  };
+
+  const closeFilterPopup = () => {
+    filterPopupState.value = {
+      isOpen: false,
+      column: null,
+      position: null,
+    };
+  };
+
+  const hasActiveFilter = (columnKey: string) => {
+    return filters.value.some(
+      (filter) => filter.key === columnKey && filter.value
+    );
   };
 
   const setPage = (page: number) => {
@@ -306,6 +357,7 @@ export function useTable<T extends TableRow>(
     columns,
     sortConfig,
     filters,
+    filterPopupState,
     pagination,
     columnWidths,
     resizingColumn,
@@ -328,6 +380,9 @@ export function useTable<T extends TableRow>(
     setFilter,
     clearFilter,
     clearAllFilters,
+    openFilterPopup,
+    closeFilterPopup,
+    hasActiveFilter,
     setPage,
     setPerPage,
     toggleColumnVisibility,

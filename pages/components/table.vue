@@ -186,6 +186,110 @@ const studentRows: StudentRow[] = [
     progress: 75,
   },
 ];
+
+// Filterable table data
+const filterableColumns: TableColumn[] = [
+  { key: "id", label: "ID", sortable: true, filterable: true },
+  { key: "name", label: "Name", sortable: true, filterable: true },
+  { key: "email", label: "Email", sortable: true, filterable: true },
+  {
+    key: "role",
+    label: "Role",
+    sortable: true,
+    filterable: true,
+    type: "select",
+    options: ["Admin", "User", "Editor", "Manager"],
+  },
+  {
+    key: "status",
+    label: "Status",
+    sortable: true,
+    filterable: true,
+    type: "select",
+    options: ["Active", "Inactive", "Pending"],
+  },
+  {
+    key: "lastActive",
+    label: "Last Active",
+    sortable: true,
+    filterable: true,
+    type: "date",
+  },
+];
+
+const filterableRows: TableRow[] = [
+  {
+    id: 1,
+    name: "John Doe",
+    email: "john@example.com",
+    role: "Admin",
+    status: "Active",
+    lastActive: "2023-04-15",
+  },
+  {
+    id: 2,
+    name: "Jane Smith",
+    email: "jane@example.com",
+    role: "User",
+    status: "Active",
+    lastActive: "2023-04-14",
+  },
+  {
+    id: 3,
+    name: "Bob Johnson",
+    email: "bob@example.com",
+    role: "Editor",
+    status: "Inactive",
+    lastActive: "2023-04-10",
+  },
+  {
+    id: 4,
+    name: "Alice Brown",
+    email: "alice@example.com",
+    role: "User",
+    status: "Pending",
+    lastActive: "2023-04-12",
+  },
+  {
+    id: 5,
+    name: "Charlie Wilson",
+    email: "charlie@example.com",
+    role: "Manager",
+    status: "Active",
+    lastActive: "2023-04-13",
+  },
+  {
+    id: 6,
+    name: "David Miller",
+    email: "david@example.com",
+    role: "User",
+    status: "Inactive",
+    lastActive: "2023-04-08",
+  },
+  {
+    id: 7,
+    name: "Eva Davis",
+    email: "eva@example.com",
+    role: "Editor",
+    status: "Active",
+    lastActive: "2023-04-16",
+  },
+  {
+    id: 8,
+    name: "Frank White",
+    email: "frank@example.com",
+    role: "User",
+    status: "Pending",
+    lastActive: "2023-04-11",
+  },
+];
+
+// Initialize the table with the filterable data
+useTable({
+  columns: filterableColumns,
+  initialData: filterableRows,
+  defaultSort: { key: "id", direction: "asc" },
+});
 </script>
 
 <!-- eslint-disable vue/html-self-closing -->
@@ -451,6 +555,23 @@ const studentRows: StudentRow[] = [
           </div>
         </template>
       </UiTable>
+    </div>
+
+    <!-- Filterable Table -->
+    <div class="bg-white rounded-lg shadow-sm p-6 mb-8">
+      <h2 class="text-xl font-semibold text-gray-900 mb-4">Filterable Table</h2>
+      <p class="text-gray-600 mb-6">
+        This table demonstrates the filtering functionality. Click on the filter
+        icon in the column headers to filter the data.
+      </p>
+      <UiTable
+        :columns="filterableColumns"
+        :model-value="filterableRows"
+        sortable
+        filterable
+        bordered
+        hover
+      />
     </div>
   </div>
 </template>

@@ -1,5 +1,4 @@
 <script setup lang="ts">
-import { useTable } from "~/composables/useTable";
 import type {
   TableColumn,
   TableRow,
@@ -8,7 +7,38 @@ import type {
   FilterConfig,
   PaginationConfig,
 } from "~/types/table";
-import { ref, computed, watch } from "vue";
+import { ref, computed, watch, inject } from "vue";
+import type { Ref } from "vue";
+
+interface TableInstance {
+  data: Ref<TableRow[]>;
+  loading: Ref<boolean>;
+  error: Ref<Error | null>;
+  columns: Ref<TableColumn[]>;
+  sortConfig: Ref<SortConfig>;
+  filters: Ref<FilterConfig[]>;
+  pagination: Ref<PaginationConfig>;
+  selectedRows: Ref<TableRow[]>;
+  filterPopupState: Ref<{
+    isOpen: boolean;
+    column: TableColumn | null;
+    position: { top: number; left: number } | null;
+  }>;
+  visibleColumns: Ref<TableColumn[]>;
+  allSelected: Ref<boolean>;
+  setFilter: (key: string, value: string) => void;
+  clearFilter: (key: string) => void;
+  clearAllFilters: () => void;
+  closeFilterPopup: () => void;
+  hasActiveFilter: (key: string) => boolean;
+  openFilterPopup: (column: TableColumn, event: MouseEvent) => void;
+  toggleSort: (column: TableColumn) => void;
+  toggleRowSelection: (row: TableRow) => void;
+  toggleAllRows: () => void;
+  getRowKey: (row: TableRow) => string | number;
+  isSelected: (row: TableRow) => boolean;
+  setPage: (page: number) => void;
+}
 
 const props = withDefaults(defineProps<TableProps>(), {
   modelValue: () => [],
@@ -56,75 +86,169 @@ const emit = defineEmits<{
 // Create a mutable ref for the data
 const localData = ref<TableRow[]>(props.modelValue as TableRow[]);
 
-const table = useTable({
-  columns: props.columns,
-  rowKey: props.rowKey,
-  initialData: localData.value,
-  fetchData: async (params) => {
-    // If no options provided, use local data
-    if (!props.options?.fetchData) {
-      return {
-        data: localData.value,
-        total: localData.value.length,
-      };
+// Filter popup state
+const activeFilterColumn = ref<string | null>(null);
+const filterPopupPosition = ref({ top: 0, left: 0 });
+const filterValues = ref<Record<string, string>>({});
+
+// Initialize filter values from existing filters
+watch(
+  () => props.options?.defaultFilters,
+  (filters) => {
+    if (filters) {
+      filters.forEach((filter) => {
+        filterValues.value[filter.key] = filter.value;
+      });
     }
-    return props.options.fetchData(params);
   },
-  defaultSort: props.options?.defaultSort,
-  defaultFilters: props.options?.defaultFilters,
-  defaultPagination: {
+  { immediate: true }
+);
+
+const table = inject<TableInstance>("table");
+
+// Provide default values for table instance
+const tableInstance = {
+  data: ref<TableRow[]>(props.modelValue as TableRow[]),
+  loading: ref(false),
+  error: ref<Error | null>(null),
+  columns: ref<TableColumn[]>(props.columns),
+  sortConfig: ref<SortConfig>({
+    key: "",
+    direction: "asc" as "asc" | "desc" | null,
+  }),
+  filters: ref<FilterConfig[]>([]),
+  pagination: ref<PaginationConfig>({
     page: props.page,
     perPage: props.perPage,
+    total: props.total,
+  }),
+  selectedRows: ref<TableRow[]>([]),
+  visibleColumns: ref<TableColumn[]>(props.columns),
+  allSelected: ref(false),
+  setFilter: (key: string, value: string) => {
+    const filters = tableInstance.filters.value;
+    const existingFilter = filters.find((f) => f.key === key);
+    if (existingFilter) {
+      existingFilter.value = value;
+    } else {
+      filters.push({ key, value });
+    }
   },
-});
+  clearFilter: (key: string) => {
+    const filters = tableInstance.filters.value;
+    const index = filters.findIndex((f) => f.key === key);
+    if (index !== -1) {
+      filters.splice(index, 1);
+    }
+  },
+  clearAllFilters: () => {
+    tableInstance.filters.value = [];
+  },
+  toggleSort: (column: TableColumn) => {
+    const currentSort = tableInstance.sortConfig.value;
+    if (currentSort.key === column.key) {
+      currentSort.direction = currentSort.direction === "asc" ? "desc" : "asc";
+    } else {
+      currentSort.key = column.key;
+      currentSort.direction = "asc";
+    }
+  },
+  toggleRowSelection: (row: TableRow) => {
+    const selectedRows = tableInstance.selectedRows.value;
+    const index = selectedRows.findIndex(
+      (r) => tableInstance.getRowKey(r) === tableInstance.getRowKey(row)
+    );
+    if (index === -1) {
+      selectedRows.push(row);
+    } else {
+      selectedRows.splice(index, 1);
+    }
+  },
+  toggleAllRows: () => {
+    const allSelected = tableInstance.allSelected.value;
+    if (allSelected) {
+      tableInstance.selectedRows.value = [];
+    } else {
+      tableInstance.selectedRows.value = [...tableInstance.data.value];
+    }
+    tableInstance.allSelected.value = !allSelected;
+  },
+  getRowKey: (row: TableRow) => {
+    return row[props.rowKey] as string | number;
+  },
+  isSelected: (row: TableRow) => {
+    return tableInstance.selectedRows.value.some(
+      (r) => tableInstance.getRowKey(r) === tableInstance.getRowKey(row)
+    );
+  },
+  setPage: (page: number) => {
+    tableInstance.pagination.value.page = page;
+  },
+};
 
-// Computed properties for reactive data
+// Use the provided table instance or fall back to our default one
+const tableRef = table || tableInstance;
+
 const tableData = computed(() => {
-  const currentData = props.options?.fetchData
-    ? table.data.value
+  let currentData = props.options?.fetchData
+    ? tableRef.data.value
     : localData.value;
-  if (!sortingConfig.value.key || !sortingConfig.value.direction) {
-    return currentData;
+
+  // Apply filters
+  if (tableRef.filters.value.length > 0) {
+    currentData = currentData.filter((row) => {
+      return tableRef.filters.value.every((filter) => {
+        const value = String(row[filter.key]).toLowerCase();
+        const filterValue = filter.value.toLowerCase();
+        return value.includes(filterValue);
+      });
+    });
   }
 
-  const key = sortingConfig.value.key;
-  const direction = sortingConfig.value.direction;
+  // Apply sorting
+  if (tableRef.sortConfig.value.key && tableRef.sortConfig.value.direction) {
+    const key = tableRef.sortConfig.value.key;
+    const direction = tableRef.sortConfig.value.direction;
 
-  return [...currentData].sort((a, b) => {
-    const aValue = a[key];
-    const bValue = b[key];
+    return [...currentData].sort((a, b) => {
+      const aValue = a[key];
+      const bValue = b[key];
 
-    // Handle undefined or null values
-    if (aValue == null && bValue == null) return 0;
-    if (aValue == null) return 1;
-    if (bValue == null) return -1;
+      // Handle undefined or null values
+      if (aValue == null && bValue == null) return 0;
+      if (aValue == null) return 1;
+      if (bValue == null) return -1;
 
-    // Compare based on value types
-    if (typeof aValue === "string" && typeof bValue === "string") {
+      // Compare based on value types
+      if (typeof aValue === "string" && typeof bValue === "string") {
+        return direction === "asc"
+          ? aValue.localeCompare(bValue)
+          : bValue.localeCompare(aValue);
+      }
+
+      if (typeof aValue === "number" && typeof bValue === "number") {
+        return direction === "asc" ? aValue - bValue : bValue - aValue;
+      }
+
+      // Convert to strings for comparison if types don't match
+      const aStr = String(aValue);
+      const bStr = String(bValue);
       return direction === "asc"
-        ? aValue.localeCompare(bValue)
-        : bValue.localeCompare(aValue);
-    }
+        ? aStr.localeCompare(bStr)
+        : bStr.localeCompare(aStr);
+    });
+  }
 
-    if (typeof aValue === "number" && typeof bValue === "number") {
-      return direction === "asc" ? aValue - bValue : bValue - aValue;
-    }
-
-    // Convert to strings for comparison if types don't match
-    const aStr = String(aValue);
-    const bStr = String(bValue);
-    return direction === "asc"
-      ? aStr.localeCompare(bStr)
-      : bStr.localeCompare(aStr);
-  });
+  return currentData;
 });
 
-const visibleColumns = computed(() => table.visibleColumns.value);
-const isAllSelected = computed(() => table.allSelected.value);
-const hasError = computed(() => table.error.value !== null);
-const paginationInfo = computed(() => table.pagination.value);
-const sortingConfig = computed(() => table.sortConfig.value);
-const selectedRowsCount = computed(() => table.selectedRows.value.length);
+const visibleColumns = computed(() => tableRef.visibleColumns.value);
+const isAllSelected = computed(() => tableRef.allSelected.value);
+const hasError = computed(() => tableRef.error.value !== null);
+const paginationInfo = computed(() => tableRef.pagination.value);
+const sortingConfig = computed(() => tableRef.sortConfig.value);
+const selectedRowsCount = computed(() => tableRef.selectedRows.value.length);
+const activeFilters = computed(() => tableRef.filters.value);
 
 // Watch for external changes
 watch(
@@ -138,7 +262,7 @@ watch(
 
 // Watch for selection changes
 watch(
-  () => table.selectedRows.value,
+  () => tableRef.selectedRows.value,
   (newValue) => {
     emit("selection-change", newValue);
   }
@@ -149,7 +273,7 @@ watch(sortingConfig, (newValue) => {
   emit("sort-change", newValue);
 });
 
-watch(table.filters, (newValue) => {
+watch(tableRef.filters, (newValue) => {
   emit("filter-change", newValue);
 });
 
@@ -178,6 +302,45 @@ const handleRowContextMenu = (row: TableRow, event: MouseEvent) => {
   emit("row-contextmenu", row, event);
 };
 
+// Filter methods
+const openFilterPopup = (column: TableColumn, event: MouseEvent) => {
+  event.stopPropagation(); // Prevent sort toggle
+
+  const target = event.currentTarget as HTMLElement;
+  const rect = target.getBoundingClientRect();
+
+  activeFilterColumn.value = column.key;
+  filterPopupPosition.value = {
+    top: rect.bottom + window.scrollY,
+    left: rect.left + window.scrollX,
+  };
+};
+
+const closeFilterPopup = () => {
+  activeFilterColumn.value = null;
+};
+
+const applyFilter = (column: TableColumn) => {
+  const value = filterValues.value[column.key] || "";
+  if (value.trim()) {
+    tableRef.setFilter(column.key, value.trim());
+  } else {
+    tableRef.clearFilter(column.key);
+  }
+  closeFilterPopup();
+};
+
+const clearFilter = (column: TableColumn) => {
+  tableRef.clearFilter(column.key);
+  filterValues.value[column.key] = "";
+  closeFilterPopup();
+};
+
+const clearAllFilters = () => {
+  tableRef.clearAllFilters();
+  filterValues.value = {};
+};
+
 // Helper functions
 const getColumnClasses = (column: TableColumn) => ({
   "ui-table__cell--sortable": column.sortable && props.sortable,
@@ -187,7 +350,7 @@ const getColumnClasses = (column: TableColumn) => ({
 
 const getRowClasses = (row: TableRow) => ({
   "ui-table__row": true,
-  "ui-table__row--selected": table.isSelected(row),
+  "ui-table__row--selected": tableRef.isSelected(row),
   "ui-table__row--selectable": props.selectable,
   [`${props.rowClass}`]: props.rowClass,
 });
@@ -250,6 +413,13 @@ const stopResize = () => {
 
   resizing.value = null;
 };
+
+// Helper function to check if a column has an active filter
+const hasActiveFilter = (columnKey: string): boolean => {
+  return activeFilters.value.some(
+    (filter: FilterConfig) => filter.key === columnKey && filter.value
+  );
+};
 </script>
 
 <template>
@@ -302,7 +472,7 @@ const stopResize = () => {
                   "
                   size="sm"
                   color="primary"
-                  @update:model-value="table.toggleAllRows"
+                  @update:model-value="tableRef.toggleAllRows"
                 />
               </div>
             </th>
@@ -320,55 +490,87 @@ const stopResize = () => {
                   ? { width: `${columnWidths[column.key]}px` }
                   : {}
               "
-              @click="column.sortable && sortable && table.toggleSort(column)"
             >
               <div class="ui-table__column-header">
-                <slot :name="`header-${column.key}`" :column="column">
-                  {{ column.label }}
-                </slot>
+                <div class="flex items-center justify-between w-full">
+                  <div class="flex items-center">
+                    <slot :name="`header-${column.key}`" :column="column">
+                      {{ column.label }}
+                    </slot>
 
-                <!-- Sort indicator -->
-                <span
-                  v-if="column.sortable && sortable"
-                  class="ui-table__sort-indicator"
-                  :class="{
-                    'ui-table__sort-indicator--asc':
-                      sortingConfig.key === column.key &&
-                      sortingConfig.direction === 'asc',
-                    'ui-table__sort-indicator--desc':
-                      sortingConfig.key === column.key &&
-                      sortingConfig.direction === 'desc',
-                  }"
-                >
-                  <svg
-                    v-if="sortingConfig.key === column.key"
-                    class="h-4 w-4"
+                    <!-- Sort indicator -->
+                    <span
+                      v-if="column.sortable && sortable"
+                      class="ui-table__sort-indicator cursor-pointer ml-1"
+                      :class="{
+                        'ui-table__sort-indicator--asc':
+                          sortingConfig.key === column.key &&
+                          sortingConfig.direction === 'asc',
+                        'ui-table__sort-indicator--desc':
+                          sortingConfig.key === column.key &&
+                          sortingConfig.direction === 'desc',
+                      }"
+                      @click.stop="tableRef.toggleSort(column)"
+                    >
+                      <svg
+                        v-if="sortingConfig.key === column.key"
+                        class="h-4 w-4"
+                        :class="{
+                          'transform rotate-180':
+                            sortingConfig.direction === 'desc',
+                        }"
+                        viewBox="0 0 20 20"
+                        fill="currentColor"
+                      >
+                        <path
+                          fill-rule="evenodd"
+                          d="M5.293 7.293a1 1 0 011.414 0L10 10.586l3.293-3.293a1 1 0 111.414 1.414l-4 4a1 1 0 01-1.414 0l-4-4a1 1 0 010-1.414z"
+                          clip-rule="evenodd"
+                        />
+                      </svg>
+                      <svg
+                        v-else
+                        class="h-4 w-4 text-gray-400"
+                        viewBox="0 0 20 20"
+                        fill="currentColor"
+                      >
+                        <path
+                          fill-rule="evenodd"
+                          d="M10 3a1 1 0 01.707.293l3 3a1 1 0 01-1.414 1.414L10 5.414 7.707 7.707a1 1 0 01-1.414-1.414l3-3A1 1 0 0110 3zm-3.707 9.293a1 1 0 011.414 0L10 14.586l2.293-2.293a1 1 0 011.414 1.414l-3 3a1 1 0 01-1.414 0l-3-3a1 1 0 010-1.414z"
+                          clip-rule="evenodd"
+                        />
+                      </svg>
+                    </span>
+                  </div>
+
+                  <!-- Filter icon -->
+                  <span
+                    v-if="filterable && column.filterable !== false"
+                    class="ui-table__filter-indicator cursor-pointer"
                     :class="{
-                      'transform rotate-180':
-                        sortingConfig.direction === 'desc',
+                      'ui-table__filter-indicator--active': hasActiveFilter(
+                        column.key
+                      ),
                     }"
-                    viewBox="0 0 20 20"
-                    fill="currentColor"
+                    @click.stop="openFilterPopup(column, $event)"
                   >
-                    <path
-                      fill-rule="evenodd"
-                      d="M5.293 7.293a1 1 0 011.414 0L10 10.586l3.293-3.293a1 1 0 111.414 1.414l-4 4a1 1 0 01-1.414 0l-4-4a1 1 0 010-1.414z"
-                      clip-rule="evenodd"
-                    />
-                  </svg>
-                  <svg
-                    v-else
-                    class="h-4 w-4 text-gray-400"
-                    viewBox="0 0 20 20"
-                    fill="currentColor"
-                  >
-                    <path
-                      fill-rule="evenodd"
-                      d="M10 3a1 1 0 01.707.293l3 3a1 1 0 01-1.414 1.414L10 5.414 7.707 7.707a1 1 0 01-1.414-1.414l3-3A1 1 0 0110 3zm-3.707 9.293a1 1 0 011.414 0L10 14.586l2.293-2.293a1 1 0 011.414 1.414l-3 3a1 1 0 01-1.414 0l-3-3a1 1 0 010-1.414z"
-                      clip-rule="evenodd"
-                    />
-                  </svg>
-                </span>
+                    <svg
+                      class="h-4 w-4"
+                      :class="{
+                        'text-primary-600': hasActiveFilter(column.key),
+                        'text-gray-400': !hasActiveFilter(column.key),
+                      }"
+                      viewBox="0 0 20 20"
+                      fill="currentColor"
+                    >
+                      <path
+                        fill-rule="evenodd"
+                        d="M3 3a1 1 0 011-1h12a1 1 0 011 1v3a1 1 0 01-.293.707L12 11.414V15a1 1 0 01-.293.707l-2 2A1 1 0 018 17v-5.586L3.293 6.707A1 1 0 013 6V3z"
+                        clip-rule="evenodd"
+                      />
+                    </svg>
+                  </span>
+                </div>
 
                 <!-- Resize handle -->
                 <div
@@ -385,11 +587,11 @@ const stopResize = () => {
         <tbody>
           <tr
             v-for="row in tableData"
-            :key="table.getRowKey(row)"
+            :key="tableRef.getRowKey(row)"
             :class="getRowClasses(row)"
             @click="
               selectable
-                ? table.toggleRowSelection(row)
+                ? tableRef.toggleRowSelection(row)
                 : handleRowClick(row, $event)
             "
             @dblclick="handleRowDoubleClick(row, $event)"
@@ -399,10 +601,10 @@ const stopResize = () => {
             <td v-if="selectable" class="ui-table__checkbox-cell">
               <div class="inline-flex items-center justify-center">
                 <UiCheckbox
-                  :model-value="table.isSelected(row)"
+                  :model-value="tableRef.isSelected(row)"
                   size="sm"
                   color="primary"
-                  @update:model-value="table.toggleRowSelection(row)"
+                  @update:model-value="tableRef.toggleRowSelection(row)"
                   @click.stop
                 />
               </div>
@@ -458,7 +660,7 @@ const stopResize = () => {
                   <div class="ui-table__pagination-controls">
                     <button
                       :disabled="paginationInfo.page === 1"
-                      @click="table.setPage(paginationInfo.page - 1)"
+                      @click="tableRef.setPage(paginationInfo.page - 1)"
                     >
                       Previous
                     </button>
@@ -467,7 +669,7 @@ const stopResize = () => {
                         paginationInfo.page >=
                         Math.ceil(paginationInfo.total / paginationInfo.perPage)
                       "
-                      @click="table.setPage(paginationInfo.page + 1)"
+                      @click="tableRef.setPage(paginationInfo.page + 1)"
                     >
                       Next
                     </button>
@@ -478,6 +680,76 @@ const stopResize = () => {
           </tr>
         </tfoot>
       </table>
+    </div>
+
+    <!-- Filter popup -->
+    <Teleport to="body">
+      <div
+        v-if="activeFilterColumn"
+        class="ui-table__filter-popup"
+        :style="{
+          top: `${filterPopupPosition.top}px`,
+          left: `${filterPopupPosition.left}px`,
+        }"
+      >
+        <div class="ui-table__filter-popup-header">
+          <span class="ui-table__filter-popup-title">
+            Filter {{ activeFilterColumn }}
+          </span>
+          <button
+            class="ui-table__filter-popup-close"
+            @click="closeFilterPopup"
+          >
+            <svg class="h-4 w-4" viewBox="0 0 20 20" fill="currentColor">
+              <path
+                fill-rule="evenodd"
+                d="M4.293 4.293a1 1 0 011.414 0L10 8.586l4.293-4.293a1 1 0 111.414 1.414L11.414 10l4.293 4.293a1 1 0 01-1.414 1.414L10 11.414l-4.293 4.293a1 1 0 01-1.414-1.414L8.586 10 4.293 5.707a1 1 0 010-1.414z"
+                clip-rule="evenodd"
+              />
+            </svg>
+          </button>
+        </div>
+        <div class="ui-table__filter-popup-content">
+          <input
+            v-model="filterValues[activeFilterColumn]"
+            type="text"
+            class="ui-table__filter-input"
+            :placeholder="`Filter by ${activeFilterColumn}...`"
+          />
+        </div>
+        <div class="ui-table__filter-popup-footer">
+          <button
+            class="ui-table__filter-popup-button ui-table__filter-popup-button--clear"
+            @click="
+              clearFilter(
+                visibleColumns.find((col) => col.key === activeFilterColumn)!
+              )
+            "
+          >
+            Clear
+          </button>
+          <button
+            class="ui-table__filter-popup-button ui-table__filter-popup-button--apply"
+            @click="
+              applyFilter(
+                visibleColumns.find((col) => col.key === activeFilterColumn)!
+              )
+            "
+          >
+            Apply
+          </button>
+        </div>
+      </div>
+    </Teleport>
+
+    <!-- Filter controls -->
+    <div
+      v-if="filterable && activeFilters.length > 0"
+      class="ui-table__filter-controls"
+    >
+      <button class="ui-table__filter-clear-all" @click="clearAllFilters">
+        Clear All Filters
+      </button>
     </div>
   </div>
 </template>
@@ -600,6 +872,91 @@ const stopResize = () => {
 .ui-table__sort-indicator--asc,
 .ui-table__sort-indicator--desc {
   color: rgb(79, 70, 229);
+}
+
+/* Filter indicator */
+.ui-table__filter-indicator {
+  display: inline-flex;
+  align-items: center;
+  margin-left: 0.5rem;
+  cursor: pointer;
+  transition: color 0.15s ease-in-out;
+}
+
+.ui-table__filter-indicator--active {
+  color: rgb(79, 70, 229);
+}
+
+/* Filter popup */
+.ui-table__filter-popup {
+  position: absolute;
+  z-index: 50;
+  width: 250px;
+  background-color: white;
+  border-radius: 0.375rem;
+  box-shadow: 0 4px 6px -1px rgba(0, 0, 0, 0.1),
+    0 2px 4px -1px rgba(0, 0, 0, 0.06);
+  overflow: hidden;
+}
+
+.ui-table__filter-popup-header {
+  display: flex;
+  align-items: center;
+  justify-content: space-between;
+  padding: 0.75rem 1rem;
+  background-color: #f9fafb;
+  border-bottom: 1px solid #e5e7eb;
+}
+
+.ui-table__filter-popup-title {
+  font-weight: 500;
+  color: #374151;
+}
+
+.ui-table__filter-popup-close {
+  color: #6b7280;
+  cursor: pointer;
+}
+
+.ui-table__filter-popup-content {
+  padding: 1rem;
+}
+
+.ui-table__filter-input {
+  width: 100%;
+  padding: 0.5rem;
+  border: 1px solid #d1d5db;
+  border-radius: 0.25rem;
+  font-size: 0.875rem;
+}
+
+.ui-table__filter-popup-footer {
+  display: flex;
+  justify-content: flex-end;
+  gap: 0.5rem;
+  padding: 0.75rem 1rem;
+  background-color: #f9fafb;
+  border-top: 1px solid #e5e7eb;
+}
+
+.ui-table__filter-popup-button {
+  padding: 0.375rem 0.75rem;
+  font-size: 0.875rem;
+  font-weight: 500;
+  border-radius: 0.25rem;
+  cursor: pointer;
+}
+
+.ui-table__filter-popup-button--clear {
+  color: #6b7280;
+  background-color: white;
+  border: 1px solid #d1d5db;
+}
+
+.ui-table__filter-popup-button--apply {
+  color: white;
+  background-color: #4f46e5;
+  border: 1px solid #4f46e5;
 }
 
 /* Resize handle */
@@ -767,5 +1124,31 @@ const stopResize = () => {
 /* Add transition for smooth width changes */
 .ui-table th {
   transition: width 0.1s ease-out;
+}
+
+/* Filter controls */
+.ui-table__filter-controls {
+  display: flex;
+  justify-content: flex-end;
+  padding: 0.5rem 1rem;
+  background-color: #f9fafb;
+  border-bottom: 1px solid #e5e7eb;
+}
+
+.ui-table__filter-clear-all {
+  padding: 0.25rem 0.5rem;
+  font-size: 0.75rem;
+  font-weight: 500;
+  color: #6b7280;
+  background-color: white;
+  border: 1px solid #d1d5db;
+  border-radius: 0.25rem;
+  cursor: pointer;
+  transition: all 0.2s ease-in-out;
+}
+
+.ui-table__filter-clear-all:hover {
+  background-color: #f3f4f6;
+  border-color: #9ca3af;
 }
 </style>
