@@ -10,7 +10,7 @@ class CategoriesModel extends Model {
     protected $table;
     protected $coursesTable;
     protected $primaryKey = 'id';
-    protected $allowedFields = ['name', 'description', 'parent_id', 'image', 'created_by', 'created_at', 'updated_at', 'courses_count', 'status', 'name_slug'];
+    protected $allowedFields = ['name', 'description', 'parent_id', 'image', 'created_by', 'created_at', 'updated_at', 'coursesCount', 'status', 'name_slug'];
     
     public function __construct() {
         parent::__construct();
@@ -29,7 +29,7 @@ class CategoriesModel extends Model {
         try {
             // get query
             $query = $this->db->table("{$this->table} c")
-                ->select("c.*, (SELECT COUNT(*) FROM {$this->coursesTable} a WHERE a.category_id = c.id AND a.status != 'Deleted') as courses_count")
+                ->select("c.*, (SELECT COUNT(*) FROM {$this->coursesTable} a WHERE a.category_id = c.id AND a.status != 'Deleted') as coursesCount")
                 ->whereIn('c.status', $status)
                 ->groupBy('c.id')
                 ->orderBy('c.preferred_order', 'ASC');

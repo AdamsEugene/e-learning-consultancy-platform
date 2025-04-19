@@ -17,7 +17,6 @@ class CoursesValidation {
         'create' => [
             'method' => 'POST',
             'authenticate' => true,
-            'isAdmin' => true,
             'payload' => [
                 "title" => "required|string|max_length[255]",
                 "subtitle" => "permit_empty|string|max_length[255]",

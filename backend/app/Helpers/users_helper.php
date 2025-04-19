@@ -37,7 +37,7 @@ function formatUserResponse($user, bool $single = false, $simpleData = false) {
         ];
 
         if(!$simpleData) {
-            foreach(['username', 'two_factor_setup', 'nationality', 'date_of_birth', 'phone', 'preferences', 'students_count', 'courses_count',
+            foreach(['username', 'two_factor_setup', 'nationality', 'date_of_birth', 'phone', 'preferences', 'students_count', 'coursesCount',
                 'timezone', 'website', 'company', 'language', 'last_login', 'permissions', 'admin_access', 'date_registered'] as $item) {
                 $result[$key][$item] = $value[$item];
             }

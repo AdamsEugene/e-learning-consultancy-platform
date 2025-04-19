@@ -29,7 +29,7 @@ class UsersModel extends Model {
         "username", "email", "firstname", "lastname", "status", "two_factor_setup", "twofactor_secret", "user_type",
         "admin_access", "date_registered", "nationality", "gender", "date_of_birth", "phone",  "password", "billing_address",
         "timezone", "website", "company", "job_title", "description", "skills", "social_links", "language",
-        "rating", "students_count", "courses_count", "image"
+        "rating", "students_count", "coursesCount", "image"
     ];
     
     public function __construct() {

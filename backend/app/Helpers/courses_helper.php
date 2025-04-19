@@ -89,9 +89,10 @@ function validateCourseSections($sections = [], $allSections = [], $allLessons =
  * Format the course response
  * 
  * @param array $course
+ * @param bool $minified
  * @return array
  */
-function formatCourseResponse($courses = []) {
+function formatCourseResponse($courses = [], $minified = false) {
     
     // return empty array if no courses
     if(empty($courses)) return [];
@@ -104,6 +105,12 @@ function formatCourseResponse($courses = []) {
             if(!empty($value[$field])) {
                 $list = json_decode($value[$field], true);
                 $value[$field] = empty($list) ? html_entity_decode($value[$field]) : $list;
+            }
+        }
+
+        if($minified) {
+            foreach(['created_by', 'category_id', 'subcategory_id', 'originalPrice', 'updated_at', 'enrollmentCount'] as $field) {
+                unset($value[$field]);
             }
         }
 

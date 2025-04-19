@@ -13,7 +13,7 @@ $databases = [
         image TEXT,
         parent_id INTEGER DEFAULT 0,
         preferred_order INTEGER DEFAULT 0,
-        courses_count INTEGER DEFAULT 0,
+        coursesCount INTEGER DEFAULT 0,
         created_by INTEGER DEFAULT 0,
         status VARCHAR(255) DEFAULT 'active',
         created_at DATETIME DEFAULT CURRENT_TIMESTAMP,
@@ -56,7 +56,7 @@ $databases = [
         rating INTEGER DEFAULT 0,
         reviewCount INTEGER DEFAULT 0,
         students_count INTEGER DEFAULT 0,
-        courses_count INTEGER DEFAULT 0,
+        coursesCount INTEGER DEFAULT 0,
         last_login DATETIME DEFAULT NULL,
         date_of_birth DATETIME DEFAULT '',
         phone VARCHAR(255) DEFAULT '',
@@ -202,7 +202,7 @@ $databases = [
 ];
 
 $alterTables = [
-    // "ALTER TABLE users ADD COLUMN reviewCount INTEGER DEFAULT 0;",
+    // "ALTER TABLE users ADD COLUMN coursesCount INTEGER DEFAULT 0;",
 ];
 
 function createDatabaseStructure() {

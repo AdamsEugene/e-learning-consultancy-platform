@@ -49,7 +49,7 @@ class Courses extends LoadController {
         );
 
         // return response
-        return Routing::success(formatCourseResponse($courses));
+        return Routing::success(formatCourseResponse($courses, $this->payload['minified'] ?? false));
     }
 
     /**
@@ -103,6 +103,11 @@ class Courses extends LoadController {
             if(empty($category)) {
                 return Routing::error('Category not found');
             }
+        }
+
+        // confirm if the user is an admin or an instructor
+        if(!in_array($this->currentUser['user_type'], ['Admin', 'Instructor'])) {
+            return Routing::error('You are not authorized to create a course. Only admins and instructors can create courses.');
         }
 
         // compare the price and the original price
@@ -307,12 +312,12 @@ class Courses extends LoadController {
 
         // if the incoming status is published, increment the courses count
         if(($this->payload['status'] == 'Published')) {
-            $this->usersModel->db->query("UPDATE users SET courses_count = (courses_count + 1) WHERE id = ? LIMIT 1", [$course['created_by']]);
+            $this->usersModel->db->query("UPDATE users SET coursesCount = (coursesCount + 1) WHERE id = ? LIMIT 1", [$course['created_by']]);
         }
 
         // if the course is published and the status is not unpublished, decrement the courses count
         if($course['status'] == 'Published' && $this->payload['status'] !== 'Published') {
-            $this->usersModel->db->query("UPDATE users SET courses_count = (courses_count - 1) WHERE id = ? LIMIT 1", [$course['created_by']]);
+            $this->usersModel->db->query("UPDATE users SET coursesCount = (coursesCount - 1) WHERE id = ? LIMIT 1", [$course['created_by']]);
         }
 
         // update the status of the course

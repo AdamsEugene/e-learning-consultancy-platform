@@ -200,7 +200,7 @@ class CoursesModel extends Model
     public function deleteRecord($id, $created_by) {
         try {
             $this->where('id', $id)->update(['status' => 'Deleted']);
-            $this->db->query("UPDATE {$this->userTable} SET courses_count = courses_count - 1 WHERE id = {$created_by}");
+            $this->db->query("UPDATE {$this->userTable} SET coursesCount = coursesCount - 1 WHERE id = {$created_by}");
             return true;
         } catch (DatabaseException $e) {
             return false;

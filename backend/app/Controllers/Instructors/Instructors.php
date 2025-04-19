@@ -38,7 +38,7 @@ class Instructors extends LoadController {
      */
     public function view() {
 
-        $this->triggerModel('courses');
+        $this->triggerModel('courses,reviews');
 
         // get the instructor
         $instructor = $this->usersModel->findById($this->uniqueId, ['active'], ['user_type' => 'Instructor']);
@@ -47,12 +47,18 @@ class Instructors extends LoadController {
             return Routing::notFound();
         }
 
+        $instructorId = $instructor['id'];
+
         $courseObject = new Courses();
-        $courseObject->payload['created_by'] = $instructor['id'];
+        $courseObject->payload['created_by'] = $instructorId;
+        $courseObject->payload['minified'] = true;
         $courses = $courseObject->list();
 
         $instructor = formatUserResponse([$instructor], true);
         $instructor['courses'] = $courses['data'];
+
+        $instructor['reviews'] = $this->reviewsModel->getRecords(100, 0, ['record_id' => $instructorId, 'entityType' => 'Instructor']);;
+
         // return the success message
         return Routing::success($instructor);
     }
