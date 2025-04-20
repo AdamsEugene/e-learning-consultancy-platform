@@ -31,20 +31,26 @@ class EnrollmentsModel extends Model {
      */
     public function getRecords($data = [], $limit = 24, $offset = 0) {
         try {
-            $query = $this->db->table("{$this->table} as e")->select("e.*, (SELECT JSON_OBJECT(
-                            'title', c.title,
-                            'slug', c.title_slug,
-                            'image', c.image,
-                            'description', c.description,
-                            'tags', c.tags,
-                            'features', c.features,
-                            'requirements', c.requirements,
-                            'created_at', c.created_at,
-                            'reviewCount', c.reviewCount,
-                            'rating', c.rating,
-                            'price', c.price,
-                            'originalPrice', c.originalPrice
-                        ) FROM {$this->coursesTable} c WHERE c.id = e.course_id LIMIT 1) as course");
+
+            // get the basic course info if the course id is not set
+            $courseInfo = !empty($data['course_id']) || !empty($data['id']) ? "" : "
+            , (SELECT JSON_OBJECT(
+                'title', c.title,
+                'slug', c.title_slug,
+                'image', c.image,
+                'description', c.description,
+                'tags', c.tags,
+                'features', c.features,
+                'requirements', c.requirements,
+                'created_at', c.created_at,
+                'reviewCount', c.reviewCount,
+                'rating', c.rating,
+                'price', c.price,
+                'originalPrice', c.originalPrice
+            ) FROM {$this->coursesTable} c WHERE c.id = e.course_id LIMIT 1) as course";
+
+            // get the query
+            $query = $this->db->table("{$this->table} as e")->select("e.* {$courseInfo}");
 
             if(!empty($data)) {
                 foreach($data as $key => $value) {

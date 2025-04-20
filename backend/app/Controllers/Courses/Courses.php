@@ -315,10 +315,28 @@ class Courses extends LoadController {
         
         // create a new instance of the enrollments controller
         $enrolObject = new Enrollments();
-        $enrolObject->setProps($this->payload, $this->uniqueId, $this->currentUser, $this->coursesModel);
+        $enrolObject->setProps($this->payload, $this->uniqueId, $this->currentUser, $this->coursesModel, $this);
+
+        // check if the course id is set
+        if(!empty($this->payload['course_id'])) {
+
+            // set the minified to true
+            $this->minified = true;
+
+            // get the course data
+            $courseData = $this->view();
+
+            // check if the course data is valid
+            if($courseData['statusCode'] !== 200) {
+                return $courseData;
+            }
+
+            // get the course data
+            $courseData = $courseData['data'];
+        }
 
         // return the response and procesing the request
-        return $enrolObject->list();
+        return $enrolObject->list($courseData ?? []);
     }
 
     /**

@@ -90,9 +90,10 @@ class CoursesValidation {
             'method' => 'GET',
             'authenticate' => true,
             'payload' => [
-                "category_id" => "permit_empty|string|max_length[64]",
-                "course_id" => "permit_empty|string|max_length[64]",
-                "user_id" => "permit_empty|string|max_length[64]",
+                "enroll_id" => "permit_empty|integer|max_length[12]",
+                "category_id" => "permit_empty|integer",
+                "course_id" => "permit_empty|integer",
+                "user_id" => "permit_empty|integer",
                 "search" => "permit_empty|string|max_length[64]",
                 "limit" => "permit_empty|integer",
                 "offset" => "permit_empty|integer",

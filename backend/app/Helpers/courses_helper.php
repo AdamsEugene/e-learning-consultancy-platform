@@ -125,10 +125,11 @@ function formatCourseResponse($courses = [], $minified = false, $single = false)
  * Format the enrolled courses
  * 
  * @param array $enrollments
+ * @param bool $single
  * 
  * @return array
  */
-function formatEnrolledCourses($enrollments = []) {
+function formatEnrolledCourses($enrollments = [], $single = false) {
 
     // return empty array if no enrollments
     if(empty($enrollments)) return [];
@@ -136,13 +137,15 @@ function formatEnrolledCourses($enrollments = []) {
     foreach($enrollments as $key => $value) {
 
         // format the course
-        $value['course'] = json_decode($value['course'], true);
+        if(!empty($value['course'])) {
+            $value['course'] = json_decode($value['course'], true);
 
-        // format the course response
-        foreach(['tags', 'features', 'description', 'requirements'] as $field) {
-            if(!empty($value['course'][$field])) {
-                $list = json_decode($value['course'][$field], true);
-                $value['course'][$field] = empty($list) ? html_entity_decode($value['course'][$field]) : $list;
+            // format the course response
+            foreach(['tags', 'features', 'description', 'requirements'] as $field) {
+                if(!empty($value['course'][$field])) {
+                    $list = json_decode($value['course'][$field], true);
+                    $value['course'][$field] = empty($list) ? html_entity_decode($value['course'][$field]) : $list;
+                }
             }
         }
 
@@ -150,7 +153,7 @@ function formatEnrolledCourses($enrollments = []) {
         $result[] = $value;
     }
 
-    return $result;
+    return $single ? $result[0] : $result;
 }
 
 /**

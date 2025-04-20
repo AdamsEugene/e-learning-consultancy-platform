@@ -8,17 +8,19 @@ use App\Controllers\LoadController;
 class Enrollments extends LoadController {
 
     protected $coursesModel;
+    protected $coursesController;
 
     /**
      * Set the properties
      * 
      * @return array
      */
-    public function setProps($payload = [], $uniqueId = null, $currentUser = [], $coursesModel = null) {
+    public function setProps($payload = [], $uniqueId = null, $currentUser = [], $coursesModel = null, $coursesController = null) {
         $this->payload = $payload;
         $this->uniqueId = $uniqueId;
         $this->currentUser = $currentUser;
         $this->coursesModel = $coursesModel;
+        $this->coursesController = $coursesController;
     }
 
     /**
@@ -26,7 +28,7 @@ class Enrollments extends LoadController {
      * 
      * @return array
      */
-    public function list() {
+    public function list($courseData = []) {
         
         // init variables
         $payload = ['user_id' => $this->currentUser['user_id']];
@@ -38,10 +40,28 @@ class Enrollments extends LoadController {
             }
         }
 
+        if(!empty($this->payload['enroll_id'])) {
+            $payload['id'] = $this->payload['enroll_id'];
+        }
+
+        // is single check
+        $single = !empty($this->payload['course_id']) || !empty($this->payload['enroll_id']) ? true : false;
+
         // check if the user id is set
         $enrollments = $this->enrollmentsModel->getRecords($payload);
 
-        return Routing::success(formatEnrolledCourses($enrollments));
+        if(!empty($this->payload['enroll_id'])) {
+            // set the minified to true
+            $this->coursesController->minified = false;
+            $this->coursesController->uniqueId = $enrollments[0]['course_id'];
+
+            // get the course data
+            $courseData = $this->coursesController->view()['data'];
+
+            $enrollments[0]['courseInfo'] = $courseData;
+        }
+
+        return Routing::success(formatEnrolledCourses($enrollments, $single));
     }
 
     /**
