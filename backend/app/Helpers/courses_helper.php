@@ -122,6 +122,38 @@ function formatCourseResponse($courses = [], $minified = false, $single = false)
 }
 
 /**
+ * Format the enrolled courses
+ * 
+ * @param array $enrollments
+ * 
+ * @return array
+ */
+function formatEnrolledCourses($enrollments = []) {
+
+    // return empty array if no enrollments
+    if(empty($enrollments)) return [];
+    
+    foreach($enrollments as $key => $value) {
+
+        // format the course
+        $value['course'] = json_decode($value['course'], true);
+
+        // format the course response
+        foreach(['tags', 'features', 'description', 'requirements'] as $field) {
+            if(!empty($value['course'][$field])) {
+                $list = json_decode($value['course'][$field], true);
+                $value['course'][$field] = empty($list) ? html_entity_decode($value['course'][$field]) : $list;
+            }
+        }
+
+        // format the course
+        $result[] = $value;
+    }
+
+    return $result;
+}
+
+/**
  * Format the course sections
  * 
  * @param array $sections

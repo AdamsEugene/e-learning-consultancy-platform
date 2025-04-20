@@ -28,6 +28,20 @@ class Enrollments extends LoadController {
      */
     public function list() {
         
+        // init variables
+        $payload = ['user_id' => $this->currentUser['user_id']];
+
+        // check if the course id is set
+        foreach(['course_id', 'category_id', 'status'] as $key) {
+            if(!empty($this->payload[$key])) {
+                $payload[$key] = $this->payload[$key];
+            }
+        }
+
+        // check if the user id is set
+        $enrollments = $this->enrollmentsModel->getRecords($payload);
+
+        return Routing::success(formatEnrolledCourses($enrollments));
     }
 
     /**

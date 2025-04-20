@@ -96,6 +96,7 @@ class CoursesValidation {
                 "search" => "permit_empty|string|max_length[64]",
                 "limit" => "permit_empty|integer",
                 "offset" => "permit_empty|integer",
+                "status" => "permit_empty|string|in_list[Enrolled,Completed,Cancelled]",
             ]
         ],
         'delete:course_id' => [
