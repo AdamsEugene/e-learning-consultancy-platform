@@ -57,5 +57,7 @@ const navigationItems: NavigationItem[] = [
   { label: "Dropdown", path: "/components/dropdown" },
   { label: "Form", path: "/components/form" },
   { label: "Card", path: "/components/card" },
+  { label: "Modal", path: "/components/modal" },
+  { label: "Confirm Modal", path: "/components/confirm-modal" },
 ];
 </script>
