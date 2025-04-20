@@ -9,7 +9,7 @@ class Reviews extends LoadController {
     /**
      * List reviews
      * 
-     * @return void
+     * @return array
      */
     public function list() {
 
@@ -37,7 +37,7 @@ class Reviews extends LoadController {
     /**
      * Create review
      * 
-     * @return void
+     * @return array
      */
     public function create() {
     
@@ -70,6 +70,9 @@ class Reviews extends LoadController {
         // increment the review count for the course
         $this->coursesModel->db->query("UPDATE {$tableName} SET reviewCount = (reviewCount + 1) WHERE id = {$this->payload['record_id']}");
 
+        // log the count
+        $this->analyticsObject->logCount('Reviews');
+
         // return the success message
         return Routing::created([
             'data' => 'Review created successfully',
@@ -80,7 +83,7 @@ class Reviews extends LoadController {
     /**
      * Delete review
      * 
-     * @return void
+     * @return array
      */
     public function delete() {
 
@@ -102,6 +105,9 @@ class Reviews extends LoadController {
 
         // delete the review
         $this->reviewsModel->deleteRecord($payload);
+
+        // log the count
+        $this->analyticsObject->logCount('Reviews', 'decrement');
 
         // return the success message
         return Routing::success('Review deleted successfully');

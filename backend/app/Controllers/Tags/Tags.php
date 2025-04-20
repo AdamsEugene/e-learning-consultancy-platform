@@ -73,6 +73,9 @@ class Tags extends LoadController {
         // create the category
         $tagId = $this->tagsModel->createRecord($this->payload);
 
+        // log the count
+        $this->analyticsObject->logCount('Tags');
+
         // get the category
         return Routing::created([
             'data' => 'Tag created successfully',
@@ -129,6 +132,9 @@ class Tags extends LoadController {
 
         // delete the tag
         $this->tagsModel->deleteRecord($this->payload['id']);
+
+        // log the count
+        $this->analyticsObject->logCount('Tags', 'decrement');
 
         // return the label
         return Routing::deleted();

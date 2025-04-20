@@ -12,9 +12,9 @@ class Enrollments extends LoadController {
     /**
      * Set the properties
      * 
-     * @return void
+     * @return array
      */
-    public function setProps($payload, $uniqueId, $currentUser, $coursesModel) {
+    public function setProps($payload = [], $uniqueId = null, $currentUser = [], $coursesModel = null) {
         $this->payload = $payload;
         $this->uniqueId = $uniqueId;
         $this->currentUser = $currentUser;
@@ -22,9 +22,18 @@ class Enrollments extends LoadController {
     }
 
     /**
+     * Get the list of all enrolled courses
+     * 
+     * @return array
+     */
+    public function list() {
+        
+    }
+
+    /**
      * Enroll in a course
      * 
-     * @return void
+     * @return array
      */
     public function enroll($courseData) {
 

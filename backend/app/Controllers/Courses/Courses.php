@@ -25,7 +25,7 @@ class Courses extends LoadController {
     /**
      * List courses
      * 
-     * @return void
+     * @return array
      */
     public function list() {
 
@@ -56,7 +56,7 @@ class Courses extends LoadController {
     /**
      * View course
      * 
-     * @return void
+     * @return array
      */
     public function view() {
 
@@ -91,7 +91,7 @@ class Courses extends LoadController {
     /**
      * Create course
      * 
-     * @return void
+     * @return array
      */
     public function create() {
 
@@ -250,6 +250,9 @@ class Courses extends LoadController {
         // set course id
         $this->payload['course_id'] = $courseId;
 
+        // log the count
+        $this->analyticsObject->logCount('Courses');
+
         return Routing::created([
             'data' => $this->doUpdateCourse ? 'Course updated successfully' : 'Course created successfully',
             'record' => $this->view($courseId)['data']
@@ -260,7 +263,7 @@ class Courses extends LoadController {
     /**
      * Update course
      * 
-     * @return void
+     * @return array
      */
     public function update() {
 
@@ -280,7 +283,7 @@ class Courses extends LoadController {
     /**
      * Enroll in a course
      * 
-     * @return void
+     * @return array
      */
     public function enroll() {
 
@@ -304,9 +307,24 @@ class Courses extends LoadController {
     }
 
     /**
+     * Get the list of all enrolled courses
+     * 
+     * @return array
+     */
+    public function enrolled() {
+        
+        // create a new instance of the enrollments controller
+        $enrolObject = new Enrollments();
+        $enrolObject->setProps($this->payload, $this->uniqueId, $this->currentUser, $this->coursesModel);
+
+        // return the response and procesing the request
+        return $enrolObject->list();
+    }
+
+    /**
      * Update course status
      * 
-     * @return void
+     * @return array
      */
     public function statuses() {
 
@@ -341,7 +359,7 @@ class Courses extends LoadController {
     /**
      * Delete course
      * 
-     * @return void
+     * @return array
      */
     public function delete() {
 
@@ -353,6 +371,9 @@ class Courses extends LoadController {
 
         // delete the course
         $this->coursesModel->deleteRecord($this->uniqueId);
+
+        // log the count
+        $this->analyticsObject->logCount('Courses', 'decrement');
 
         // return response
         return Routing::success('Course deleted successfully');

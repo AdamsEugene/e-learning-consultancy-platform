@@ -14,6 +14,8 @@ use App\Models\InstructorsModel;
 use App\Models\ReviewsModel;
 use App\Models\WishlistModel;
 use App\Models\EnrollmentsModel;
+use App\Controllers\Analytics\Analytics;
+
 class LoadController extends BaseController
 {
     public $restrictedDomain = ['e-learning.com', 'e-learning.com'];
@@ -29,6 +31,7 @@ class LoadController extends BaseController
     protected $reviewsModel;
     protected $wishlistModel;
     protected $enrollmentsModel;
+    protected $analyticsObject;
 
     public function __construct($model = [])
     {
@@ -36,7 +39,8 @@ class LoadController extends BaseController
         $this->authModel = new AuthModel();
         $this->usersModel = new UsersModel();
         $this->accessModel = new AccessModel();
-
+        $this->analyticsObject = new Analytics();
+        
         // initialize the cache object
         if(empty($this->cacheObject)) {
             $this->cacheObject = new Caching();

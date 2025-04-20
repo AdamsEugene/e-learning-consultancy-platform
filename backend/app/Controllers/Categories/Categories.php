@@ -85,6 +85,9 @@ class Categories extends LoadController {
         // create the category
         $categoryId = $this->categoriesModel->createRecord($this->payload);
 
+        // log the count
+        $this->analyticsObject->logCount('Categories');
+
         // get the category
         return Routing::created([
             'data' => 'Category created successfully',
@@ -149,6 +152,9 @@ class Categories extends LoadController {
 
         // delete the category
         $this->categoriesModel->deleteRecord($this->payload['id']);
+
+        // log the count
+        $this->analyticsObject->logCount('Categories', 'decrement');
 
         // return the category
         return Routing::deleted();

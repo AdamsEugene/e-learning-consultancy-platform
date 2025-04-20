@@ -115,6 +115,11 @@ class Api extends BaseController
             }
         }
 
+        // confirm if the message prop was set in the request.
+        if(is_array($handler) && in_array('message', array_keys($handler)) && $handler['message'] == null) {
+            $handler['message'] = 'The request was successful; however no response was returned.';
+        }
+
         // set the request id
         $handler['requestId'] = random_string('alnum', 12);
         $handler['cused'] = $this->cacheUse; // whether the cache was used or not

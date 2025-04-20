@@ -81,6 +81,9 @@ class Users extends LoadController {
         // hash the password
         $hashPassword = hash_password($this->payload['password']);
 
+        // set the user type
+        $this->submittedPayload['user_type'] = $this->submittedPayload['user_type'] ?? 'Student';
+
         // set the password
         $this->submittedPayload['password'] = $hashPassword;
         $this->submittedPayload['user_type'] = ucwords($this->submittedPayload['user_type']);
@@ -96,6 +99,9 @@ class Users extends LoadController {
 
         // set the user id
         $this->payload['user_id'] = $userId;
+
+        // log the count
+        $this->analyticsObject->logCount($this->submittedPayload['user_type']);
 
         return Routing::created([
             'data' => 'The user has been created successfully', 
@@ -215,6 +221,9 @@ class Users extends LoadController {
 
         // update the status of the courses
         $this->coursesModel->updateRecordQuery(['status' => $status], ['created_by' => $this->payload['user_id']]);
+
+        // log the count
+        $this->analyticsObject->logCount($users['user_type'], 'decrement');
 
         // return the success message
         return Routing::success('The user has been deleted successfully');

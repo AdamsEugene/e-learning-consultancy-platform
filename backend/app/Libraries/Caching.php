@@ -262,31 +262,6 @@ class Caching {
                 ],
                 'ttl' => 3600
             ],
-            'heatmaps' => [
-                'methods' => [
-                    // 'menu', 
-                    // 'list',
-                    'data',
-                    // 'view',
-                    'metadata',
-                    // 'segments',
-                    // 'summary'
-                ],
-                "invalid" => [
-                    'create'=> ['list','menu',],
-                    'delete'=> ['list','menu','data'],
-                    'update'=> ['list','menu','data'],
-                ],
-                'ttl' => configs('heatmaps_ttl')
-            ],
-            'recordings' => [
-                'methods' => [
-                    'list',
-                    'playback',
-                    'shareable'
-                ],
-                'ttl' => configs('heatmaps_ttl')
-            ],
             'dashboard' => [
                 'methods' => [
                     'insight', 
@@ -295,14 +270,6 @@ class Caching {
                     'populate'
                 ],
                 'ttl' => configs('heatmaps_ttl')
-            ],
-            'playback' => [
-                'methods' => [
-                    'setup', 
-                    'action', 
-                    'images'
-                ],
-                'ttl' => (24 * 3600)
             ],
             'users' => [
                 'methods' => [

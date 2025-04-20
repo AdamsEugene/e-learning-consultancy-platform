@@ -10,7 +10,7 @@ class Wishlist extends LoadController {
     /**
      * View
      * 
-     * @return void
+     * @return array
      */
     public function list() {
 
@@ -46,7 +46,7 @@ class Wishlist extends LoadController {
     /**
      * View
      * 
-     * @return void
+     * @return array
      */
     public function view() {
 
@@ -88,7 +88,7 @@ class Wishlist extends LoadController {
     /**
      * Create
      * 
-     * @return void
+     * @return array
      */
     public function create() {
 
@@ -135,7 +135,7 @@ class Wishlist extends LoadController {
     /**
      * Delete
      * 
-     * @return void
+     * @return array
      */
     public function delete() {
 

@@ -86,6 +86,18 @@ class CoursesValidation {
                 "user_id" => "permit_empty|string|max_length[12]",
             ]
         ],
+        'enrolled' => [
+            'method' => 'GET',
+            'authenticate' => true,
+            'payload' => [
+                "category_id" => "permit_empty|string|max_length[64]",
+                "course_id" => "permit_empty|string|max_length[64]",
+                "user_id" => "permit_empty|string|max_length[64]",
+                "search" => "permit_empty|string|max_length[64]",
+                "limit" => "permit_empty|integer",
+                "offset" => "permit_empty|integer",
+            ]
+        ],
         'delete:course_id' => [
             'method' => 'DELETE',
             'authenticate' => true,
