@@ -94,7 +94,7 @@ const getSectionProgress = (section: CourseSection) => {
       <UiButton
         v-if="isSmallScreen"
         variant="ghost"
-        color="gray"
+        state="default"
         size="sm"
         icon-only
         aria-label="Close menu"
@@ -197,7 +197,7 @@ const getSectionProgress = (section: CourseSection) => {
                 : 'text-gray-700 hover:bg-gray-100',
             ]"
             variant="ghost"
-            color="gray"
+            state="default"
             @click="navigateToLesson(lesson)"
           >
             <!-- Lesson completion status -->

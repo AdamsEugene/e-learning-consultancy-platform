@@ -30,6 +30,7 @@ const emit = defineEmits<{
   (e: "resize", width: string): void;
 }>();
 
+// Use ref to track the opened/closed state
 const isOpen = ref(props.modelValue);
 const drawerRef = ref<HTMLElement | null>(null);
 const currentWidth = ref(props.width);
@@ -42,7 +43,7 @@ const drawerWidth = computed(() => {
   return currentWidth.value;
 });
 
-// Watch for modelValue changes
+// Watch for modelValue changes from parent
 watch(
   () => props.modelValue,
   (newValue) => {
@@ -133,6 +134,12 @@ const stopResize = () => {
 // Lifecycle hooks
 onMounted(() => {
   document.addEventListener("keydown", handleKeydown);
+
+  // Initialize with proper state on mount
+  if (props.modelValue) {
+    isOpen.value = true;
+    emit("open");
+  }
 });
 
 onUnmounted(() => {
@@ -144,24 +151,26 @@ onUnmounted(() => {
 
 <template>
   <Teleport to="body">
+    <!-- Backdrop overlay -->
     <Transition name="drawer-fade">
       <div
         v-if="isOpen"
         class="fixed inset-0 backdrop-blur-sm bg-black/30 z-40"
-        :style="{ zIndex: zIndex }"
+        :style="{ zIndex: zIndex,  width: `calc(100% - ${drawerWidth})` }"
         @click="closeOnClickOutside && closeDrawer()"
-      />
+      >
+        <slot name="backdrop" />
+      </div>
     </Transition>
 
+    <!-- Drawer panel -->
     <Transition
       :name="position === 'right' ? 'drawer-slide-right' : 'drawer-slide-left'"
     >
       <div
         v-if="isOpen"
         ref="drawerRef"
-        v-click-outside="closeOnClickOutside ? closeDrawer : undefined"
-        v-scroll-lock="isOpen"
-        class="fixed top-0 h-full bg-white/90 backdrop-blur-md shadow-xl z-50 overflow-hidden flex flex-col"
+        class="fixed top-0 h-full bg-white/90 backdrop-blur-md shadow-xl overflow-hidden flex flex-col"
         :class="[
           position === 'right' ? 'right-0' : 'left-0',
           'w-full sm:w-auto',
@@ -227,7 +236,7 @@ onUnmounted(() => {
               <div class="flex items-center space-x-2">
                 <slot name="footer-actions">
                   <button
-                    class="px-4 py-2 border border-gray-300 rounded-md text-sm font-medium text-gray-700 hover:bg-gray-50 focus:outline-none focus:ring-2 focus:ring-offset-2 focus:ring-indigo-500"
+                    class="px-4 py-2 border border-gray-300 rounded-md text-sm font-medium text-gray-700 hover:bg-gray-50 focus:outline-none"
                     @click="closeDrawer"
                   >
                     Close
@@ -262,23 +271,15 @@ onUnmounted(() => {
 }
 
 .drawer-slide-right-enter-from,
-.drawer-slide-left-enter-from {
+.drawer-slide-right-leave-to {
   transform: translateX(100%);
   opacity: 0;
 }
 
-.drawer-slide-right-leave-to,
+.drawer-slide-left-enter-from,
 .drawer-slide-left-leave-to {
-  transform: translateX(100%);
+  transform: translateX(-100%);
   opacity: 0;
-}
-
-.drawer-slide-left-enter-from {
-  transform: translateX(-100%);
-}
-
-.drawer-slide-left-leave-to {
-  transform: translateX(-100%);
 }
 
 /* Add glass effect to the drawer */

@@ -1,7 +1,5 @@
 <!-- components/courses/QuizComponent.vue -->
 <script setup lang="ts">
-import UiButton from "~/components/ui/Button.vue";
-
 // Type definitions
 interface QuizOption {
   id: string;
@@ -540,8 +538,8 @@ onMounted(() => {
       <!-- Action button -->
       <div class="mt-8 text-center">
         <UiButton
-          variant="solid"
-          color="primary"
+          variant="primary"
+          state="default"
           size="lg"
           @click="completeQuiz"
         >
@@ -640,8 +638,8 @@ onMounted(() => {
           <div class="flex justify-between">
             <UiButton
               v-if="currentQuestionIndex > 0"
-              variant="outline"
-              color="gray"
+              variant="ghost"
+              state="default"
               size="md"
               @click="previousQuestion"
             >
@@ -664,8 +662,8 @@ onMounted(() => {
             <div v-else />
 
             <UiButton
-              :variant="isCurrentQuestionAnswered() ? 'solid' : 'ghost'"
-              :color="isCurrentQuestionAnswered() ? 'primary' : 'gray'"
+              :variant="isCurrentQuestionAnswered() ? 'primary' : 'ghost'"
+              state="default"
               size="md"
               :disabled="!isCurrentQuestionAnswered()"
               @click="nextQuestion"

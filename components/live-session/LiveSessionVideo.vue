@@ -45,13 +45,14 @@ const emit = defineEmits<{
         </p>
         <UiButton
           v-if="!isConnecting"
-          color="primary"
+          variant="primary"
+          state="default"
           size="lg"
           @click="emit('join')"
         >
           Join Session
         </UiButton>
-        <UiButton v-else color="primary" size="lg" loading>
+        <UiButton v-else variant="primary" state="default" size="lg" loading>
           Connecting...
         </UiButton>
       </div>

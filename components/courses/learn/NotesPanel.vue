@@ -330,8 +330,8 @@ watch(
     <template #header-actions>
       <!-- Theme toggle -->
       <UiButton
-        variant="icon"
-        :color="theme === 'dark' ? 'secondary' : 'primary'"
+        variant="ghost"
+        state="default"
         size="sm"
         :icon-only="true"
         :left-icon="
@@ -433,7 +433,7 @@ watch(
           <UiButton
             :disabled="!canSaveNote"
             :color="theme === 'dark' ? 'secondary' : 'primary'"
-            :variant="theme === 'dark' ? 'ghost' : 'solid'"
+            :variant="theme === 'dark' ? 'ghost' : 'primary'"
             size="md"
             left-icon="ph:floppy-disk-fill"
             @click="saveNote"
@@ -458,7 +458,7 @@ watch(
           <div class="flex items-center">
             <UiButton
               variant="ghost"
-              :color="theme === 'dark' ? 'secondary' : 'primary'"
+              state="default"
               size="sm"
               :left-icon="
                 sortBy === 'newest'
@@ -529,17 +529,17 @@ watch(
                   class="flex items-center space-x-2"
                 >
                   <UiButton
-                    variant="solid"
-                    color="danger"
-                    size="xs"
+                    variant="primary"
+                    state="default"
+                    size="sm"
                     @click="deleteNote(note.id)"
                   >
                     Confirm
                   </UiButton>
                   <UiButton
                     variant="ghost"
-                    color="secondary"
-                    size="xs"
+                    state="default"
+                    size="sm"
                     @click="cancelDelete"
                   >
                     Cancel
@@ -548,9 +548,9 @@ watch(
 
                 <UiButton
                   v-else
-                  variant="icon"
-                  color="danger"
-                  size="xs"
+                  variant="ghost"
+                  state="default"
+                  size="sm"
                   :icon-only="true"
                   left-icon="ph:trash-fill"
                   aria-label="Delete note"
@@ -583,6 +583,12 @@ watch(
         </div>
       </div>
     </div>
+
+    <template #backdrop>
+      <div class="flex items-center justify-center h-full">
+        <h1>Add notes here</h1>
+      </div>
+    </template>
   </UiDrawer>
 </template>
 

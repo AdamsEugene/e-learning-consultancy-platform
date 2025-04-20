@@ -50,7 +50,7 @@ onMounted(() => {
 
 // Computed classes for the checkbox wrapper
 const wrapperClasses = computed(() => {
-  const baseClasses = "inline-flex items-center";
+  const baseClasses = "inline-flex items-center group";
   const sizeClasses = {
     sm: "gap-1.5",
     md: "gap-2",
@@ -68,7 +68,7 @@ const wrapperClasses = computed(() => {
 // Computed classes for the checkbox
 const checkboxClasses = computed(() => {
   const baseClasses =
-    "relative shrink-0 border rounded transition-all duration-200";
+    "relative shrink-0 border rounded transition-all duration-200 ease-in-out transform";
 
   const sizeClasses = {
     sm: "h-3.5 w-3.5",
@@ -81,36 +81,55 @@ const checkboxClasses = computed(() => {
       border: props.modelValue ? "border-indigo-600" : "border-gray-300",
       bg: props.modelValue ? "bg-indigo-600" : "bg-white",
       hover:
-        !props.disabled && !props.modelValue ? "hover:border-indigo-500" : "",
+        !props.disabled && !props.modelValue
+          ? "group-hover:border-indigo-500"
+          : "",
+      focus: "focus:ring-indigo-500/20",
     },
     secondary: {
       border: props.modelValue ? "border-gray-600" : "border-gray-300",
       bg: props.modelValue ? "bg-gray-600" : "bg-white",
       hover:
-        !props.disabled && !props.modelValue ? "hover:border-gray-500" : "",
+        !props.disabled && !props.modelValue
+          ? "group-hover:border-gray-500"
+          : "",
+      focus: "focus:ring-gray-500/20",
     },
     success: {
       border: props.modelValue ? "border-green-600" : "border-gray-300",
       bg: props.modelValue ? "bg-green-600" : "bg-white",
       hover:
-        !props.disabled && !props.modelValue ? "hover:border-green-500" : "",
+        !props.disabled && !props.modelValue
+          ? "group-hover:border-green-500"
+          : "",
+      focus: "focus:ring-green-500/20",
     },
     danger: {
       border: props.modelValue ? "border-red-600" : "border-gray-300",
       bg: props.modelValue ? "bg-red-600" : "bg-white",
-      hover: !props.disabled && !props.modelValue ? "hover:border-red-500" : "",
+      hover:
+        !props.disabled && !props.modelValue
+          ? "group-hover:border-red-500"
+          : "",
+      focus: "focus:ring-red-500/20",
     },
     warning: {
       border: props.modelValue ? "border-yellow-600" : "border-gray-300",
       bg: props.modelValue ? "bg-yellow-600" : "bg-white",
       hover:
-        !props.disabled && !props.modelValue ? "hover:border-yellow-500" : "",
+        !props.disabled && !props.modelValue
+          ? "group-hover:border-yellow-500"
+          : "",
+      focus: "focus:ring-yellow-500/20",
     },
     info: {
       border: props.modelValue ? "border-blue-600" : "border-gray-300",
       bg: props.modelValue ? "bg-blue-600" : "bg-white",
       hover:
-        !props.disabled && !props.modelValue ? "hover:border-blue-500" : "",
+        !props.disabled && !props.modelValue
+          ? "group-hover:border-blue-500"
+          : "",
+      focus: "focus:ring-blue-500/20",
     },
   };
 
@@ -130,6 +149,7 @@ const checkboxClasses = computed(() => {
     colorClasses[props.color].border,
     colorClasses[props.color].bg,
     colorClasses[props.color].hover,
+    colorClasses[props.color].focus,
     focusClasses,
     ringColorClasses[props.color],
   ]
@@ -139,13 +159,15 @@ const checkboxClasses = computed(() => {
 
 // Computed classes for the label
 const labelClasses = computed(() => {
-  const baseClasses = "select-none";
+  const baseClasses = "select-none transition-colors duration-200";
   const sizeClasses = {
     sm: "text-sm",
     md: "text-base",
     lg: "text-lg",
   };
-  const stateClasses = props.disabled ? "text-gray-400" : "text-gray-700";
+  const stateClasses = props.disabled
+    ? "text-gray-400"
+    : "text-gray-700 group-hover:text-gray-900";
 
   return [baseClasses, sizeClasses[props.size], stateClasses]
     .filter(Boolean)
@@ -187,7 +209,7 @@ const handleChange = (event: Event) => {
         <!-- Checkmark icon -->
         <svg
           v-if="modelValue && !indeterminate"
-          class="absolute inset-0 h-full w-full stroke-white p-0.5"
+          class="absolute inset-0 h-full w-full stroke-white p-0.5 transform transition-transform duration-200 ease-out"
           viewBox="0 0 20 20"
           fill="none"
           stroke-width="2"
@@ -200,7 +222,7 @@ const handleChange = (event: Event) => {
         <!-- Indeterminate icon -->
         <svg
           v-if="indeterminate"
-          class="absolute inset-0 h-full w-full stroke-white p-0.5"
+          class="absolute inset-0 h-full w-full stroke-white p-0.5 transform transition-transform duration-200 ease-out"
           viewBox="0 0 20 20"
           fill="none"
           stroke-width="2"
@@ -213,11 +235,11 @@ const handleChange = (event: Event) => {
         <!-- Hover/Focus ripple effect -->
         <div
           v-if="isHovered || isFocused"
-          class="absolute -inset-2 transition-opacity"
+          class="absolute -inset-2 transition-all duration-200 ease-out"
           :class="[
             `bg-${props.color}-500/10`,
             'rounded-full',
-            isHovered ? 'opacity-100' : 'opacity-0',
+            isHovered ? 'opacity-100 scale-100' : 'opacity-0 scale-95',
           ]"
         />
       </div>
@@ -225,7 +247,7 @@ const handleChange = (event: Event) => {
 
     <span v-if="label" :class="labelClasses">
       {{ label }}
-      <span v-if="required" class="text-red-500">*</span>
+      <span v-if="required" class="text-red-500 ml-0.5">*</span>
     </span>
 
     <!-- Pass through any default slot content -->
@@ -247,11 +269,42 @@ const handleChange = (event: Event) => {
 /* Smooth transitions */
 .peer:checked + div svg {
   transform: scale(1);
-  transition: transform 0.15s cubic-bezier(0.2, 0, 0.13, 1.5);
+  transition: transform 0.2s cubic-bezier(0.2, 0, 0.13, 1.5);
 }
 
 .peer:not(:checked) + div svg {
   transform: scale(0);
-  transition: transform 0.15s cubic-bezier(0.4, 0, 0.23, 1);
+  transition: transform 0.2s cubic-bezier(0.4, 0, 0.23, 1);
+}
+
+/* Hover animation */
+.peer:not(:disabled):hover + div {
+  transform: scale(1.05);
+}
+
+/* Focus animation */
+.peer:focus-visible + div {
+  transform: scale(1.05);
+}
+
+/* Disabled state */
+.peer:disabled + div {
+  opacity: 0.5;
+  cursor: not-allowed;
+}
+
+/* Required indicator animation */
+.text-red-500 {
+  animation: pulse 2s cubic-bezier(0.4, 0, 0.6, 1) infinite;
+}
+
+@keyframes pulse {
+  0%,
+  100% {
+    opacity: 1;
+  }
+  50% {
+    opacity: 0.5;
+  }
 }
 </style>

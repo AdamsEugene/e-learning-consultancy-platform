@@ -47,7 +47,8 @@ const emit = defineEmits<{
         <div class="flex items-center space-x-4">
           <UiButton
             v-if="!isConnecting && !hasEnded && isLive"
-            color="danger"
+            variant="danger"
+            state="default"
             @click="emit('leave')"
           >
             Leave Session
@@ -55,19 +56,21 @@ const emit = defineEmits<{
 
           <UiButton
             v-else-if="!isConnecting && !hasEnded && !isLive"
-            color="primary"
+            variant="primary"
+            state="default"
             @click="emit('join')"
           >
             Join Session
           </UiButton>
 
-          <UiButton v-else-if="isConnecting" color="primary" :loading="true">
+          <UiButton v-else-if="isConnecting" variant="primary" state="default" :loading="true">
             Connecting...
           </UiButton>
 
           <UiButton
             v-else-if="hasEnded"
-            color="secondary"
+            variant="ghost"
+            state="default"
             @click="emit('back')"
           >
             Watch Recording

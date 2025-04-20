@@ -376,8 +376,8 @@ onMounted(() => {
           <div class="mt-8 flex justify-between">
             <div />
             <UiButton
-              variant="solid"
-              color="primary"
+              variant="primary"
+              state="default"
               size="lg"
               @click="nextStep"
               @mouseenter="buttonHover = true"
@@ -568,8 +568,8 @@ onMounted(() => {
           <!-- Form navigation -->
           <div class="flex justify-between">
             <UiButton
-              variant="outline"
-              color="gray"
+              variant="ghost"
+              state="default"
               size="md"
               @click="prevStep"
             >
@@ -591,8 +591,8 @@ onMounted(() => {
             </UiButton>
 
             <UiButton
-              variant="solid"
-              color="primary"
+              variant="primary"
+              state="default"
               size="md"
               :disabled="!isFormValid"
               @click="submitAssignment"
@@ -726,8 +726,8 @@ onMounted(() => {
               </p>
 
               <UiButton
-                variant="solid"
-                color="primary"
+                variant="primary"
+                state="default"
                 size="lg"
                 @click="completeAssignment"
               >

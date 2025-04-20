@@ -1,443 +1,443 @@
 <script setup lang="ts">
 interface Props {
-  // Core props
-  type?: "button" | "submit" | "reset";
-  variant?: "solid" | "outline" | "ghost" | "link" | "icon" | "text" | "subtle";
-  color?:
+  /**
+   * Button variant
+   * @default 'primary'
+   */
+  variant?:
     | "primary"
     | "secondary"
-    | "success"
+    | "tertiary"
     | "danger"
+    | "success"
     | "warning"
     | "info"
-    | "gray"
-    | "white";
-  size?: "xs" | "sm" | "md" | "lg" | "xl";
+    | "ghost";
 
-  // State props
-  loading?: boolean;
+  /**
+   * Button size
+   * @default 'md'
+   */
+  size?: "sm" | "md" | "lg" | "xl";
+
+  /**
+   * Icon position (when using icon + text)
+   * @default 'left'
+   */
+  iconPosition?: "left" | "right" | "only";
+
+  /**
+   * Button visual state
+   * @default 'default'
+   */
+  state?: "default" | "hover" | "active" | "disabled";
+
+  /**
+   * Badge text or count to display
+   */
+  badge?: string | number;
+
+  /**
+   * Badge color variant
+   * @default 'primary'
+   */
+  badgeVariant?: "primary" | "success" | "warning" | "danger" | "info";
+
+  /**
+   * Button type attribute
+   * @default 'button'
+   */
+  type?: "button" | "submit" | "reset";
+
+  /**
+   * Whether the button is disabled
+   * @default false
+   */
   disabled?: boolean;
+
+  /**
+   * Whether the button is in loading state
+   * @default false
+   */
+  loading?: boolean;
+
+  /**
+   * Whether the button is currently active (selected)
+   * @default false
+   */
   active?: boolean;
 
-  // Icon props
-  iconOnly?: boolean;
+  /**
+   * Whether the button should be full width
+   * @default false
+   */
+  fullWidth?: boolean;
 
-  // Animation props
-  animated?: boolean;
+  /**
+   * Whether the button has a ripple effect on click
+   * @default true
+   */
   ripple?: boolean;
 
-  // Additional styling
-  rounded?: boolean;
-  block?: boolean;
-  glass?: boolean;
+  /**
+   * Whether the button is elevated (has shadow)
+   * @default false
+   */
   elevated?: boolean;
-  noPadding?: boolean;
+
+  /**
+   * Whether the button is outlined
+   * @default false
+   */
+  outlined?: boolean;
+
+  /**
+   * Whether the button is rounded (pill shape)
+   * @default false
+   */
+  rounded?: boolean;
+
+  /**
+   * Custom classes to add to the button
+   */
   customClass?: string;
 }
 
 const props = withDefaults(defineProps<Props>(), {
-  type: "button",
-  variant: "solid",
-  color: "primary",
+  variant: "primary",
   size: "md",
-  loading: false,
+  iconPosition: "left",
+  state: "default",
+  badgeVariant: "primary",
+  type: "button",
   disabled: false,
+  loading: false,
   active: false,
-  iconOnly: false,
-  animated: true,
-  ripple: true,
-  rounded: true,
-  block: false,
-  glass: false,
+  fullWidth: false,
+  ripple: false,
   elevated: false,
-  noPadding: false,
-  customClass: "",
+  outlined: false,
+  rounded: false,
+  badge: undefined,
+  customClass: undefined,
 });
 
-// Emit click event
 const emit = defineEmits<{
   (e: "click", event: MouseEvent): void;
 }>();
 
-// Handle click with ripple effect
-const buttonRef = ref<HTMLButtonElement | null>(null);
-
-interface RippleEffect {
-  x: number;
-  y: number;
-  size: number;
-  alpha: number;
-  scale: number;
-}
-
-const ripples = ref<RippleEffect[]>([]);
-const rippleContainer = ref<HTMLElement | null>(null);
-
-const handleClick = (event: MouseEvent) => {
-  if (props.disabled || props.loading) return;
-
-  if (props.ripple) {
-    const button = buttonRef.value;
-    if (!button) return;
-
-    const rect = button.getBoundingClientRect();
-    const size = Math.max(rect.width, rect.height);
-    const x = event.clientX - rect.left;
-    const y = event.clientY - rect.top;
-
-    const newRipple: RippleEffect = {
-      x,
-      y,
-      size,
-      alpha: 0.32,
-      scale: 0,
-    };
-
-    ripples.value.push(newRipple);
-
-    // Trigger animation
-    requestAnimationFrame(() => {
-      newRipple.scale = 1;
-      newRipple.alpha = 0;
-
-      // Remove ripple after animation
-      setTimeout(() => {
-        const index = ripples.value.indexOf(newRipple);
-        if (index > -1) {
-          ripples.value.splice(index, 1);
-        }
-      }, 550);
-    });
-  }
-
-  emit("click", event);
-};
-
-const handleMouseDown = (event: MouseEvent) => {
+// Create ripple effect
+const createRipple = (event: MouseEvent) => {
   if (!props.ripple || props.disabled || props.loading) return;
 
-  const container = rippleContainer.value;
-  if (!container) return;
+  const button = event.currentTarget as HTMLElement;
+  const circle = document.createElement("span");
+  const diameter = Math.max(button.clientWidth, button.clientHeight);
+  const radius = diameter / 2;
 
-  const rect = container.getBoundingClientRect();
-  const x = event.clientX - rect.left;
-  const y = event.clientY - rect.top;
-  const size = Math.max(rect.width, rect.height) * 2;
+  // Position the ripple
+  circle.style.width = circle.style.height = `${diameter}px`;
+  circle.style.left = `${
+    event.clientX - (button.getBoundingClientRect().left + radius)
+  }px`;
+  circle.style.top = `${
+    event.clientY - (button.getBoundingClientRect().top + radius)
+  }px`;
+  circle.classList.add("ripple");
 
-  const newRipple: RippleEffect = {
-    x,
-    y,
-    size,
-    alpha: 0.32,
-    scale: 0,
-  };
-
-  ripples.value.push(newRipple);
-
-  // Trigger animation
-  requestAnimationFrame(() => {
-    newRipple.scale = 1;
-    newRipple.alpha = 0;
-
-    // Remove ripple after animation
-    setTimeout(() => {
-      const index = ripples.value.indexOf(newRipple);
-      if (index > -1) {
-        ripples.value.splice(index, 1);
-      }
-    }, 550);
-  });
-};
-
-// Computed classes
-const buttonClasses = computed(() => {
-  const classes = [
-    // Base classes
-    "relative inline-flex items-center justify-center font-medium transition-all duration-200 select-none",
-    !props.noPadding && "rounded-lg",
-
-    // Size classes
-    !props.noPadding && sizeClasses.value,
-
-    // Variant and color classes
-    variantClasses.value,
-
-    // State classes
-    {
-      "opacity-60 cursor-not-allowed": props.disabled,
-      "cursor-wait": props.loading,
-      "scale-95": props.active,
-    },
-
-    // Additional styling
-    {
-      "w-full": props.block,
-      "rounded-full": props.rounded,
-      "backdrop-blur-sm bg-opacity-80": props.glass,
-      "p-0 aspect-square": props.iconOnly,
-    },
-
-    // Animation classes
-    {
-      "transform hover:scale-105 active:scale-95":
-        props.animated && !props.disabled && !props.loading,
-      "overflow-hidden": props.ripple,
-    },
-  ];
-
-  return classes;
-});
-
-const sizeClasses = computed(() => {
-  if (props.iconOnly) {
-    return {
-      xs: "w-6 h-6 text-xs",
-      sm: "w-8 h-8 text-sm",
-      md: "w-10 h-10 text-base",
-      lg: "w-12 h-12 text-lg",
-      xl: "w-14 h-14 text-xl",
-    }[props.size];
+  // Remove existing ripples
+  const ripple = button.querySelector(".ripple");
+  if (ripple) {
+    ripple.remove();
   }
 
-  return {
-    xs: "px-2 py-1 text-xs gap-2",
-    sm: "px-3 py-1.5 text-sm gap-2.5",
-    md: "px-4 py-2 text-base gap-3",
-    lg: "px-5 py-2.5 text-lg gap-3.5",
-    xl: "px-6 py-3 text-xl gap-4",
-  }[props.size];
+  // Add the new ripple
+  button.appendChild(circle);
+
+  // Remove the ripple after animation completes
+  setTimeout(() => {
+    if (circle) {
+      circle.remove();
+    }
+  }, 600);
+};
+
+// Handle button click
+const handleClick = (event: MouseEvent) => {
+  if (!props.disabled && !props.loading) {
+    createRipple(event);
+    emit("click", event);
+  }
+};
+
+// Helper function for generating size classes
+const sizeClasses = computed(() => {
+  switch (props.size) {
+    case "sm":
+      return "h-8 text-xs py-1 px-3 gap-1.5";
+    case "md":
+      return "h-10 text-sm py-2 px-4 gap-2";
+    case "lg":
+      return "h-12 text-base py-2.5 px-5 gap-2.5";
+    case "xl":
+      return "h-14 text-lg py-3 px-6 gap-3";
+    default:
+      return "h-10 text-sm py-2 px-4 gap-2";
+  }
 });
 
+// Helper function for generating icon-only size classes
+const iconOnlyClasses = computed(() => {
+  if (props.iconPosition !== "only") return "";
+
+  switch (props.size) {
+    case "sm":
+      return "h-8 w-8 p-1";
+    case "md":
+      return "h-10 w-10 p-2";
+    case "lg":
+      return "h-12 w-12 p-3";
+    case "xl":
+      return "h-14 w-14 p-3.5";
+    default:
+      return "h-10 w-10 p-2";
+  }
+});
+
+// Generate variant-based classes
 const variantClasses = computed(() => {
-  const colorMap = {
-    primary: {
-      solid: "bg-indigo-600 text-white hover:bg-indigo-700 shadow-sm",
-      outline: "border-2 border-indigo-600 text-indigo-600 hover:bg-indigo-50",
-      ghost: "text-indigo-600 hover:bg-indigo-50",
-      link: "text-indigo-600 hover:underline",
-      text: "text-indigo-600 hover:text-indigo-700",
-      subtle: "bg-indigo-50 text-indigo-700 hover:bg-indigo-100",
-    },
-    secondary: {
-      solid: "bg-gray-600 text-white hover:bg-gray-700 shadow-sm",
-      outline: "border-2 border-gray-600 text-gray-600 hover:bg-gray-50",
-      ghost: "text-gray-600 hover:bg-gray-50",
-      link: "text-gray-600 hover:underline",
-      text: "text-gray-600 hover:text-gray-700",
-      subtle: "bg-gray-50 text-gray-700 hover:bg-gray-100",
-    },
-    success: {
-      solid: "bg-green-600 text-white hover:bg-green-700 shadow-sm",
-      outline: "border-2 border-green-600 text-green-600 hover:bg-green-50",
-      ghost: "text-green-600 hover:bg-green-50",
-      link: "text-green-600 hover:underline",
-      text: "text-green-600 hover:text-green-700",
-      subtle: "bg-green-50 text-green-700 hover:bg-green-100",
-    },
-    danger: {
-      solid: "bg-red-600 text-white hover:bg-red-700 shadow-sm",
-      outline: "border-2 border-red-600 text-red-600 hover:bg-red-50",
-      ghost: "text-red-600 hover:bg-red-50",
-      link: "text-red-600 hover:underline",
-      text: "text-red-600 hover:text-red-700",
-      subtle: "bg-red-50 text-red-700 hover:bg-red-100",
-    },
-    warning: {
-      solid: "bg-yellow-500 text-white hover:bg-yellow-600 shadow-sm",
-      outline: "border-2 border-yellow-500 text-yellow-500 hover:bg-yellow-50",
-      ghost: "text-yellow-500 hover:bg-yellow-50",
-      link: "text-yellow-500 hover:underline",
-      text: "text-yellow-500 hover:text-yellow-600",
-      subtle: "bg-yellow-50 text-yellow-700 hover:bg-yellow-100",
-    },
-    info: {
-      solid: "bg-blue-600 text-white hover:bg-blue-700 shadow-sm",
-      outline: "border-2 border-blue-600 text-blue-600 hover:bg-blue-50",
-      ghost: "text-blue-600 hover:bg-blue-50",
-      link: "text-blue-600 hover:underline",
-      text: "text-blue-600 hover:text-blue-700",
-      subtle: "bg-blue-50 text-blue-700 hover:bg-blue-100",
-    },
-    gray: {
-      solid: "bg-gray-500 text-white hover:bg-gray-600 shadow-sm",
-      outline: "border-2 border-gray-500 text-gray-500 hover:bg-gray-50",
-      ghost: "text-gray-500 hover:bg-gray-50",
-      link: "text-gray-500 hover:underline",
-      text: "text-gray-500 hover:text-gray-600",
-      subtle: "bg-gray-50 text-gray-700 hover:bg-gray-100",
-    },
-    white: {
-      solid: "bg-white text-gray-900 hover:bg-gray-50 shadow-sm",
-      outline: "border-2 border-white text-white hover:bg-white/10",
-      ghost: "text-white hover:bg-white/10",
-      link: "text-white hover:underline",
-      text: "text-white hover:text-gray-200",
-      subtle: "bg-white/10 text-white hover:bg-white/20",
-    },
-  };
+  // Base classes common to all variants
+  const baseClasses =
+    "relative overflow-hidden transition-all duration-200 focus:outline-none focus:ring-2";
 
-  const iconOnlyClasses = props.iconOnly
-    ? {
-        solid: "hover:opacity-80",
-        outline: "hover:bg-opacity-10",
-        ghost: "hover:bg-opacity-10",
-        link: "",
-        text: "hover:opacity-80",
-        subtle: "hover:bg-opacity-20",
+  // Classes for disabled state (override all other states)
+  if (props.disabled) {
+    return `${baseClasses} opacity-50 cursor-not-allowed bg-gray-100 text-gray-400 border border-gray-200`;
+  }
+
+  // Classes for when button is loading
+  if (props.loading) {
+    return `${baseClasses} cursor-wait`;
+  }
+
+  // Apply variant-specific classes
+  switch (props.variant) {
+    case "primary":
+      if (props.outlined) {
+        return `${baseClasses} bg-transparent text-indigo-600 border border-indigo-600 hover:bg-indigo-50 active:bg-indigo-100 focus:ring-indigo-500`;
       }
-    : {};
+      return `${baseClasses} bg-indigo-600 text-white hover:bg-indigo-700 active:bg-indigo-800 focus:ring-indigo-500 ${
+        props.elevated ? "shadow-md hover:shadow-lg" : ""
+      }`;
 
-  const elevatedClasses = props.elevated ? "shadow-md hover:shadow-lg" : "";
-  const customClasses = props.customClass || "";
+    case "secondary":
+      if (props.outlined) {
+        return `${baseClasses} bg-transparent text-gray-700 border border-gray-300 hover:bg-gray-50 active:bg-gray-100 focus:ring-gray-500`;
+      }
+      return `${baseClasses} bg-gray-200 text-gray-800 hover:bg-gray-300 active:bg-gray-400 focus:ring-gray-500 ${
+        props.elevated ? "shadow-md hover:shadow-lg" : ""
+      }`;
 
-  return [
-    colorMap[props.color][props.variant === "icon" ? "ghost" : props.variant],
-    iconOnlyClasses[props.variant === "icon" ? "ghost" : props.variant],
-    elevatedClasses,
-    customClasses,
-  ];
+    case "tertiary":
+      return `${baseClasses} bg-transparent text-gray-700 hover:bg-gray-100 active:bg-gray-200 focus:ring-gray-500`;
+
+    case "success":
+      if (props.outlined) {
+        return `${baseClasses} bg-transparent text-green-600 border border-green-600 hover:bg-green-50 active:bg-green-100 focus:ring-green-500`;
+      }
+      return `${baseClasses} bg-green-600 text-white hover:bg-green-700 active:bg-green-800 focus:ring-green-500 ${
+        props.elevated ? "shadow-md hover:shadow-lg" : ""
+      }`;
+
+    case "danger":
+      if (props.outlined) {
+        return `${baseClasses} bg-transparent text-red-600 border border-red-600 hover:bg-red-50 active:bg-red-100 focus:ring-red-500`;
+      }
+      return `${baseClasses} bg-red-600 text-white hover:bg-red-700 active:bg-red-800 focus:ring-red-500 ${
+        props.elevated ? "shadow-md hover:shadow-lg" : ""
+      }`;
+
+    case "warning":
+      if (props.outlined) {
+        return `${baseClasses} bg-transparent text-amber-600 border border-amber-600 hover:bg-amber-50 active:bg-amber-100 focus:ring-amber-500`;
+      }
+      return `${baseClasses} bg-amber-500 text-white hover:bg-amber-600 active:bg-amber-700 focus:ring-amber-500 ${
+        props.elevated ? "shadow-md hover:shadow-lg" : ""
+      }`;
+
+    case "info":
+      if (props.outlined) {
+        return `${baseClasses} bg-transparent text-blue-600 border border-blue-600 hover:bg-blue-50 active:bg-blue-100 focus:ring-blue-500`;
+      }
+      return `${baseClasses} bg-blue-600 text-white hover:bg-blue-700 active:bg-blue-800 focus:ring-blue-500 ${
+        props.elevated ? "shadow-md hover:shadow-lg" : ""
+      }`;
+
+    case "ghost":
+      return `${baseClasses} bg-transparent text-gray-700 hover:bg-gray-100 active:bg-gray-200 focus:ring-gray-500`;
+
+    default:
+      return `${baseClasses} bg-indigo-600 text-white hover:bg-indigo-700 active:bg-indigo-800 focus:ring-indigo-500`;
+  }
 });
 
-const spinnerColorClass = computed(() => {
-  return `spinner-${props.color}`;
+// Generate badge classes based on variant
+const badgeClasses = computed(() => {
+  const baseBadgeClasses =
+    "absolute -top-2 -right-2 text-xs font-bold px-1.5 py-0.5 min-w-[18px] h-[18px] flex items-center justify-center rounded-full";
+
+  switch (props.badgeVariant) {
+    case "primary":
+      return `${baseBadgeClasses} bg-indigo-600 text-white`;
+    case "success":
+      return `${baseBadgeClasses} bg-green-600 text-white`;
+    case "warning":
+      return `${baseBadgeClasses} bg-amber-500 text-white`;
+    case "danger":
+      return `${baseBadgeClasses} bg-red-600 text-white`;
+    case "info":
+      return `${baseBadgeClasses} bg-blue-600 text-white`;
+    default:
+      return `${baseBadgeClasses} bg-indigo-600 text-white`;
+  }
+});
+
+// Combined classes for the button
+const buttonClasses = computed(() => {
+  return [
+    // Core styles
+    "inline-flex items-center justify-center font-medium transition-all",
+
+    // Size classes
+    props.iconPosition === "only" ? iconOnlyClasses.value : sizeClasses.value,
+
+    // Variant classes
+    variantClasses.value,
+
+    // Full width
+    props.fullWidth ? "w-full" : "",
+
+    // Rounded pill style
+    props.rounded ? "rounded-full" : "rounded-lg",
+
+    // Active state
+    props.active ? "!ring-2 !ring-offset-2" : "",
+
+    // Custom classes
+    props.customClass || "",
+  ];
 });
 </script>
 
 <template>
   <button
-    ref="buttonRef"
-    :class="[buttonClasses]"
+    :type="type"
     :disabled="disabled || loading"
+    :class="buttonClasses"
+    role="button"
     @click="handleClick"
-    @mousedown="handleMouseDown"
   >
-    <!-- Loading Spinner -->
-    <div
+    <!-- Loading spinner -->
+    <span
       v-if="loading"
-      class="absolute inset-0 flex items-center justify-center"
+      class="flex items-center justify-center absolute inset-0 bg-inherit"
     >
-      <div class="loading-spinner" :class="spinnerColorClass" />
-    </div>
+      <svg
+        class="animate-spin h-5 w-5"
+        xmlns="http://www.w3.org/2000/svg"
+        fill="none"
+        viewBox="0 0 24 24"
+      >
+        <circle
+          class="opacity-25"
+          cx="12"
+          cy="12"
+          r="10"
+          stroke="currentColor"
+          stroke-width="4"
+        />
+        <path
+          class="opacity-75"
+          fill="currentColor"
+          d="M4 12a8 8 0 018-8V0C5.373 0 0 5.373 0 12h4zm2 5.291A7.962 7.962 0 014 12H0c0 3.042 1.135 5.824 3 7.938l3-2.647z"
+        />
+      </svg>
+    </span>
 
-    <!-- Button Content -->
-    <div
-      :class="{ 'opacity-0': loading }"
-      class="relative flex items-center justify-center gap-2 transition-opacity duration-200"
+    <!-- Button content (hidden during loading) -->
+    <span
+      :class="{ 'opacity-0': loading, 'flex items-center': true }"
+      class="flex items-center w-full"
     >
-      <!-- Left Icon Slot -->
-      <div v-if="$slots.leftIcon" class="flex-shrink-0">
-        <slot name="leftIcon" />
-      </div>
+      <!-- Left icon slot -->
+      <slot v-if="$slots['icon-left'] || $slots['icon']" name="icon-left" />
 
-      <!-- Default Slot (Button Text) -->
-      <slot />
-
-      <!-- Right Icon Slot -->
-      <div v-if="$slots.rightIcon" class="flex-shrink-0">
-        <slot name="rightIcon" />
-      </div>
-    </div>
-
-    <!-- Ripple Container -->
-    <div
-      v-if="ripple && !disabled && !loading"
-      ref="rippleContainer"
-      class="absolute inset-0 overflow-hidden rounded-[inherit]"
-    >
-      <div
-        v-for="(_ripple, index) in ripples"
-        :key="index"
-        class="absolute rounded-full bg-current"
-        :style="{
-          width: `${_ripple.size}px`,
-          height: `${_ripple.size}px`,
-          left: `${_ripple.x - _ripple.size / 2}px`,
-          top: `${_ripple.y - _ripple.size / 2}px`,
-          transform: `scale(${_ripple.scale})`,
-          opacity: _ripple.alpha,
-          transition:
-            'transform 550ms cubic-bezier(0.4, 0, 0.2, 1), opacity 550ms cubic-bezier(0.4, 0, 0.2, 1)',
+      <!-- Text content (hidden for icon-only buttons) -->
+      <span
+        :class="{
+          'ml-2': $slots['icon-left'] && iconPosition !== 'only',
+          'mr-2': $slots['icon-right'] && iconPosition !== 'only',
         }"
-      />
-    </div>
+        class="flex items-center w-full gap-2"
+      >
+        <slot />
+      </span>
+
+      <!-- <slot/> -->
+
+      <!-- Right icon slot -->
+      <slot v-if="$slots['icon-right'] || $slots['icon']" name="icon-right">
+        <slot name="icon" />
+      </slot>
+    </span>
+
+    <!-- Badge (if provided) -->
+    <span v-if="badge" :class="badgeClasses">{{ badge }}</span>
   </button>
 </template>
 
 <style scoped>
-.loading-spinner {
-  width: 1.25rem;
-  height: 1.25rem;
-  border: 2px solid currentColor;
-  border-bottom-color: transparent;
+.ripple {
+  position: absolute;
   border-radius: 50%;
-  display: inline-block;
-  animation: rotation 1s linear infinite;
+  transform: scale(0);
+  animation: ripple 0.6s linear;
+  background-color: rgba(255, 255, 255, 0.3);
+  pointer-events: none;
 }
 
-@keyframes rotation {
-  0% {
+@keyframes ripple {
+  to {
+    transform: scale(4);
+    opacity: 0;
+  }
+}
+
+/* Button hover animation */
+button {
+  transform: translateY(0);
+  transition: transform 0.15s ease;
+}
+
+button:not(:disabled):not(.cursor-wait):hover {
+  transform: translateY(-1px);
+}
+
+button:not(:disabled):not(.cursor-wait):active {
+  transform: translateY(0);
+}
+
+/* Loading spinner animation */
+@keyframes spin {
+  from {
     transform: rotate(0deg);
   }
-  100% {
+  to {
     transform: rotate(360deg);
   }
 }
 
-/* Color-specific spinner styles */
-.spinner-primary {
-  border-color: rgb(var(--color-primary-500) / 0.5);
-  border-bottom-color: transparent;
-}
-
-.spinner-secondary {
-  border-color: rgb(var(--color-secondary-500) / 0.5);
-  border-bottom-color: transparent;
-}
-
-.spinner-success {
-  border-color: rgb(var(--color-success-500) / 0.5);
-  border-bottom-color: transparent;
-}
-
-.spinner-danger {
-  border-color: rgb(var(--color-danger-500) / 0.5);
-  border-bottom-color: transparent;
-}
-
-.spinner-warning {
-  border-color: rgb(var(--color-warning-500) / 0.5);
-  border-bottom-color: transparent;
-}
-
-.spinner-info {
-  border-color: rgb(var(--color-info-500) / 0.5);
-  border-bottom-color: transparent;
-}
-
-.spinner-gray {
-  border-color: rgb(var(--color-gray-500) / 0.5);
-  border-bottom-color: transparent;
-}
-
-.spinner-white {
-  border-color: rgba(255, 255, 255, 0.5);
-  border-bottom-color: transparent;
-}
-
-/* Glass effect */
-.backdrop-blur-sm {
-  backdrop-filter: blur(8px);
-}
-
-/* Hover animations */
-.transform {
-  transition-property: transform;
-  transition-timing-function: cubic-bezier(0.4, 0, 0.2, 1);
-  transition-duration: 200ms;
-}
-
-/* Active state animation */
-.scale-95 {
-  transform: scale(0.95);
+.animate-spin {
+  animation: spin 1s linear infinite;
 }
 </style>

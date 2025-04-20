@@ -37,8 +37,8 @@ const markComplete = () => {
     <!-- Previous button -->
     <UiButton
       v-if="previousLesson"
-      variant="outline"
-      color="gray"
+      variant="ghost"
+      state="default"
       size="md"
       class="group flex items-center"
       @click="navigateToPrevious"
@@ -71,8 +71,8 @@ const markComplete = () => {
       <transition name="fade" mode="out-in">
         <UiButton
           v-if="!isCompleted"
-          variant="solid"
-          color="primary"
+          variant="primary"
+          state="default"
           size="md"
           class="transition-all duration-200 transform hover:scale-105"
           @click="markComplete"
@@ -99,8 +99,8 @@ const markComplete = () => {
     <!-- Next button -->
     <UiButton
       v-if="nextLesson"
-      variant="solid"
-      color="primary"
+      variant="primary"
+      state="default"
       size="md"
       class="group flex items-center"
       @click="navigateToNext"
