@@ -741,24 +741,24 @@ onMounted(() => {
         <!-- Tab navigation -->
         <div class="flex space-x-1 overflow-x-auto">
           <button
-            @click="activeTab = 'upcoming'"
             class="px-4 py-2 text-sm font-medium rounded-md transition-colors"
             :class="
               activeTab === 'upcoming'
                 ? 'bg-indigo-100 text-indigo-700'
                 : 'text-gray-500 hover:bg-gray-100 hover:text-gray-900'
             "
+            @click="activeTab = 'upcoming'"
           >
             Upcoming Classes
           </button>
           <button
-            @click="activeTab = 'current'"
             class="px-4 py-2 text-sm font-medium rounded-md transition-colors flex items-center"
             :class="
               activeTab === 'current'
                 ? 'bg-green-100 text-green-700'
                 : 'text-gray-500 hover:bg-gray-100 hover:text-gray-900'
             "
+            @click="activeTab = 'current'"
           >
             Live Now
             <span
@@ -769,24 +769,24 @@ onMounted(() => {
             </span>
           </button>
           <button
-            @click="activeTab = 'past'"
             class="px-4 py-2 text-sm font-medium rounded-md transition-colors"
             :class="
               activeTab === 'past'
                 ? 'bg-gray-200 text-gray-700'
                 : 'text-gray-500 hover:bg-gray-100 hover:text-gray-900'
             "
+            @click="activeTab = 'past'"
           >
             Past Classes
           </button>
           <button
-            @click="activeTab = 'cancelled'"
             class="px-4 py-2 text-sm font-medium rounded-md transition-colors"
             :class="
               activeTab === 'cancelled'
                 ? 'bg-red-100 text-red-700'
                 : 'text-gray-500 hover:bg-gray-100 hover:text-gray-900'
             "
+            @click="activeTab = 'cancelled'"
           >
             Cancelled
           </button>
@@ -797,13 +797,13 @@ onMounted(() => {
           <!-- View toggle buttons -->
           <div class="flex border rounded-lg overflow-hidden">
             <button
-              @click="viewMode = 'calendar'"
               class="px-3 py-1.5 text-sm font-medium transition-colors"
               :class="
                 viewMode === 'calendar'
                   ? 'bg-indigo-600 text-white'
                   : 'bg-white text-gray-700 hover:bg-gray-100'
               "
+              @click="viewMode = 'calendar'"
             >
               <svg
                 xmlns="http://www.w3.org/2000/svg"
@@ -821,13 +821,13 @@ onMounted(() => {
               </svg>
             </button>
             <button
-              @click="viewMode = 'list'"
               class="px-3 py-1.5 text-sm font-medium transition-colors"
               :class="
                 viewMode === 'list'
                   ? 'bg-indigo-600 text-white'
                   : 'bg-white text-gray-700 hover:bg-gray-100'
               "
+              @click="viewMode = 'list'"
             >
               <svg
                 xmlns="http://www.w3.org/2000/svg"
@@ -882,22 +882,22 @@ onMounted(() => {
         <div
           v-if="viewMode === 'calendar'"
           class="h-[600px] bg-gray-200 rounded-lg"
-        ></div>
+        />
         <div v-else class="space-y-4">
           <div
             v-for="i in 3"
             :key="`skeleton-${i}`"
             class="flex items-center space-x-4 p-4 border-b border-gray-200"
           >
-            <div class="bg-gray-200 h-12 w-12 rounded-full"></div>
+            <div class="bg-gray-200 h-12 w-12 rounded-full" />
             <div class="flex-1">
-              <div class="h-5 bg-gray-200 rounded w-3/4 mb-3"></div>
-              <div class="h-4 bg-gray-200 rounded w-1/4 mb-3"></div>
-              <div class="h-4 bg-gray-200 rounded w-1/2"></div>
+              <div class="h-5 bg-gray-200 rounded w-3/4 mb-3" />
+              <div class="h-4 bg-gray-200 rounded w-1/4 mb-3" />
+              <div class="h-4 bg-gray-200 rounded w-1/2" />
             </div>
             <div class="flex space-x-2">
-              <div class="h-8 w-8 bg-gray-200 rounded-full"></div>
-              <div class="h-8 w-8 bg-gray-200 rounded-full"></div>
+              <div class="h-8 w-8 bg-gray-200 rounded-full" />
+              <div class="h-8 w-8 bg-gray-200 rounded-full" />
             </div>
           </div>
         </div>
@@ -911,13 +911,13 @@ onMounted(() => {
     >
       <DashboardCalendar
         :events="calendarEvents"
-        userType="instructor"
-        initialView="month"
-        :highlightToday="true"
-        :showWeekends="true"
-        :allowCreate="true"
-        :allowEdit="true"
-        :isLoading="false"
+        user-type="instructor"
+        initial-view="month"
+        :highlight-today="true"
+        :show-weekends="true"
+        :allow-create="true"
+        :allow-edit="true"
+        :is-loading="false"
         @event-click="onCalendarEventClick"
         @date-change="onCalendarDateChange"
       />
@@ -938,16 +938,16 @@ onMounted(() => {
             <span class="relative flex h-3 w-3 mr-2">
               <span
                 class="animate-ping absolute inline-flex h-full w-full rounded-full bg-green-400 opacity-75"
-              ></span>
+              />
               <span
                 class="relative inline-flex rounded-full h-3 w-3 bg-green-500"
-              ></span>
+              />
             </span>
             Live Now
           </h3>
           <button
-            @click="activeTab = 'current'"
             class="text-sm text-green-700 hover:text-green-900 hover:underline"
+            @click="activeTab = 'current'"
           >
             View All Live Classes
           </button>
@@ -998,8 +998,8 @@ onMounted(() => {
             </div>
             <div class="flex space-x-2">
               <button
-                @click="startClass(classSession)"
                 class="flex items-center px-3 py-1 bg-green-600 text-white rounded-lg hover:bg-green-700 transition-colors"
+                @click="startClass(classSession)"
               >
                 <span class="flex items-center">
                   <svg
@@ -1018,9 +1018,9 @@ onMounted(() => {
                 </span>
               </button>
               <button
-                @click="showClassDetails(classSession)"
                 class="p-1 rounded-lg text-gray-500 hover:bg-gray-100 hover:text-gray-700 transition-colors"
                 title="View Details"
+                @click="showClassDetails(classSession)"
               >
                 <svg
                   xmlns="http://www.w3.org/2000/svg"
@@ -1374,7 +1374,7 @@ onMounted(() => {
                       classSession.registeredStudents,
                       classSession.maxCapacity
                     )}%`"
-                  ></div>
+                  />
                 </div>
               </div>
             </div>
@@ -1383,8 +1383,8 @@ onMounted(() => {
             <div class="flex flex-wrap gap-2 md:flex-col lg:flex-row">
               <button
                 v-if="classSession.status === 'live'"
-                @click="startClass(classSession)"
                 class="flex items-center justify-center px-3 py-1.5 bg-green-600 text-white rounded-lg hover:bg-green-700 transition-colors"
+                @click="startClass(classSession)"
               >
                 <svg
                   xmlns="http://www.w3.org/2000/svg"
@@ -1406,8 +1406,8 @@ onMounted(() => {
                   classSession.status === 'scheduled' &&
                   new Date(classSession.startTime) > new Date()
                 "
-                @click="confirmCancelClass(classSession)"
                 class="flex items-center justify-center px-3 py-1.5 bg-red-50 text-red-700 border border-red-200 rounded-lg hover:bg-red-100 transition-colors"
+                @click="confirmCancelClass(classSession)"
               >
                 <svg
                   xmlns="http://www.w3.org/2000/svg"
@@ -1470,8 +1470,8 @@ onMounted(() => {
               </NuxtLink>
 
               <button
-                @click="showClassDetails(classSession)"
                 class="flex items-center justify-center px-3 py-1.5 bg-gray-50 text-gray-700 border border-gray-200 rounded-lg hover:bg-gray-100 transition-colors"
+                @click="showClassDetails(classSession)"
               >
                 <svg
                   xmlns="http://www.w3.org/2000/svg"
@@ -1543,23 +1543,23 @@ onMounted(() => {
             rows="3"
             class="w-full px-3 py-2 border border-gray-300 rounded-md shadow-sm focus:outline-none focus:ring-2 focus:ring-red-500 focus:border-red-500"
             placeholder="Enter cancellation reason (will be sent to students)"
-          ></textarea>
+          />
         </div>
 
         <div class="flex justify-end space-x-3">
           <button
-            @click="showCancelClassModal = false"
             class="px-4 py-2 text-sm font-medium text-gray-700 bg-white border border-gray-300 rounded-md shadow-sm hover:bg-gray-50 focus:outline-none focus:ring-2 focus:ring-indigo-500 focus:ring-offset-2"
+            @click="showCancelClassModal = false"
           >
             Never mind
           </button>
           <button
-            @click="cancelClass"
             class="px-4 py-2 text-sm font-medium text-white bg-red-600 rounded-md shadow-sm hover:bg-red-700 focus:outline-none focus:ring-2 focus:ring-red-500 focus:ring-offset-2"
             :disabled="!cancelReason || isCancelling"
             :class="{
               'opacity-50 cursor-not-allowed': !cancelReason || isCancelling,
             }"
+            @click="cancelClass"
           >
             <span v-if="isCancelling" class="flex items-center">
               <svg
@@ -1575,154 +1575,17 @@ onMounted(() => {
                   r="10"
                   stroke="currentColor"
                   stroke-width="4"
-                ></circle>
+                />
                 <path
                   class="opacity-75"
                   fill="currentColor"
                   d="M4 12a8 8 0 018-8V0C5.373 0 0 5.373 0 12h4zm2 5.291A7.962 7.962 0 014 12H0c0 3.042 1.135 5.824 3 7.938l3-2.647z"
-                ></path>
+                />
               </svg>
               Cancelling...
             </span>
             <span v-else>Cancel Class</span>
           </button>
-        </div>
-      </div>
-    </div>
-
-    <!-- Class details modal -->
-    <div
-      v-if="showClassDetailsModal"
-      class="fixed inset-0 bg-gray-500 bg-opacity-75 flex items-center justify-center z-50"
-    >
-      <div
-        class="bg-white rounded-lg max-w-3xl w-full p-6 shadow-xl max-h-[90vh] overflow-y-auto"
-      >
-        <div class="flex justify-between items-start mb-4">
-          <div>
-            <span
-              class="inline-flex items-center px-2.5 py-0.5 rounded-full text-xs font-medium mb-2"
-              :class="getClassTypeBadgeClasses(selectedClass?.type || '')"
-            >
-              {{ formatClassType(selectedClass?.type || "") }}
-            </span>
-            <h2 class="text-xl font-bold text-gray-900">
-              {{ selectedClass?.title }}
-            </h2>
-            <p class="text-gray-600 mt-1">{{ selectedClass?.courseName }}</p>
-          </div>
-          <button
-            @click="showClassDetailsModal = false"
-            class="text-gray-400 hover:text-gray-500"
-          >
-            <svg
-              xmlns="http://www.w3.org/2000/svg"
-              class="h-6 w-6"
-              fill="none"
-              viewBox="0 0 24 24"
-              stroke="currentColor"
-            >
-              <path
-                stroke-linecap="round"
-                stroke-linejoin="round"
-                stroke-width="2"
-                d="M6 18L18 6M6 6l12 12"
-              />
-            </svg>
-          </button>
-        </div>
-
-        <div class="bg-gray-50 p-4 rounded-lg mb-4">
-          <div class="grid grid-cols-1 md:grid-cols-2 gap-4">
-            <div>
-              <h3 class="text-sm font-medium text-gray-500 mb-1">
-                Date & Time
-              </h3>
-              <p class="text-gray-900">
-                {{ formatDate(selectedClass?.date || "") }}
-              </p>
-              <p class="text-gray-900">
-                {{ formatTime(selectedClass?.startTime || "") }} -
-                {{ formatTime(selectedClass?.endTime || "") }}
-              </p>
-              <p class="text-gray-500 text-sm">
-                {{
-                  formatDuration(
-                    selectedClass?.startTime || "",
-                    selectedClass?.endTime || ""
-                  )
-                }}
-              </p>
-            </div>
-            <div>
-              <h3 class="text-sm font-medium text-gray-500 mb-1">Location</h3>
-              <p class="text-gray-900">
-                {{
-                  selectedClass?.isOnline ? "Online" : selectedClass?.location
-                }}
-              </p>
-              <p
-                v-if="selectedClass?.isOnline"
-                class="text-indigo-600 text-sm truncate"
-              >
-                <a
-                  :href="selectedClass?.meetingUrl"
-                  target="_blank"
-                  class="hover:underline"
-                  >{{ selectedClass?.meetingUrl }}</a
-                >
-              </p>
-            </div>
-            <div>
-              <h3 class="text-sm font-medium text-gray-500 mb-1">Status</h3>
-              <p
-                class="inline-flex items-center px-2.5 py-0.5 rounded-full text-xs font-medium"
-                :class="getStatusBadgeClasses(selectedClass?.status || '')"
-              >
-                {{
-                  selectedClass?.status.charAt(0).toUpperCase() +
-                  selectedClass?.status.slice(1)
-                }}
-              </p>
-            </div>
-            <div>
-              <h3 class="text-sm font-medium text-gray-500 mb-1">Enrollment</h3>
-              <p class="text-gray-900">
-                {{ selectedClass?.registeredStudents }} /
-                {{ selectedClass?.maxCapacity }} students
-              </p>
-              <div class="mt-1 w-full bg-gray-200 rounded-full h-2.5 relative">
-                <div
-                  class="h-2.5 rounded-full"
-                  :class="{
-                    'bg-green-500':
-                      getCapacityPercentage(
-                        selectedClass?.registeredStudents || 0,
-                        selectedClass?.maxCapacity || 1
-                      ) < 70,
-                    'bg-yellow-500':
-                      getCapacityPercentage(
-                        selectedClass?.registeredStudents || 0,
-                        selectedClass?.maxCapacity || 1
-                      ) >= 70 &&
-                      getCapacityPercentage(
-                        selectedClass?.registeredStudents || 0,
-                        selectedClass?.maxCapacity || 1
-                      ) < 90,
-                    'bg-red-500':
-                      getCapacityPercentage(
-                        selectedClass?.registeredStudents || 0,
-                        selectedClass?.maxCapacity || 1
-                      ) >= 90,
-                  }"
-                  :style="`width: ${getCapacityPercentage(
-                    selectedClass?.registeredStudents || 0,
-                    selectedClass?.maxCapacity || 1
-                  )}%`"
-                ></div>
-              </div>
-            </div>
-          </div>
         </div>
       </div>
     </div>

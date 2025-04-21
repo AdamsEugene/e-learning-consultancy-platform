@@ -155,11 +155,13 @@ onUnmounted(() => {
     <Transition name="drawer-fade">
       <div
         v-if="isOpen"
-        class="fixed inset-0 backdrop-blur-sm bg-black/30 z-40"
-        :style="{ zIndex: zIndex,  width: `calc(100% - ${drawerWidth})` }"
+        class="fixed inset-0 backdrop-blur-sm bg-black/30 z-40 transition-all"
+        :style="{ zIndex: zIndex }"
         @click="closeOnClickOutside && closeDrawer()"
       >
-        <slot name="backdrop" />
+        <div class="h-full" :style="{ width: `calc(100% - ${drawerWidth})` }">
+          <slot name="backdrop" />
+        </div>
       </div>
     </Transition>
 
@@ -170,7 +172,7 @@ onUnmounted(() => {
       <div
         v-if="isOpen"
         ref="drawerRef"
-        class="fixed top-0 h-full bg-white/90 backdrop-blur-md shadow-xl overflow-hidden flex flex-col"
+        class="fixed top-0 h-full bg-white/90 backdrop-blur-md shadow-xl overflow-hidden flex flex-col transition-all duration-300"
         :class="[
           position === 'right' ? 'right-0' : 'left-0',
           'w-full sm:w-auto',
@@ -254,12 +256,14 @@ onUnmounted(() => {
 <style scoped>
 .drawer-fade-enter-active,
 .drawer-fade-leave-active {
-  transition: opacity 0.4s cubic-bezier(0.4, 0, 0.2, 1);
+  transition: opacity 0.4s cubic-bezier(0.4, 0, 0.2, 1),
+    background-color 0.4s cubic-bezier(0.4, 0, 0.2, 1);
 }
 
 .drawer-fade-enter-from,
 .drawer-fade-leave-to {
   opacity: 0;
+  background-color: transparent;
 }
 
 .drawer-slide-right-enter-active,
@@ -267,19 +271,22 @@ onUnmounted(() => {
 .drawer-slide-left-enter-active,
 .drawer-slide-left-leave-active {
   transition: transform 0.4s cubic-bezier(0.4, 0, 0.2, 1),
-    opacity 0.3s cubic-bezier(0.4, 0, 0.2, 1);
+    opacity 0.4s cubic-bezier(0.4, 0, 0.2, 1),
+    background-color 0.4s cubic-bezier(0.4, 0, 0.2, 1);
 }
 
 .drawer-slide-right-enter-from,
 .drawer-slide-right-leave-to {
   transform: translateX(100%);
   opacity: 0;
+  background-color: transparent;
 }
 
 .drawer-slide-left-enter-from,
 .drawer-slide-left-leave-to {
   transform: translateX(-100%);
   opacity: 0;
+  background-color: transparent;
 }
 
 /* Add glass effect to the drawer */
