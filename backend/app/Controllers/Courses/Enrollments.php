@@ -50,6 +50,11 @@ class Enrollments extends LoadController {
         // check if the user id is set
         $enrollments = $this->enrollmentsModel->getRecords($payload);
 
+        // fix the no enrollments record
+        if(empty($enrollments)) {
+            return Routing::success([]);
+        }
+
         if(!empty($this->payload['enroll_id'])) {
             // set the minified to true
             $this->coursesController->minified = false;
@@ -122,4 +127,42 @@ class Enrollments extends LoadController {
         return Routing::success('You have been enrolled in the course');
     }
 
+    /**
+     * Start learning
+     * 
+     * @return array
+     */
+    public function startlearning() {
+
+        // get the enrollment
+        $enrollment = $this->enrollmentsModel->getRecords([
+            'user_id' => $this->currentUser['user_id'], 
+            'id' => $this->payload['enroll_id'], 
+            'status' => ['Enrolled', 'Pending']
+        ]);
+
+        // check if the enrollment is empty
+        if(empty($enrollment)) {
+            return Routing::error('You are not enrolled in this course');
+        }
+
+        // reset all params for the course
+        $this->enrollmentsModel->updateRecord($this->payload['enroll_id'], [
+            'lessonsCompleted' => 0,
+            'currentLesson' => 1,
+            'nextLesson' => 1,
+            'status' => 'Started'
+        ]);
+
+        return Routing::success('You have started learning the course');
+    }
+
+    /**
+     * Continue learning
+     * 
+     * @return array
+     */
+    public function lessonlog() {
+
+    }
 }

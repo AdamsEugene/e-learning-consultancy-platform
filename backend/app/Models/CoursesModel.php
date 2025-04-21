@@ -246,12 +246,12 @@ class CoursesModel extends Model
      * 
      * @return int
      */
-    public function getSections($data) {
+    public function getSections($data, $limit = 24, $offset = 0, $order = 'DESC') {
         try {
             return $this->db->table($this->contentTable)
                 ->where($data)
-                ->orderBy('id', 'DESC')
-                ->get()
+                ->orderBy('id', $order)
+                ->get($limit, $offset)
                 ->getResultArray();
         } catch (DatabaseException $e) {
             print_r($e->getMessage());
@@ -266,11 +266,11 @@ class CoursesModel extends Model
      * 
      * @return int
      */
-    public function deleteSection($id) {
+    public function deleteSection($data) {
         try {
-            $this->db->table($this->contentTable)->where('id', $id)->delete();
-            return true;
+            return $this->db->table($this->contentTable)->where($data)->delete();
         } catch (DatabaseException $e) {
+            print_r($e->getMessage());
             return false;
         }
     }

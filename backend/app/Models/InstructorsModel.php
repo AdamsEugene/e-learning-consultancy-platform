@@ -119,12 +119,12 @@ class InstructorsModel extends Model {
      * @param int $id
      * @return int
      */
-    public function deleteRecord($id) {
+    public function deleteRecord($data) {
         try {
-            $this->db->table($this->table)->where('id', $id)->delete();
+            $this->db->table($this->table)->where($data)->delete();
             return $this->db->affectedRows();
         } catch(DatabaseException $e) {
-            return 0;
+            return false;
         }
     }
 }

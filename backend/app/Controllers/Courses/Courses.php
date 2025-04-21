@@ -108,7 +108,7 @@ class Courses extends LoadController {
 
         // confirm if the user is an admin or an instructor
         if(!in_array($this->currentUser['user_type'], ['Admin', 'Instructor'])) {
-            return Routing::error('You are not authorized to create a course. Only admins and instructors can create courses.');
+            // return Routing::error('You are not authorized to create a course. Only admins and instructors can create courses.');
         }
 
         // compare the price and the original price
@@ -175,6 +175,9 @@ class Courses extends LoadController {
             $this->payload['tags'] = json_encode($tags_list ?? []);
         }
 
+        // reprocess the sections
+        $reprocessSections = true;
+
         // validate the sections
         if(!empty($this->payload['sections'])) {
             // decode the sections
@@ -184,6 +187,34 @@ class Courses extends LoadController {
             $validateSections = validateCourseSections($sections, $this->allSections, $this->allLessons, $this->acceptedLessonTypes);
             if(is_string($validateSections)) {
                 return Routing::error($validateSections);
+            }
+
+            if(!empty($this->recordInfo)) {
+                $sections = $this->coursesModel->getSections(['course_id' => $this->recordInfo['id']], 100, 0, 'ASC');
+
+                $existing = [];
+                if(!empty($sections)) {
+                    foreach($sections as $section) {
+                        $existing[] = [
+                            'title' => $section['title'],
+                            'lessons' => $section['lessons'],
+                            'totalDuration' => $section['totalDuration']
+                        ];
+                    }
+                }
+
+                $incoming = [];
+                foreach($validateSections as $section) {
+                    $incoming[] = [
+                        'title' => $section['title'],
+                        'lessons' => json_encode($section['lessons']),
+                        'totalDuration' => $section['totalDuration']
+                    ];
+                }
+
+                if(md5(json_encode($incoming)) == md5(json_encode($existing))) {
+                    $reprocessSections = false;
+                }
             }
 
             // set the sections
@@ -214,7 +245,14 @@ class Courses extends LoadController {
         }
 
         // insert the sections
-        if(!empty($sectionsList) && is_array($sectionsList)) {
+        if(!empty($sectionsList) && is_array($sectionsList) && $reprocessSections) {
+
+            // if updating, delete the existing sections
+            if($this->doUpdateCourse) {
+                $this->coursesModel->deleteSection(['course_id' => $courseId]);
+            }
+            
+            // loop through the sections
             foreach($sectionsList as $section) {
                 $this->coursesModel->createSection([
                     'course_id' => $courseId,
@@ -227,6 +265,13 @@ class Courses extends LoadController {
         }
         // insert the course instructors
         if(!$this->doUpdateCourse || $this->doUpdateCourse && !empty($this->payload['instructor_id'])) {
+
+            // delete the existing instructors
+            if($this->doUpdateCourse && !empty($this->payload['instructor_id'])) {
+                $this->instructorsModel->deleteRecord(['course_id' => $courseId, 'instructor_id' => $instructor_id]);
+            }
+
+            // create the new instructors
             $this->instructorsModel->createRecord([
                 'course_id' => $courseId,
                 'instructor_id' => $instructor_id
@@ -337,6 +382,36 @@ class Courses extends LoadController {
 
         // return the response and procesing the request
         return $enrolObject->list($courseData ?? []);
+    }
+
+    /**
+     * Start learning
+     * 
+     * @return array
+     */
+    public function startlearning() {
+
+        // create a new instance of the enrollments controller
+        $enrolObject = new Enrollments();
+        $enrolObject->setProps($this->payload, $this->uniqueId, $this->currentUser, $this->coursesModel, $this);
+
+        // return the response and procesing the request
+        return $enrolObject->startlearning();
+    }
+
+    /**
+     * Continue learning
+     * 
+     * @return array
+     */
+    public function lessonlog() {
+
+        // create a new instance of the enrollments controller
+        $enrolObject = new Enrollments();
+        $enrolObject->setProps($this->payload, $this->uniqueId, $this->currentUser, $this->coursesModel, $this);
+
+        // return the response and procesing the request
+        return $enrolObject->lessonlog();
     }
 
     /**

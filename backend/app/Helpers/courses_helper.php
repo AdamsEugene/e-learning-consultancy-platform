@@ -29,6 +29,10 @@ function validateCourseSections($sections = [], $allSections = [], $allLessons =
     // loop through the sections
     foreach($sections as $key => $section) {
 
+        // get the section duration
+        $totalDuration = (int) $section['totalDuration'];
+        $lessonsDuration = 0;
+
         // get the section keys
         $sectionKeys = array_keys($section);
 
@@ -67,6 +71,11 @@ function validateCourseSections($sections = [], $allSections = [], $allLessons =
             $missingKeys = array_diff($allLessons, $lessonKeys);
 
             if(!empty($missingKeys)) {
+                // lesson keys
+                $lesson['title'] = $lesson['title'] ?? 'Untitled Lesson';
+                $section['title'] = $section['title'] ?? 'Untitled Section';
+
+                // return the error message
                 return "Section {$curKey} - '{$section['title']}' lesson '{$lesson['title']}' is missing some keys: " . implode(', ', $missingKeys);
             }
 
@@ -79,6 +88,14 @@ function validateCourseSections($sections = [], $allSections = [], $allLessons =
             if(!is_numeric($lesson['duration'])) {
                 return "Section {$curKey} - '{$section['title']}' lesson '{$lesson['title']}' duration is not a number.";
             }
+
+            $lessonsDuration += (int) $lesson['duration'];
+
+        }
+
+        if($lessonsDuration > $totalDuration) {
+            $diffHours = convertSecondsToHoursAndMinutes($lessonsDuration - $totalDuration);
+            return "Section {$curKey} - '{$section['title']}' total duration is less than the sum of the lessons duration by {$diffHours})";
         }
     }
 
@@ -139,7 +156,6 @@ function formatEnrolledCourses($enrollments = [], $single = false) {
         // format the course
         if(!empty($value['course'])) {
             $value['course'] = json_decode($value['course'], true);
-
             // format the course response
             foreach(['tags', 'features', 'description', 'requirements'] as $field) {
                 if(!empty($value['course'][$field])) {
@@ -147,6 +163,10 @@ function formatEnrolledCourses($enrollments = [], $single = false) {
                     $value['course'][$field] = empty($list) ? html_entity_decode($value['course'][$field]) : $list;
                 }
             }
+        }
+
+        if(!empty($value['user'])) {
+            $value['user'] = json_decode($value['user'], true);
         }
 
         // format the course

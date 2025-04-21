@@ -56,7 +56,7 @@ class CoursesValidation {
         'update:course_id' => [
             'method' => 'PUT',
             'authenticate' => true,
-            'isAdmin' => true,
+            // 'isAdmin' => true,
             'payload' => [
                 "title" => "permit_empty|string|max_length[255]",
                 "subtitle" => "permit_empty|string|max_length[255]",
@@ -98,6 +98,24 @@ class CoursesValidation {
                 "limit" => "permit_empty|integer",
                 "offset" => "permit_empty|integer",
                 "status" => "permit_empty|string|in_list[Enrolled,Completed,Cancelled]",
+            ]
+        ],
+        'startlearning:enroll_id' => [
+            'method' => 'POST',
+            'authenticate' => true,
+            'payload' => [
+                "enroll_id" => "required|integer",
+            ]
+        ],
+        'lessonlog:enroll_id' => [
+            'method' => 'POST',
+            'authenticate' => true,
+            'payload' => [
+                "enroll_id" => "required|integer",
+                "lesson_id" => "required|integer",
+                "section_id" => "required|integer",
+                "timer" => "required|integer",
+                "status" => "permit_empty|string|in_list[Started,Completed]",
             ]
         ],
         'delete:course_id' => [

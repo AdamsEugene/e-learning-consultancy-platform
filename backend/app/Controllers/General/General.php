@@ -7,7 +7,13 @@ use App\Libraries\Routing;
 
 class General extends LoadController {
 
-    public function getLevels() {
-        return Routing::success(getLevels());
+    public function utilities() {
+        $result = [
+            'levels' => getLevels(),
+            'eventTypes' => getEventTypes(),
+            'industries' => getIndustries()
+        ];
+        return Routing::success($result);
     }
+
 }

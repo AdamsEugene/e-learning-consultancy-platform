@@ -34,6 +34,22 @@ function configs($key) {
 }
 
 /**
+ * Get the event types
+ * 
+ * @return array
+ */
+function getEventTypes() {
+    return [
+        "course" => "text-blue-500",
+        "meeting" => "text-purple-500",
+        "assignment" => "text-amber-500",
+        "reminder" => "text-green-500",
+        "consultation" => "text-indigo-500",
+        "deadline" => "text-red-500"
+    ];
+}
+
+/**
  * Get the industries
  * 
  * @return array

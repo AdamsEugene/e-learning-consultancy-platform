@@ -47,7 +47,14 @@ class EnrollmentsModel extends Model {
                 'rating', c.rating,
                 'price', c.price,
                 'originalPrice', c.originalPrice
-            ) FROM {$this->coursesTable} c WHERE c.id = e.course_id LIMIT 1) as course";
+            ) FROM {$this->coursesTable} c WHERE c.id = e.course_id LIMIT 1) as course, (SELECT JSON_OBJECT(
+                'firstname', u.firstname, 
+                'lastname', u.lastname, 
+                'email', u.email,
+                'reviewCount', u.reviewCount,
+                'userType', u.user_type,
+                'rating', u.rating
+            ) FROM {$this->userTable} u WHERE u.id = e.user_id LIMIT 1) as user";
 
             // get the query
             $query = $this->db->table("{$this->table} as e")->select("e.* {$courseInfo}");
@@ -80,6 +87,21 @@ class EnrollmentsModel extends Model {
     public function createRecord($data) {
         try {
             return $this->db->table($this->table)->insert($data);
+        } catch(DatabaseException $e) {
+            return false;
+        }
+    }
+
+    /**
+     * Update a record
+     * 
+     * @param int $id
+     * @param array $data
+     * @return bool
+     */
+    public function updateRecord($id, $data) {
+        try {
+            return $this->db->table($this->table)->where('id', $id)->update($data);
         } catch(DatabaseException $e) {
             return false;
         }
