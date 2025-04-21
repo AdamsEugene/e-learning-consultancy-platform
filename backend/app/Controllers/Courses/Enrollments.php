@@ -164,5 +164,19 @@ class Enrollments extends LoadController {
      */
     public function lessonlog() {
 
+        // get the enrollment
+        $enrollment = $this->enrollmentsModel->getRecords([
+            'user_id' => $this->currentUser['user_id'], 
+            'id' => $this->payload['enroll_id'], 
+            'status' => ['Enrolled', 'Pending']
+        ]);
+
+        // check if the enrollment is empty
+        if(empty($enrollment)) {
+            return Routing::error('You are not enrolled in this course');
+        }
+        
+        
+
     }
 }

@@ -254,7 +254,6 @@ class CoursesModel extends Model
                 ->get($limit, $offset)
                 ->getResultArray();
         } catch (DatabaseException $e) {
-            print_r($e->getMessage());
             return false;
         }
     }
@@ -270,7 +269,6 @@ class CoursesModel extends Model
         try {
             return $this->db->table($this->contentTable)->where($data)->delete();
         } catch (DatabaseException $e) {
-            print_r($e->getMessage());
             return false;
         }
     }

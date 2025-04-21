@@ -201,6 +201,32 @@ $databases = [
     CREATE INDEX IF NOT EXISTS idx_courses_enrollments_course_id ON courses_enrollments (course_id);
     CREATE INDEX IF NOT EXISTS idx_courses_enrollments_user_id ON courses_enrollments (user_id);
     CREATE INDEX IF NOT EXISTS idx_courses_enrollments_status ON courses_enrollments (status);",
+    "CREATE TABLE IF NOT EXISTS lesson_discussions (
+        id INTEGER PRIMARY KEY AUTOINCREMENT,
+        course_id INTEGER DEFAULT 0,
+        lesson_id INTEGER DEFAULT 0,
+        user_id INTEGER DEFAULT 0,
+        votes INTEGER DEFAULT 0,
+        parent_id INTEGER DEFAULT 0,
+        content TEXT DEFAULT '',
+        created_at DATETIME DEFAULT CURRENT_TIMESTAMP,
+        updated_at DATETIME DEFAULT CURRENT_TIMESTAMP
+    );
+    CREATE INDEX IF NOT EXISTS idx_lesson_discussions_course_id ON lesson_discussions (course_id);
+    CREATE INDEX IF NOT EXISTS idx_lesson_discussions_lesson_id ON lesson_discussions (lesson_id);
+    CREATE INDEX IF NOT EXISTS idx_lesson_discussions_user_id ON lesson_discussions (user_id);",
+    "CREATE TABLE IF NOT EXISTS lesson_notes (
+        id INTEGER PRIMARY KEY AUTOINCREMENT,
+        course_id INTEGER DEFAULT 0,
+        lesson_id INTEGER DEFAULT 0,
+        user_id INTEGER DEFAULT 0,
+        content TEXT DEFAULT '',
+        created_at DATETIME DEFAULT CURRENT_TIMESTAMP,
+        updated_at DATETIME DEFAULT CURRENT_TIMESTAMP
+    );
+    CREATE INDEX IF NOT EXISTS idx_lesson_notes_course_id ON lesson_notes (course_id);
+    CREATE INDEX IF NOT EXISTS idx_lesson_notes_lesson_id ON lesson_notes (lesson_id);
+    CREATE INDEX IF NOT EXISTS idx_lesson_notes_user_id ON lesson_notes (user_id);",
     "CREATE TABLE IF NOT EXISTS wishlist (
         id INTEGER PRIMARY KEY AUTOINCREMENT,
         user_id INTEGER DEFAULT 0,

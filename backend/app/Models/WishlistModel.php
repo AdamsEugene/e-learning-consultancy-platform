@@ -76,7 +76,6 @@ class WishlistModel extends Model {
 
             return $query->first();
         } catch(DatabaseException $e) {
-            print_r($e->getMessage());
             return [];
         }
     }

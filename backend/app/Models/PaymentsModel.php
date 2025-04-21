@@ -10,7 +10,7 @@ class PaymentsModel extends Model {
 
     protected $table;
     protected $payment_token;
-    protected $allowedFields = ['customer_id', 'pay_method_id', 'pay_method', 'account_id', 'is_default_source'];
+    protected $allowedFields = ['user_id', 'card_id', 'card_info', 'is_default_card'];
 
     public function __construct() {
         parent::__construct();

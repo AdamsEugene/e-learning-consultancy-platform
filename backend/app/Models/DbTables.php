@@ -16,6 +16,9 @@ class DbTables {
     public static $wishlistTable = 'wishlist';
     public static $contentTable = 'courses_content';
 
+    public static $discussionsTable = 'lesson_discussions';
+    public static $notesTable = 'lesson_notes';
+
     public static $altUserTable = 'temp_table';
     public static $instructorsTable = 'courses_instructors';
     public static $reviewsTable = 'courses_reviews';

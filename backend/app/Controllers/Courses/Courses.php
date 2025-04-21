@@ -108,7 +108,7 @@ class Courses extends LoadController {
 
         // confirm if the user is an admin or an instructor
         if(!in_array($this->currentUser['user_type'], ['Admin', 'Instructor'])) {
-            // return Routing::error('You are not authorized to create a course. Only admins and instructors can create courses.');
+            return Routing::error('You are not authorized to create a course. Only admins and instructors can create courses.');
         }
 
         // compare the price and the original price
@@ -251,7 +251,7 @@ class Courses extends LoadController {
             if($this->doUpdateCourse) {
                 $this->coursesModel->deleteSection(['course_id' => $courseId]);
             }
-            
+
             // loop through the sections
             foreach($sectionsList as $section) {
                 $this->coursesModel->createSection([
