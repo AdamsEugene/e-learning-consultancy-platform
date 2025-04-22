@@ -54,17 +54,44 @@ watch(
   }
 );
 
-// Header scroll effect - maintaining original behavior
+// Header scroll effect - MODIFIED for initial transparency
 const scrollY = ref(0);
-const headerOpacity = computed(() => {
-  if (scrollY.value < 100) return 0;
-  if (scrollY.value > 200) return 1;
-  return (scrollY.value - 100) / 100;
+const headerBackground = computed(() => {
+  if (scrollY.value < 10) return "bg-transparent"; // Initially transparent
+  if (scrollY.value >= 100)
+    return isDarkMode.value
+      ? "bg-gray-800/90 backdrop-blur-md"
+      : "bg-white/90 backdrop-blur-md"; // Final state
+  // For values between 10-100, gradual change from transparent to final state
+  const opacity = (scrollY.value - 10) / 90;
+  return isDarkMode.value
+    ? `bg-gray-800/[${opacity}] backdrop-blur-[${opacity * 12}px]`
+    : `bg-white/[${opacity}] backdrop-blur-[${opacity * 12}px]`;
+});
+
+const headerShadow = computed(() => {
+  if (scrollY.value < 100) return "";
+  return "shadow-lg";
 });
 
 const updateScrollPosition = () => {
   scrollY.value = window.scrollY;
 };
+
+// Text color for transparent header (ensuring contrast against any background)
+const initialTextClass = computed(() => {
+  if (scrollY.value < 10) {
+    return "text-white drop-shadow-sm";
+  }
+  return isDarkMode.value ? "text-white" : "text-gray-700";
+});
+
+const initialHighlightTextClass = computed(() => {
+  if (scrollY.value < 10) {
+    return "text-white drop-shadow-sm";
+  }
+  return isDarkMode.value ? "text-indigo-400" : "text-indigo-600";
+});
 
 // Scroll to top function
 const scrollToTop = () => {
@@ -139,7 +166,6 @@ onBeforeUnmount(() => {
 });
 </script>
 
-<!-- eslint-disable vue/html-self-closing -->
 <template>
   <div
     class="min-h-screen flex flex-col transition-colors duration-500"
@@ -147,19 +173,10 @@ onBeforeUnmount(() => {
       isDarkMode ? 'dark bg-gray-900 text-gray-100' : 'bg-white text-gray-900'
     "
   >
-    <!-- Floating header that appears on scroll - KEEPING ORIGINAL BEHAVIOR -->
+    <!-- Modified header - Always visible with transparent background initially -->
     <header
       class="fixed top-0 left-0 right-0 z-50 transition-all duration-300"
-      :class="[
-        isDarkMode
-          ? 'bg-gray-800/90 backdrop-blur-md'
-          : 'bg-white/90 backdrop-blur-md',
-        headerOpacity > 0 ? 'shadow-lg' : '',
-      ]"
-      :style="{
-        opacity: headerOpacity,
-        transform: headerOpacity === 0 ? 'translateY(-100%)' : 'translateY(0)',
-      }"
+      :class="[headerBackground, headerShadow]"
     >
       <div
         class="container mx-auto px-4 py-3 flex justify-between items-center"
@@ -187,7 +204,7 @@ onBeforeUnmount(() => {
 
             <span
               class="text-xl font-bold transition-colors duration-300"
-              :class="isDarkMode ? 'text-white' : 'text-indigo-600'"
+              :class="initialHighlightTextClass"
             >
               LearnConsult
             </span>
@@ -206,12 +223,8 @@ onBeforeUnmount(() => {
               class="font-medium transition-all duration-300 group"
               :class="[
                 currentRoute === link.to
-                  ? isDarkMode
-                    ? 'text-indigo-400'
-                    : 'text-indigo-600'
-                  : isDarkMode
-                  ? 'text-gray-300 hover:text-white'
-                  : 'text-gray-700 hover:text-indigo-600',
+                  ? initialHighlightTextClass
+                  : initialTextClass + ' hover:text-indigo-400',
               ]"
             >
               {{ link.label }}
@@ -229,11 +242,7 @@ onBeforeUnmount(() => {
           <NuxtLink
             to="/auth/login"
             class="font-semibold transition-colors duration-300 relative group overflow-hidden"
-            :class="
-              isDarkMode
-                ? 'text-white hover:text-indigo-300'
-                : 'text-indigo-600 hover:text-indigo-800'
-            "
+            :class="initialHighlightTextClass + ' hover:text-indigo-400'"
           >
             <span class="relative z-10">Log in</span>
             <span
@@ -264,7 +273,7 @@ onBeforeUnmount(() => {
         <!-- Mobile menu button -->
         <button
           class="md:hidden focus:outline-none"
-          :class="isDarkMode ? 'text-white' : 'text-gray-700'"
+          :class="initialTextClass"
           aria-label="Toggle menu"
           @click="toggleMobileMenu"
         >
@@ -318,6 +327,7 @@ onBeforeUnmount(() => {
       />
     </transition>
 
+    <!-- Rest of your mobile menu, content, and footer... -->
     <!-- Mobile menu drawer -->
     <transition
       enter-active-class="transition-transform duration-300 ease-out"
@@ -737,17 +747,6 @@ onBeforeUnmount(() => {
         </svg>
       </button>
     </footer>
-
-    <!-- Support Chat Component -->
-    <UiSupportChat
-      brand-name="LearnConsult"
-      agent-name="Alex from Support"
-      agent-avatar="/images/instructors/i3.jpg"
-      brand-color="purple"
-      position="bottom-right"
-      greeting-message="👋 Hi there! Need any help with your courses or consultancy?"
-      response-time="We aim to respond within an hour"
-    />
   </div>
 </template>
 
@@ -810,6 +809,11 @@ html {
 .logo-hover:hover {
   filter: brightness(1.2);
   transform: scale(1.05);
+}
+
+/* Text shadow for better visibility on transparent headers */
+.drop-shadow-sm {
+  text-shadow: 0 1px 2px rgba(0, 0, 0, 0.3);
 }
 
 /* Group hover effects for icons */
