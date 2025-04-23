@@ -126,7 +126,7 @@ const caseStudies = ref([
       <div class="text-center mb-20">
         <div class="mb-3 animate-fade-in">
           <span
-            class="bg-white bg-opacity-10 backdrop-blur-sm text-white text-sm font-bold px-4 py-2 rounded-full shadow-glow"
+            class="bg-white bg-opacity-10 backdrop-blur-sm text-black text-sm font-bold px-4 py-2 rounded-full shadow-glow"
           >
             Expert Solutions
           </span>
@@ -308,7 +308,7 @@ const caseStudies = ref([
                 <!-- Client and title info -->
                 <div class="absolute bottom-0 left-0 p-6 text-white z-10">
                   <div
-                    class="inline-block px-3 py-1 bg-white bg-opacity-20 backdrop-blur-sm rounded-full text-xs font-semibold mb-2"
+                    class="inline-block px-3 py-1 bg-white text-black bg-opacity-20 backdrop-blur-sm rounded-full text-xs font-semibold mb-2"
                   >
                     {{ study.client }}
                   </div>
