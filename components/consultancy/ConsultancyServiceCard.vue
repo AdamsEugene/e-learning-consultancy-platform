@@ -65,17 +65,16 @@ const gradient = computed(() => {
   >
     <!-- Decorative background gradient -->
     <div
-      class="absolute -top-10 -right-10 w-32 h-32 rounded-full opacity-10 bg-gradient-to-br transition-transform duration-700"
+      class="absolute -top-10 -right-10 w-32 h-32 rounded-full opacity-10 bg-gradient-to-br transition-opacity duration-700"
       :class="gradient"
-      :style="isHovered ? 'transform: scale(1.5)' : 'transform: scale(1)'"
+      :style="isHovered ? 'opacity: 0.2' : 'opacity: 0.1'"
     />
 
     <!-- Popular badge if applicable -->
     <div
       v-if="service.popular"
-      class="absolute top-3 right-3 rounded-full px-3 py-1 text-xs font-bold shadow-md transition-transform duration-500"
+      class="absolute top-3 right-3 rounded-full px-3 py-1 text-xs font-bold shadow-md"
       :class="[`bg-${service.color}-100`, `text-${service.color}-800`]"
-      :style="isHovered ? 'transform: scale(1.1)' : ''"
     >
       Popular
     </div>
@@ -83,7 +82,10 @@ const gradient = computed(() => {
     <!-- Service icon -->
     <div
       class="relative mb-4 inline-flex items-center justify-center p-3 rounded-lg transition-all duration-500"
-      :class="[`bg-${service.color}-100`, isHovered ? 'scale-110' : '']"
+      :class="[
+        `bg-${service.color}-100`, 
+        isHovered ? `shadow-sm bg-${service.color}-50` : ''
+      ]"
     >
       <svg
         v-if="service.icon === 'code'"
@@ -231,14 +233,14 @@ const gradient = computed(() => {
     <!-- Service description -->
     <p class="text-gray-600 mb-4 relative">{{ service.description }}</p>
 
-    <!-- Features list with subtle slide animation -->
+    <!-- Features list with subtle animation -->
     <ul class="space-y-2 mb-6 relative">
       <li
         v-for="(feature, index) in service.features"
         :key="index"
-        class="flex items-center transition-all duration-300"
+        class="flex items-center transition-colors duration-300 cursor-default"
         :style="`transition-delay: ${index * 50}ms`"
-        :class="isHovered ? 'translate-x-1' : ''"
+        :class="isHovered ? `text-${service.color}-900` : ''"
       >
         <svg
           xmlns="http://www.w3.org/2000/svg"
@@ -257,13 +259,13 @@ const gradient = computed(() => {
       </li>
     </ul>
 
-    <!-- Learn more button with color transition -->
+    <!-- Learn more button with shadow on hover -->
     <div class="relative">
       <button
         class="inline-flex items-center font-medium rounded-lg transition-all duration-500 cursor-pointer"
         :class="[
           isHovered
-            ? `text-white bg-${service.color}-600 px-4 py-2`
+            ? `text-${service.color}-600 hover:text-${service.color}-700`
             : `text-${service.color}-600 hover:text-${service.color}-700`,
         ]"
       >
@@ -271,7 +273,6 @@ const gradient = computed(() => {
         <svg
           xmlns="http://www.w3.org/2000/svg"
           class="h-5 w-5 ml-1 transition-all duration-500"
-          :class="isHovered ? 'translate-x-1' : ''"
           viewBox="0 0 20 20"
           fill="currentColor"
         >
