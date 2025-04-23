@@ -2,10 +2,14 @@
 <script setup lang="ts">
 import { ref, onMounted, computed, onBeforeUnmount, watch } from "vue";
 import { useRoute } from "vue-router";
+import { useHeaderBackground } from "~/composables/useHeaderBackground";
 
 // Router and current route
 const route = useRoute();
 const currentRoute = ref(route.path);
+
+// Header background management
+const { getBackgroundForRoute } = useHeaderBackground();
 
 // Theme toggling
 const isDarkMode = ref(false);
@@ -54,15 +58,22 @@ watch(
   }
 );
 
-// Header scroll effect - MODIFIED for initial transparency
+// Header scroll effect - MODIFIED for route-based backgrounds
 const scrollY = ref(0);
 const headerBackground = computed(() => {
-  if (scrollY.value < 10) return "bg-transparent"; // Initially transparent
-  if (scrollY.value >= 100)
+  // When not scrolled, use the route-specific background
+  if (scrollY.value < 10) {
+    return getBackgroundForRoute(route.path);
+  }
+
+  // When fully scrolled (>=100px), use the solid background with blur
+  if (scrollY.value >= 100) {
     return isDarkMode.value
       ? "bg-gray-800/90 backdrop-blur-md"
-      : "bg-white/90 backdrop-blur-md"; // Final state
-  // For values between 10-100, gradual change from transparent to final state
+      : "bg-white/90 backdrop-blur-md";
+  }
+
+  // For values between 10-100, gradual transition
   const opacity = (scrollY.value - 10) / 90;
   return isDarkMode.value
     ? `bg-gray-800/[${opacity}] backdrop-blur-[${opacity * 12}px]`
@@ -469,7 +480,8 @@ onBeforeUnmount(() => {
       leave-class="opacity-100"
       leave-to-class="opacity-0"
     >
-      <main v-if="true" class="flex-grow">
+      <main v-if="true" class="flex-grow pt-16">
+        <!-- Added pt-16 to create space for the transparent header -->
         <slot />
       </main>
     </transition>
