@@ -1,10 +1,10 @@
 <script lang="ts" setup>
 // Typing animation configuration
 const phrases = [
-  "Transform your skills with expert-led courses",
-  "Get personalized consultancy from industry experts",
-  "Advance your career with our dual-focused platform",
-  "Learn new technologies at your own pace",
+  "Transform your skills with expert courses",
+  "Get personalized expert consultancy",
+  "Learn and grow with industry experts",
+  "Master new skills at your pace",
 ];
 
 // Animation props
@@ -197,7 +197,7 @@ const badgesSvg = `${imageFolder}badges.svg`;
             </span>
           </div>
           <h1
-            class="text-4xl md:text-5xl lg:text-6xl font-bold mb-6 leading-tight min-h-[6rem]"
+            class="text-4xl md:text-5xl lg:text-6xl font-bold mb-6 leading-tight h-[5.5rem] flex items-center"
           >
             <span class="typed-text">{{ typedText }}</span>
             <span class="cursor" :class="{ typing: isTyping }">|</span>
