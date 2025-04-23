@@ -79,7 +79,7 @@ const handleViewProject = () => {
       <div class="absolute bottom-0 left-0 p-6 text-white">
         <!-- Client badge -->
         <div
-          class="inline-block mb-2 bg-white bg-opacity-20 backdrop-blur-sm rounded-full px-3 py-1 text-sm font-medium"
+          class="inline-block mb-2 bg-white bg-opacity-20 text-black backdrop-blur-sm rounded-full px-3 py-1 text-sm font-medium"
         >
           {{ project.client }}
         </div>
@@ -95,7 +95,7 @@ const handleViewProject = () => {
         <!-- Tags if available -->
         <div
           v-if="project.tags && project.tags.length"
-          class="flex flex-wrap gap-2 mt-2"
+          class="flex flex-wrap gap-2 mt-2 text-black"
         >
           <span
             v-for="tag in project.tags"
