@@ -197,7 +197,7 @@ const badgesSvg = `${imageFolder}badges.svg`;
             </span>
           </div>
           <h1
-            class="text-4xl md:text-5xl lg:text-6xl font-bold mb-6 leading-tight h-[5.5rem] flex items-center"
+            class="text-4xl md:text-5xl lg:text-6xl font-bold mb-8 leading-tight h-[5.5rem] flex items-center my-3"
           >
             <span class="typed-text">{{ typedText }}</span>
             <span class="cursor" :class="{ typing: isTyping }">|</span>
