@@ -163,11 +163,11 @@ const caseStudies = ref([
           :class="service.delay"
         >
           <div
-            class="service-card relative h-full p-6 bg-white bg-opacity-10 backdrop-filter backdrop-blur-sm rounded-xl border border-white border-opacity-20 hover:bg-opacity-15 transition-all duration-500 transform hover:-translate-y-2 hover:shadow-glow-sm group overflow-hidden"
+            class="service-card relative h-full p-6 bg-black/30 backdrop-filter backdrop-blur-sm rounded-xl border border-white border-opacity-20 hover:bg-black/40 transition-all duration-500 transform hover:-translate-y-2 hover:shadow-glow-sm group overflow-hidden"
           >
             <!-- Background gradient that appears on hover -->
             <div
-              class="absolute -inset-0.5 bg-gradient-to-r opacity-0 group-hover:opacity-100 rounded-xl blur-sm transition-all duration-500"
+              class="absolute -inset-0.5 bg-gradient-to-r opacity-0 group-hover:opacity-70 rounded-xl blur-sm transition-all duration-500"
               :class="service.gradient"
             />
 
@@ -177,7 +177,7 @@ const caseStudies = ref([
               <div class="relative mb-6">
                 <!-- Glowing background -->
                 <div
-                  class="absolute -inset-2 rounded-full opacity-0 group-hover:opacity-30 blur transition-all duration-500"
+                  class="absolute -inset-2 rounded-full opacity-0 group-hover:opacity-40 blur transition-all duration-500"
                   :class="`bg-${service.glowColor}-500`"
                 />
 
@@ -228,14 +228,13 @@ const caseStudies = ref([
 
               <!-- Service content -->
               <h3
-                class="text-xl font-bold mb-3 text-white group-hover:text-transparent group-hover:bg-clip-text group-hover:bg-gradient-to-r transition-all duration-500"
-                :class="service.gradient"
+                class="text-xl font-bold mb-3 text-white transition-transform duration-500 group-hover:scale-105 origin-left"
               >
                 {{ service.title }}
               </h3>
 
               <p
-                class="text-indigo-100 group-hover:text-white transition-all duration-500 mb-4"
+                class="text-white mb-4 transition-all duration-500 group-hover:text-opacity-95"
               >
                 {{ service.description }}
               </p>
@@ -243,7 +242,7 @@ const caseStudies = ref([
               <!-- Learn more link with animated arrow -->
               <a
                 href="/consultancy/services"
-                class="flex items-center text-indigo-300 group-hover:text-white text-sm font-semibold transition-colors"
+                class="flex items-center text-white text-sm font-semibold transition-colors group-hover:text-opacity-100"
               >
                 <span class="relative">
                   Learn more
