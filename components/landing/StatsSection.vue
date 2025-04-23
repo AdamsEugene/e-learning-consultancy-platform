@@ -219,35 +219,41 @@ const statItems = [
           in their careers.
         </p>
 
-        <!-- Growth timeline visualization -->
-        <div class="mt-8 flex items-center justify-center space-x-2">
-          <div class="h-2 w-2 rounded-full bg-indigo-600" />
-          <div class="h-0.5 w-10 bg-gray-300" />
-          <div class="flex flex-col items-center">
-            <div class="h-4 w-4 rounded-full bg-indigo-600 mb-1" />
-            <span class="text-xs text-gray-500">2021</span>
-          </div>
-          <div class="h-0.5 w-10 bg-gray-300" />
-          <div class="flex flex-col items-center">
-            <div class="h-4 w-4 rounded-full bg-indigo-600 mb-1" />
-            <span class="text-xs text-gray-500">2022</span>
-          </div>
-          <div class="h-0.5 w-10 bg-gray-300" />
-          <div class="flex flex-col items-center">
-            <div class="h-4 w-4 rounded-full bg-indigo-600 mb-1" />
-            <span class="text-xs text-gray-500">2023</span>
-          </div>
-          <div class="h-0.5 w-10 bg-gray-300" />
-          <div class="flex flex-col items-center">
-            <div
-              class="h-6 w-6 rounded-full bg-indigo-600 mb-1 animate-pulse flex items-center justify-center"
-            >
-              <span class="text-xs text-white font-bold">NOW</span>
+        <!-- Clean modern timeline -->
+        <div class="mt-10 max-w-md mx-auto">
+          <div class="relative flex items-center justify-between">
+            <!-- Horizontal line -->
+            <div class="absolute left-0 right-0 h-1 bg-indigo-100"></div>
+            
+            <!-- Timeline points -->
+            <div class="relative flex flex-col items-center">
+              <div class="z-10 flex items-center justify-center w-8 h-8 rounded-full bg-indigo-100">
+                <span class="text-xs font-medium text-indigo-600">21</span>
+              </div>
+              <span class="absolute top-10 text-xs text-gray-500">2021</span>
             </div>
-            <span class="text-xs text-gray-500">2024</span>
+            
+            <div class="relative flex flex-col items-center">
+              <div class="z-10 flex items-center justify-center w-8 h-8 rounded-full bg-indigo-100">
+                <span class="text-xs font-medium text-indigo-600">22</span>
+              </div>
+              <span class="absolute top-10 text-xs text-gray-500">2022</span>
+            </div>
+            
+            <div class="relative flex flex-col items-center">
+              <div class="z-10 flex items-center justify-center w-8 h-8 rounded-full bg-indigo-100">
+                <span class="text-xs font-medium text-indigo-600">23</span>
+              </div>
+              <span class="absolute top-10 text-xs text-gray-500">2023</span>
+            </div>
+            
+            <div class="relative flex flex-col items-center">
+              <div class="z-10 flex items-center justify-center w-10 h-10 rounded-full bg-indigo-600 animate-pulse">
+                <span class="text-xs font-bold text-white">NOW</span>
+              </div>
+              <span class="absolute top-12 text-xs text-gray-500">2024</span>
+            </div>
           </div>
-          <div class="h-0.5 w-10 bg-gray-300" />
-          <div class="h-2 w-2 rounded-full bg-gray-300" />
         </div>
       </div>
     </div>
