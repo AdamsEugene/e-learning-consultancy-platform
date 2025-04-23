@@ -219,36 +219,37 @@ const statItems = [
           in their careers.
         </p>
 
-        <!-- Clean modern timeline -->
+        <!-- Clean modern timeline with progressive animation -->
         <div class="mt-10 max-w-md mx-auto">
           <div class="relative flex items-center justify-between">
-            <!-- Horizontal line -->
-            <div class="absolute left-0 right-0 h-1 bg-indigo-100"></div>
+            <!-- Animated progress line -->
+            <div class="absolute left-0 right-0 h-1 bg-indigo-50"></div>
+            <div class="absolute left-0 h-1 bg-indigo-500 timeline-progress-animate"></div>
             
-            <!-- Timeline points -->
-            <div class="relative flex flex-col items-center">
-              <div class="z-10 flex items-center justify-center w-8 h-8 rounded-full bg-indigo-100">
+            <!-- Timeline points with sequential animation -->
+            <div class="relative flex flex-col items-center timeline-point-animate delay-0">
+              <div class="z-10 flex items-center justify-center w-8 h-8 rounded-full bg-indigo-100 transition-all duration-500">
                 <span class="text-xs font-medium text-indigo-600">21</span>
               </div>
               <span class="absolute top-10 text-xs text-gray-500">2021</span>
             </div>
             
-            <div class="relative flex flex-col items-center">
-              <div class="z-10 flex items-center justify-center w-8 h-8 rounded-full bg-indigo-100">
+            <div class="relative flex flex-col items-center timeline-point-animate delay-500">
+              <div class="z-10 flex items-center justify-center w-8 h-8 rounded-full bg-indigo-100 transition-all duration-500">
                 <span class="text-xs font-medium text-indigo-600">22</span>
               </div>
               <span class="absolute top-10 text-xs text-gray-500">2022</span>
             </div>
             
-            <div class="relative flex flex-col items-center">
-              <div class="z-10 flex items-center justify-center w-8 h-8 rounded-full bg-indigo-100">
+            <div class="relative flex flex-col items-center timeline-point-animate delay-1000">
+              <div class="z-10 flex items-center justify-center w-8 h-8 rounded-full bg-indigo-100 transition-all duration-500">
                 <span class="text-xs font-medium text-indigo-600">23</span>
               </div>
               <span class="absolute top-10 text-xs text-gray-500">2023</span>
             </div>
             
-            <div class="relative flex flex-col items-center">
-              <div class="z-10 flex items-center justify-center w-10 h-10 rounded-full bg-indigo-600 animate-pulse">
+            <div class="relative flex flex-col items-center timeline-point-animate delay-1500">
+              <div class="z-10 flex items-center justify-center w-10 h-10 rounded-full bg-indigo-600 animate-pulse-delayed">
                 <span class="text-xs font-bold text-white">NOW</span>
               </div>
               <span class="absolute top-12 text-xs text-gray-500">2024</span>
@@ -508,5 +509,82 @@ const statItems = [
 
 .delay-300 {
   animation-delay: 300ms;
+}
+
+/* Add these animations to the <style> section */
+@keyframes timelineProgress {
+  0% {
+    width: 0%;
+  }
+  25% {
+    width: 33%;
+  }
+  50% {
+    width: 66%;
+  }
+  75% {
+    width: 100%;
+  }
+  100% {
+    width: 100%;
+  }
+}
+
+@keyframes timelinePointAppear {
+  0% {
+    opacity: 0;
+    transform: scale(0);
+  }
+  80% {
+    opacity: 1;
+    transform: scale(1.2);
+  }
+  100% {
+    opacity: 1;
+    transform: scale(1);
+  }
+}
+
+@keyframes pulseDelayed {
+  0%, 50% {
+    opacity: 1;
+  }
+  75% {
+    opacity: 0.5;
+  }
+  100% {
+    opacity: 1;
+  }
+}
+
+.timeline-progress-animate {
+  animation: timelineProgress 2s ease-out forwards;
+}
+
+.timeline-point-animate > div {
+  opacity: 0;
+  transform: scale(0);
+  animation: timelinePointAppear 0.5s ease-out forwards;
+}
+
+.delay-0 > div {
+  animation-delay: 0.2s;
+}
+
+.delay-500 > div {
+  animation-delay: 0.7s;
+}
+
+.delay-1000 > div {
+  animation-delay: 1.2s;
+}
+
+.delay-1500 > div {
+  animation-delay: 1.7s;
+}
+
+.animate-pulse-delayed {
+  animation: pulseDelayed 2s cubic-bezier(0.4, 0, 0.6, 1) infinite;
+  animation-delay: 1.7s;
 }
 </style>
