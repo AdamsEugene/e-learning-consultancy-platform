@@ -210,7 +210,7 @@ const statItems = [
 
       <!-- Enhanced context section with timeline -->
       <div
-        class="mt-16 text-center max-w-3xl mx-auto bg-white p-8 rounded-2xl shadow-xl border border-gray-100 transform hover:shadow-2xl transition-all duration-500"
+        class="mt-16 text-center max-w-3xl mx-auto bg-white px-8 pt-4 pb-10 rounded-2xl shadow-xl border border-gray-100 transform hover:shadow-2xl transition-all duration-500"
       >
         <p class="text-gray-600 mb-6 leading-relaxed">
           Our platform continues to grow with thousands of new students joining
