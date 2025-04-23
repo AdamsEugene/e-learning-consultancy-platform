@@ -172,8 +172,8 @@ const caseStudies = ref([
             />
 
             <!-- Card content -->
-            <div class="relative z-10">
-              <!-- Icon with pulse effect -->
+            <div class="relative z-10 flex flex-col h-full">
+              <!-- Icon container with glowing effect -->
               <div class="relative mb-6">
                 <!-- Glowing background -->
                 <div
@@ -226,43 +226,49 @@ const caseStudies = ref([
                 </div>
               </div>
 
-              <!-- Service content -->
-              <h3
-                class="text-xl font-bold mb-3 text-white transition-transform duration-500 group-hover:scale-105 origin-left"
-              >
-                {{ service.title }}
-              </h3>
-
-              <p
-                class="text-white mb-4 transition-all duration-500 group-hover:text-opacity-95"
-              >
-                {{ service.description }}
-              </p>
-
-              <!-- Learn more link with animated arrow -->
-              <a
-                href="/consultancy/services"
-                class="flex items-center text-white text-sm font-semibold transition-colors group-hover:text-opacity-100"
-              >
-                <span class="relative">
-                  Learn more
-                  <span
-                    class="absolute -bottom-1 left-0 w-0 h-0.5 bg-white transition-all duration-500 group-hover:w-full"
-                  />
-                </span>
-                <svg
-                  xmlns="http://www.w3.org/2000/svg"
-                  class="h-4 w-4 ml-1 transform transition-transform duration-500 group-hover:translate-x-2"
-                  viewBox="0 0 20 20"
-                  fill="currentColor"
+              <!-- Service text content -->
+              <div class="flex-grow">
+                <h3
+                  class="text-xl font-bold mb-3 text-white transition-transform duration-500 group-hover:scale-105 origin-left"
                 >
-                  <path
-                    fill-rule="evenodd"
-                    d="M12.293 5.293a1 1 0 011.414 0l4 4a1 1 0 010 1.414l-4 4a1 1 0 01-1.414-1.414L14.586 11H3a1 1 0 110-2h11.586l-2.293-2.293a1 1 0 010-1.414z"
-                    clip-rule="evenodd"
-                  />
-                </svg>
-              </a>
+                  {{ service.title }}
+                </h3>
+
+                <p
+                  class="text-white mb-4 transition-all duration-500 group-hover:text-opacity-95"
+                >
+                  {{ service.description }}
+                </p>
+              </div>
+
+              <!-- Learn more link at the bottom only -->
+              <div>
+                <a
+                  href="/consultancy/services"
+                  class="flex items-center text-white text-sm font-semibold transition-colors group-hover:text-opacity-100 mt-auto"
+                  aria-label="Learn more about this service"
+                >
+                  <span class="relative">
+                    Learn more
+                    <span
+                      class="absolute -bottom-1 left-0 w-0 h-0.5 bg-white transition-all duration-500 group-hover:w-full"
+                    />
+                  </span>
+                  <svg
+                    xmlns="http://www.w3.org/2000/svg"
+                    class="h-4 w-4 ml-1 transform transition-transform duration-500 group-hover:translate-x-2"
+                    viewBox="0 0 20 20"
+                    fill="currentColor"
+                    aria-hidden="true"
+                  >
+                    <path
+                      fill-rule="evenodd"
+                      d="M12.293 5.293a1 1 0 011.414 0l4 4a1 1 0 010 1.414l-4 4a1 1 0 01-1.414-1.414L14.586 11H3a1 1 0 110-2h11.586l-2.293-2.293a1 1 0 010-1.414z"
+                      clip-rule="evenodd"
+                    />
+                  </svg>
+                </a>
+              </div>
             </div>
           </div>
         </div>
