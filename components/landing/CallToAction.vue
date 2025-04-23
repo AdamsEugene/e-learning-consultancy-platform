@@ -82,19 +82,12 @@ const trustBadges = [
         <!-- Label badge -->
         <div class="mb-6 inline-block animate-fade-in">
           <span
-            class="bg-white bg-opacity-10 backdrop-blur-sm text-white text-sm font-bold px-4 py-2 rounded-full shadow-glow"
+            class="bg-white bg-opacity-10 backdrop-blur-sm text-black text-sm font-bold px-4 py-2 rounded-full shadow-glow"
           >
             Get Started Today
           </span>
         </div>
 
-        <!-- Main heading -->
-        <h2
-          class="text-4xl md:text-6xl font-bold mb-6 leading-tight animate-fade-in animate-gradient-text"
-          style="animation-delay: 200ms"
-        >
-          Ready to Transform Your Skills?
-        </h2>
 
         <!-- Subheading -->
         <p
