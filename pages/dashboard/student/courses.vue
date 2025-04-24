@@ -418,7 +418,7 @@ onMounted(() => {
 // Calculate progress color based on progress value
 const progressColor = computed(() => {
   const progress = selectedCourse.value?.progress ?? 0;
-  
+
   if (progress === 100) {
     return "bg-gradient-to-r from-green-500 to-emerald-500";
   } else if (progress >= 75) {
@@ -1185,18 +1185,28 @@ const formatDate = (dateString: string) => {
               class="w-20 h-20 rounded-lg object-cover"
             />
             <div>
-              <h3 class="font-bold text-lg text-gray-900">{{ selectedCourse.title }}</h3>
-              <p class="text-sm text-gray-600">{{ selectedCourse.instructor }}</p>
+              <h3 class="font-bold text-lg text-gray-900">
+                {{ selectedCourse.title }}
+              </h3>
+              <p class="text-sm text-gray-600">
+                {{ selectedCourse.instructor }}
+              </p>
             </div>
           </div>
 
           <!-- Progress stats with details -->
           <div class="bg-white p-4 rounded-lg shadow-sm border border-gray-100">
             <div class="flex items-center justify-between mb-2">
-              <div class="text-sm font-medium text-gray-700">Course Progress</div>
-              <div class="text-indigo-600 font-bold">{{ selectedCourse.progress }}%</div>
+              <div class="text-sm font-medium text-gray-700">
+                Course Progress
+              </div>
+              <div class="text-indigo-600 font-bold">
+                {{ selectedCourse.progress }}%
+              </div>
             </div>
-            <div class="h-2 w-full bg-gray-200 rounded-full mb-3 overflow-hidden">
+            <div
+              class="h-2 w-full bg-gray-200 rounded-full mb-3 overflow-hidden"
+            >
               <div
                 class="h-full rounded-full transition-all duration-700 ease-out"
                 :class="progressColor"
@@ -1213,7 +1223,10 @@ const formatDate = (dateString: string) => {
               <div class="bg-gray-50 p-2 rounded">
                 <div class="text-xs text-gray-500">Remaining</div>
                 <div class="text-indigo-600 font-bold">
-                  {{ selectedCourse.totalLessons - selectedCourse.completedLessons }}
+                  {{
+                    selectedCourse.totalLessons -
+                    selectedCourse.completedLessons
+                  }}
                 </div>
               </div>
               <div class="bg-gray-50 p-2 rounded">
@@ -1231,7 +1244,9 @@ const formatDate = (dateString: string) => {
             class="bg-white p-4 rounded-lg shadow-sm border border-gray-100"
           >
             <h4 class="font-medium text-gray-900 mb-2">Description</h4>
-            <p class="text-sm text-gray-600">{{ selectedCourse.description }}</p>
+            <p class="text-sm text-gray-600">
+              {{ selectedCourse.description }}
+            </p>
           </div>
 
           <!-- Next lesson -->
@@ -1287,13 +1302,17 @@ const formatDate = (dateString: string) => {
               </div>
               <div>
                 <span class="text-gray-500">Category:</span>
-                <div class="font-medium text-gray-900">{{ selectedCourse.category }}</div>
+                <div class="font-medium text-gray-900">
+                  {{ selectedCourse.category }}
+                </div>
               </div>
               <div>
                 <span class="text-gray-500">Enrolled:</span>
                 <div class="font-medium text-gray-900">
                   {{
-                    selectedCourse.enrolledDate ? formatDate(selectedCourse.enrolledDate) : "N/A"
+                    selectedCourse.enrolledDate
+                      ? formatDate(selectedCourse.enrolledDate)
+                      : "N/A"
                   }}
                 </div>
               </div>
