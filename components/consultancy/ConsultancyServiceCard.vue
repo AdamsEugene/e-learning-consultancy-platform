@@ -262,17 +262,18 @@ const gradient = computed(() => {
     <!-- Learn more button with shadow on hover -->
     <div class="relative">
       <button
-        class="inline-flex items-center font-medium rounded-lg transition-all duration-500 cursor-pointer"
+        class="inline-flex items-center font-medium rounded-lg transition-all duration-500 cursor-pointer px-4 py-2 border"
         :class="[
           isHovered
-            ? `text-${service.color}-600 hover:text-${service.color}-700`
-            : `text-${service.color}-600 hover:text-${service.color}-700`,
+            ? `text-white bg-${service.color}-600 border-${service.color}-600 shadow-md`
+            : `text-${service.color}-600 border-${service.color}-300 bg-${service.color}-50 hover:bg-${service.color}-100`,
         ]"
       >
         <span>Learn more</span>
         <svg
           xmlns="http://www.w3.org/2000/svg"
           class="h-5 w-5 ml-1 transition-all duration-500"
+          :class="isHovered ? 'translate-x-1' : ''"
           viewBox="0 0 20 20"
           fill="currentColor"
         >

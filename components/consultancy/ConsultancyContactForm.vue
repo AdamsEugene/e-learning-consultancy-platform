@@ -291,13 +291,13 @@ const getErrorMessage = (field: string): string => {
 
 <template>
   <div
-    class="bg-white rounded-xl shadow-xl overflow-hidden border border-gray-200 transform transition-all duration-500 hover:shadow-2xl"
+    class="bg-white rounded-xl shadow-xl overflow-hidden border border-gray-200 transform transition-all duration-500 hover:shadow-2xl mx-auto"
   >
     <!-- Form header -->
     <div class="bg-gradient-to-r from-indigo-600 to-purple-600 text-white p-8">
       <div class="max-w-3xl mx-auto">
         <span
-          class="inline-block px-3 py-1 text-xs font-bold rounded-full bg-white bg-opacity-20 backdrop-blur-sm mb-4"
+          class="inline-block px-3 py-1 text-xs font-bold rounded-full bg-white text-black bg-opacity-20 backdrop-blur-sm mb-4"
         >
           {{ subtitle }}
         </span>
