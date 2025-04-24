@@ -1,6 +1,6 @@
 <!-- components/dashboard/CourseCard.vue -->
 <script setup lang="ts">
-import { ref, computed } from "vue";
+import { ref, computed, watch } from "vue";
 
 interface Course {
   id: number;
@@ -93,6 +93,11 @@ const handleContinue = () => {
   emit("continue", props.course.id);
 };
 
+// Handle modal close
+const handleModalClose = () => {
+  isSidePanelOpen.value = false;
+};
+
 // Handle view course button click
 const handleView = () => {
   isSidePanelOpen.value = true;
@@ -102,6 +107,14 @@ const handleView = () => {
 setTimeout(() => {
   isVisible.value = true;
 }, 50 + props.animationDelay);
+
+// Watch modal state
+watch(isSidePanelOpen, (newValue) => {
+  if (!newValue) {
+    // Reset any other state when modal closes
+    // Add any additional reset logic here if needed
+  }
+});
 </script>
 
 <template>
@@ -338,6 +351,7 @@ setTimeout(() => {
       width="400px"
       height="100vh"
       :max-width="'400px'"
+      @close="handleModalClose"
     >
       <div class="space-y-6 p-2">
         <!-- Course Header -->
