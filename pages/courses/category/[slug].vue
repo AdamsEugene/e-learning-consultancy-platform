@@ -488,11 +488,11 @@ onMounted(() => {
 
           <!-- Sort dropdown -->
           <div class="relative">
-            <label
+           <!--  <label
               for="sort-select"
               class="text-sm text-gray-600 mr-2 hidden sm:inline-block"
               >Sort by:</label
-            >
+            > -->
             <div class="relative">
               <select
                 id="sort-select"

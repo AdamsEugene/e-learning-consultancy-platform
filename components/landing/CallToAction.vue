@@ -302,10 +302,10 @@ const trustBadges = [
 
           <!-- Counter text -->
           <div class="text-center md:text-left">
-            <span class="opacity-80">Join over</span>
-            <span class="font-bold text-white counter-animate">15,000+</span>
+            <span class="opacity-80"> Join over </span>
+            <span class="font-bold text-white counter-animate"> 15,000+ </span>
             <span class="opacity-80"
-              >students who have already transformed their careers with us</span
+              > students who have already transformed their careers with us </span
             >
           </div>
         </div>

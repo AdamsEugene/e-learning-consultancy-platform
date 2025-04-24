@@ -51,9 +51,11 @@ const filters = ref({
 const isLoading = ref(true);
 const isLoaded = ref(false);
 const showFilterPanel = ref(false);
+const showStats = ref(false);
+const isSidePanelOpen = ref(false);
+const selectedCourse = ref<Course | null>(null);
 
 // Stats animation
-const showStats = ref(false);
 const statsValues = ref({
   totalCourses: 0,
   activeCourses: 0,
@@ -223,7 +225,7 @@ const categories = computed(() => {
 
 // Status counts for filter badges
 const statusCounts = computed(() => {
-  const counts = {
+  const counts: Record<string, number> = {
     all: courses.value.length,
     active: 0,
     completed: 0,
@@ -324,10 +326,15 @@ const updateSearch = (event: Event) => {
 };
 
 // View course details function
-const viewCourse = (courseId: number) => {
-  // In a real app, this would navigate to the course page
-  console.log(`Navigate to course ${courseId}`);
-  // Example: router.push(`/dashboard/courses/${courseId}`);
+const handleView = (event: MouseEvent, course: Course) => {
+  selectedCourse.value = course;
+  isSidePanelOpen.value = true;
+};
+
+// Handle modal close
+const handleModalClose = () => {
+  isSidePanelOpen.value = false;
+  selectedCourse.value = null;
 };
 
 // Continue learning function - go to the next lesson
@@ -407,6 +414,57 @@ onMounted(() => {
     }, 100);
   }, 800);
 });
+
+// Calculate progress color based on progress value
+const progressColor = computed(() => {
+  const progress = selectedCourse.value?.progress ?? 0;
+
+  if (progress === 100) {
+    return "bg-gradient-to-r from-green-500 to-emerald-500";
+  } else if (progress >= 75) {
+    return "bg-gradient-to-r from-indigo-500 to-blue-500";
+  } else if (progress >= 50) {
+    return "bg-gradient-to-r from-indigo-500 to-purple-500";
+  } else if (progress >= 25) {
+    return "bg-gradient-to-r from-purple-500 to-pink-500";
+  } else {
+    return "bg-gradient-to-r from-red-500 to-pink-500";
+  }
+});
+
+// Format time ago utility function
+const getTimeAgo = (dateString: string) => {
+  const now = new Date();
+  const date = new Date(dateString);
+  const diffMs = now.getTime() - date.getTime();
+
+  const diffSecs = Math.floor(diffMs / 1000);
+  const diffMins = Math.floor(diffSecs / 60);
+  const diffHours = Math.floor(diffMins / 60);
+  const diffDays = Math.floor(diffHours / 24);
+
+  if (diffDays > 30) {
+    return formatDate(dateString);
+  } else if (diffDays > 0) {
+    return `${diffDays} day${diffDays > 1 ? "s" : ""} ago`;
+  } else if (diffHours > 0) {
+    return `${diffHours} hour${diffHours > 1 ? "s" : ""} ago`;
+  } else if (diffMins > 0) {
+    return `${diffMins} minute${diffMins > 1 ? "s" : ""} ago`;
+  } else {
+    return "Just now";
+  }
+};
+
+// Format date utility function
+const formatDate = (dateString: string) => {
+  const date = new Date(dateString);
+  return date.toLocaleDateString("en-US", {
+    year: "numeric",
+    month: "short",
+    day: "numeric",
+  });
+};
 </script>
 
 <template>
@@ -924,8 +982,8 @@ onMounted(() => {
         :key="course.id"
         :course="course"
         :animation-delay="index * 100"
-        @view="viewCourse"
-        @continue="continueLearning"
+        @view="(e) => handleView(e, course)"
+        @continue="continueLearning(course.id)"
       />
     </div>
 
@@ -991,12 +1049,7 @@ onMounted(() => {
           <div class="absolute bottom-0 left-0 right-0 h-2 bg-gray-200">
             <div
               class="h-full transition-all duration-700"
-              :class="{
-                'bg-gradient-to-r from-indigo-500 to-blue-500':
-                  course.progress < 100,
-                'bg-gradient-to-r from-green-500 to-emerald-500':
-                  course.progress === 100,
-              }"
+              :class="progressColor"
               :style="{ width: `${course.progress}%` }"
             />
           </div>
@@ -1006,7 +1059,8 @@ onMounted(() => {
         <div class="p-5 flex-grow">
           <div class="flex items-start justify-between mb-2">
             <h3
-              class="font-bold text-lg text-gray-900 hover:text-indigo-600 transition-colors"
+              class="font-bold text-lg text-gray-900 hover:text-indigo-600 transition-colors cursor-pointer"
+              @click="(e) => handleView(e, course)"
             >
               {{ course.title }}
             </h3>
@@ -1019,7 +1073,7 @@ onMounted(() => {
                   fill="currentColor"
                 >
                   <path
-                    d="M9.049 2.927c.3-.921 1.603-.921 1.902 0l1.07 3.292a1 1 0 00.95.69h3.462c.969 0 1.371 1.24.588 1.81l-2.8 2.034a1 1 0 00-.364 1.118l1.07 3.292c.3.921-.755 1.688-1.54 1.118l-2.8-2.034a1 1 0 00-1.175 0l-2.8 2.034c-.784.57-1.838-.197-1.539-1.118l1.07-3.292a1 1 0 00-.364-1.118L2.98 8.72c-.783-.57-.38-1.81.588-1.81h3.461a1 1 0 00.951-.69l1.07-3.292z"
+                    d="M9.049 2.08a1 1 0 00-.788 0l-7 3a1 1 0 000 1.84L5.25 8.051a.999.999 0 01.356-.257l4-1.714a1 1 0 11.788 1.838L7.667 9.088l1.94.831a1 1 0 00.787 0l7-3a1 1 0 000-1.838l-7-3zM3.31 9.397L5 10.12v4.102a8.969 8.969 0 00-1.05-.174 1 1 0 01-.89-.89 11.115 11.115 0 01.25-3.762zM9.3 16.573A9.026 9.026 0 007 14.935v-3.957l1.818.78a3 3 0 002.364 0l5.508-2.361a11.026 11.026 0 01.25 3.762 1 1 0 01-.89.89 8.968 8.968 0 00-5.35 2.524 1 1 0 01-1.4 0zM6 18a1 1 0 001-1v-2.065a8.935 8.935 0 00-2-.712V17a1 1 0 001 1z"
                   />
                 </svg>
                 <span class="text-sm font-medium text-gray-700 ml-1">{{
@@ -1071,8 +1125,8 @@ onMounted(() => {
           <div class="flex space-x-2 mt-2">
             <button
               v-if="course.progress < 100"
-              class="flex-1 bg-gradient-to-r from-indigo-600 to-indigo-700 hover:from-indigo-700 hover:to-indigo-800 text-white py-2 px-4 rounded-lg transition-colors flex items-center justify-center font-medium text-sm shadow-sm"
-              @click="continueLearning(course.id)"
+              class="flex-1 bg-gradient-to-r from-indigo-600 to-indigo-700 hover:from-indigo-700 hover:to-indigo-800 text-white py-2 px-4 rounded-lg transition-colors flex items-center justify-center font-medium text-sm shadow-sm cursor-pointer"
+              @click="(e) => handleView(e, course)"
             >
               <svg
                 xmlns="http://www.w3.org/2000/svg"
@@ -1090,8 +1144,8 @@ onMounted(() => {
             </button>
             <button
               v-else
-              class="flex-1 bg-gradient-to-r from-green-600 to-green-700 hover:from-green-700 hover:to-green-800 text-white py-2 px-4 rounded-lg transition-colors flex items-center justify-center font-medium text-sm shadow-sm"
-              @click="viewCourse(course.id)"
+              class="flex-1 bg-gradient-to-r from-green-600 to-green-700 hover:from-green-700 hover:to-green-800 text-white py-2 px-4 rounded-lg transition-colors flex items-center justify-center font-medium text-sm shadow-sm cursor-pointer"
+              @click="(e) => handleView(e, course)"
             >
               <svg
                 xmlns="http://www.w3.org/2000/svg"
@@ -1108,24 +1162,170 @@ onMounted(() => {
               </svg>
               Review Course
             </button>
+          </div>
+        </div>
+      </div>
+
+      <!-- Side Panel Modal -->
+      <CommonModalsModal
+        v-model="isSidePanelOpen"
+        title="Course Details"
+        position="right"
+        width="400px"
+        height="100vh"
+        :max-width="'400px'"
+        @close="handleModalClose"
+      >
+        <div v-if="selectedCourse" class="space-y-6 p-2">
+          <!-- Course Header -->
+          <div class="flex items-center space-x-3 mb-6">
+            <img
+              :src="selectedCourse.thumbnail"
+              :alt="selectedCourse.title"
+              class="w-20 h-20 rounded-lg object-cover"
+            />
+            <div>
+              <h3 class="font-bold text-lg text-gray-900">
+                {{ selectedCourse.title }}
+              </h3>
+              <p class="text-sm text-gray-600">
+                {{ selectedCourse.instructor }}
+              </p>
+            </div>
+          </div>
+
+          <!-- Progress stats with details -->
+          <div class="bg-white p-4 rounded-lg shadow-sm border border-gray-100">
+            <div class="flex items-center justify-between mb-2">
+              <div class="text-sm font-medium text-gray-700">
+                Course Progress
+              </div>
+              <div class="text-indigo-600 font-bold">
+                {{ selectedCourse.progress }}%
+              </div>
+            </div>
+            <div
+              class="h-2 w-full bg-gray-200 rounded-full mb-3 overflow-hidden"
+            >
+              <div
+                class="h-full rounded-full transition-all duration-700 ease-out"
+                :class="progressColor"
+                :style="{ width: `${selectedCourse.progress}%` }"
+              ></div>
+            </div>
+            <div class="grid grid-cols-3 gap-2 text-center">
+              <div class="bg-gray-50 p-2 rounded">
+                <div class="text-xs text-gray-500">Completed</div>
+                <div class="text-indigo-600 font-bold">
+                  {{ selectedCourse.completedLessons }}
+                </div>
+              </div>
+              <div class="bg-gray-50 p-2 rounded">
+                <div class="text-xs text-gray-500">Remaining</div>
+                <div class="text-indigo-600 font-bold">
+                  {{
+                    selectedCourse.totalLessons -
+                    selectedCourse.completedLessons
+                  }}
+                </div>
+              </div>
+              <div class="bg-gray-50 p-2 rounded">
+                <div class="text-xs text-gray-500">Total</div>
+                <div class="text-indigo-600 font-bold">
+                  {{ selectedCourse.totalLessons }}
+                </div>
+              </div>
+            </div>
+          </div>
+
+          <!-- Course description -->
+          <div
+            v-if="selectedCourse.description"
+            class="bg-white p-4 rounded-lg shadow-sm border border-gray-100"
+          >
+            <h4 class="font-medium text-gray-900 mb-2">Description</h4>
+            <p class="text-sm text-gray-600">
+              {{ selectedCourse.description }}
+            </p>
+          </div>
+
+          <!-- Next lesson -->
+          <div class="bg-white p-4 rounded-lg shadow-sm border border-gray-100">
+            <h4 class="font-medium text-gray-900 mb-2">Next Lesson</h4>
+            <p class="text-sm text-indigo-600 font-medium mb-4">
+              {{ selectedCourse.nextLesson }}
+            </p>
             <button
-              class="flex-none bg-white border border-gray-300 hover:bg-gray-50 text-gray-700 py-2 px-3 rounded-lg transition-colors"
-              @click="viewCourse(course.id)"
+              v-if="selectedCourse.progress < 100"
+              class="w-full bg-gradient-to-r from-indigo-600 to-indigo-700 hover:from-indigo-700 hover:to-indigo-800 text-white py-2.5 px-4 rounded-lg transition-all duration-300 flex items-center justify-center font-medium text-sm cursor-pointer"
+              @click="continueLearning(selectedCourse.id)"
             >
               <svg
                 xmlns="http://www.w3.org/2000/svg"
-                class="h-5 w-5"
+                class="h-4 w-4 mr-1.5"
                 viewBox="0 0 20 20"
                 fill="currentColor"
               >
                 <path
-                  d="M10 6a2 2 0 110-4 2 2 0 010 4zM10 12a2 2 0 110-4 2 2 0 010 4zM10 18a2 2 0 110-4 2 2 0 010 4z"
+                  fill-rule="evenodd"
+                  d="M10 18a8 8 0 100-16 8 8 0 000 16zM9.555 7.168A1 1 0 008 8v4a1 1 0 001.555.832l3-2a1 1 0 000-1.664l-3-2z"
+                  clip-rule="evenodd"
                 />
               </svg>
+              Continue Learning
             </button>
           </div>
+
+          <!-- Tags cloud -->
+          <div class="bg-white p-4 rounded-lg shadow-sm border border-gray-100">
+            <h4 class="font-medium text-gray-900 mb-3">Topics</h4>
+            <div class="flex flex-wrap gap-2">
+              <span
+                v-for="tag in selectedCourse.tags"
+                :key="tag"
+                class="px-3 py-1 rounded-full text-xs font-medium bg-gray-50 text-gray-700 hover:bg-indigo-50 hover:text-indigo-600 transition-colors"
+              >
+                {{ tag }}
+              </span>
+            </div>
+          </div>
+
+          <!-- Course metadata -->
+          <div class="bg-white p-4 rounded-lg shadow-sm border border-gray-100">
+            <h4 class="font-medium text-gray-900 mb-3">Course Information</h4>
+            <div class="grid grid-cols-2 gap-3 text-sm">
+              <div>
+                <span class="text-gray-500">Instructor:</span>
+                <div class="font-medium text-gray-900">
+                  {{ selectedCourse.instructor }}
+                </div>
+              </div>
+              <div>
+                <span class="text-gray-500">Category:</span>
+                <div class="font-medium text-gray-900">
+                  {{ selectedCourse.category }}
+                </div>
+              </div>
+              <div>
+                <span class="text-gray-500">Enrolled:</span>
+                <div class="font-medium text-gray-900">
+                  {{
+                    selectedCourse.enrolledDate
+                      ? formatDate(selectedCourse.enrolledDate)
+                      : "N/A"
+                  }}
+                </div>
+              </div>
+              <div>
+                <span class="text-gray-500">Last accessed:</span>
+                <div class="font-medium text-gray-900">
+                  {{ getTimeAgo(selectedCourse.lastAccessed) }}
+                </div>
+              </div>
+            </div>
+          </div>
         </div>
-      </div>
+      </CommonModalsModal>
     </div>
 
     <!-- Empty courses message with CTA -->

@@ -74,9 +74,9 @@ const starSize = sizeClasses[props.size];
       </svg>
     </div>
 
-    <span v-if="showValue" class="ml-1 font-medium text-gray-800">
+    <span v-if="showValue" class="ml-1 font-medium text-white">
       {{ rating.toFixed(1) }}
-      <span v-if="reviewCount" class="text-gray-600 font-normal">
+      <span v-if="reviewCount" class="text-white font-normal">
         ({{ reviewCount.toLocaleString() }})
       </span>
     </span>

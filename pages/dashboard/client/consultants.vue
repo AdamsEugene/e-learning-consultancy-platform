@@ -792,9 +792,9 @@ const formatPrice = (price: number) => {
             </div>
             <div class="flex items-center space-x-4">
               <div class="flex items-center">
-                <label for="sort-by" class="mr-2 text-sm text-gray-700"
+              <!--   <label for="sort-by" class="mr-2 text-sm text-gray-700"
                   >Sort By:</label
-                >
+                > -->
                 <select
                   id="sort-by"
                   v-model="sortBy"
