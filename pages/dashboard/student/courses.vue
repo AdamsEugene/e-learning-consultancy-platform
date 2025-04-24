@@ -1125,7 +1125,7 @@ const formatDate = (dateString: string) => {
           <div class="flex space-x-2 mt-2">
             <button
               v-if="course.progress < 100"
-              class="flex-1 bg-gradient-to-r from-indigo-600 to-indigo-700 hover:from-indigo-700 hover:to-indigo-800 text-white py-2 px-4 rounded-lg transition-colors flex items-center justify-center font-medium text-sm shadow-sm"
+              class="flex-1 bg-gradient-to-r from-indigo-600 to-indigo-700 hover:from-indigo-700 hover:to-indigo-800 text-white py-2 px-4 rounded-lg transition-colors flex items-center justify-center font-medium text-sm shadow-sm cursor-pointer"
               @click="(e) => handleView(e, course)"
             >
               <svg
@@ -1144,7 +1144,7 @@ const formatDate = (dateString: string) => {
             </button>
             <button
               v-else
-              class="flex-1 bg-gradient-to-r from-green-600 to-green-700 hover:from-green-700 hover:to-green-800 text-white py-2 px-4 rounded-lg transition-colors flex items-center justify-center font-medium text-sm shadow-sm"
+              class="flex-1 bg-gradient-to-r from-green-600 to-green-700 hover:from-green-700 hover:to-green-800 text-white py-2 px-4 rounded-lg transition-colors flex items-center justify-center font-medium text-sm shadow-sm cursor-pointer"
               @click="(e) => handleView(e, course)"
             >
               <svg
@@ -1242,7 +1242,7 @@ const formatDate = (dateString: string) => {
             </p>
             <button
               v-if="selectedCourse.progress < 100"
-              class="w-full bg-gradient-to-r from-indigo-600 to-indigo-700 hover:from-indigo-700 hover:to-indigo-800 text-white py-2.5 px-4 rounded-lg transition-all duration-300 flex items-center justify-center font-medium text-sm"
+              class="w-full bg-gradient-to-r from-indigo-600 to-indigo-700 hover:from-indigo-700 hover:to-indigo-800 text-white py-2.5 px-4 rounded-lg transition-all duration-300 flex items-center justify-center font-medium text-sm cursor-pointer"
               @click="continueLearning(selectedCourse.id)"
             >
               <svg
