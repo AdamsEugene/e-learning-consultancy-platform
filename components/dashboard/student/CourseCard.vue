@@ -37,7 +37,7 @@ const emit = defineEmits(["view", "continue"]);
 // State
 const isHovered = ref(false);
 const isVisible = ref(false);
-const showDetails = ref(false);
+const isSidePanelOpen = ref(false);
 
 // Calculate progress color based on progress value
 const progressColor = computed(() => {
@@ -95,12 +95,7 @@ const handleContinue = () => {
 
 // Handle view course button click
 const handleView = () => {
-  emit("view", props.course.id);
-};
-
-// Toggle course details visibility
-const toggleDetails = () => {
-  showDetails.value = !showDetails.value;
+  isSidePanelOpen.value = true;
 };
 
 // Set card to visible after slight delay to enable animation
@@ -117,7 +112,6 @@ setTimeout(() => {
         ? 'translate-y-0 opacity-100 shadow-sm'
         : 'translate-y-8 opacity-0 shadow-none',
       isHovered ? 'shadow-xl translate-y-[-4px]' : 'shadow-sm hover:shadow-md',
-      showDetails ? 'ring-2 ring-indigo-500 ring-opacity-50' : 'ring-0',
     ]"
     @mouseenter="isHovered = true"
     @mouseleave="isHovered = false"
@@ -293,7 +287,7 @@ setTimeout(() => {
       </div>
 
       <!-- Action buttons -->
-      <div class="flex space-x-2 mt-auto">
+      <div class="flex space-x-2 mt-auto p-5">
         <button
           v-if="course.progress < 100"
           @click="handleContinue"
@@ -333,161 +327,149 @@ setTimeout(() => {
           </svg>
           Review Course
         </button>
-        <button
-          @click="toggleDetails"
-          class="flex-none bg-white border border-gray-300 hover:bg-gray-50 text-gray-700 p-2.5 rounded-lg transition-colors shadow-sm hover:shadow hover:border-indigo-300"
-          title="View details"
-        >
-          <svg
-            xmlns="http://www.w3.org/2000/svg"
-            class="h-5 w-5"
-            viewBox="0 0 20 20"
-            fill="currentColor"
-          >
-            <path
-              fill-rule="evenodd"
-              d="M5.293 7.293a1 1 0 011.414 0L10 10.586l3.293-3.293a1 1 0 111.414 1.414l-4 4a1 1 0 01-1.414 0l-4-4a1 1 0 010-1.414z"
-              clip-rule="evenodd"
-            />
-          </svg>
-        </button>
       </div>
     </div>
 
-    <!-- Course content - expanded details view -->
-    <div v-else class="p-5 space-y-4 bg-indigo-50/50">
-      <div class="flex justify-between">
-        <h4 class="font-bold text-sm uppercase tracking-wide text-indigo-600">
-          Course Details
-        </h4>
-        <button
-          @click="toggleDetails"
-          class="text-gray-500 hover:text-indigo-600 transition-colors"
-          title="Close details"
+    <!-- Side Panel Modal -->
+    <CommonModalsModal
+      v-model="isSidePanelOpen"
+      title="Course Details"
+      position="right"
+      width="400px"
+      height="100vh"
+      :max-width="'400px'"
+    >
+      <div class="space-y-6 p-2">
+        <!-- Course Header -->
+        <div class="flex items-center space-x-3 mb-6">
+          <img
+            :src="course.thumbnail"
+            :alt="course.title"
+            class="w-20 h-20 rounded-lg object-cover"
+          />
+          <div>
+            <h3 class="font-bold text-lg text-gray-900">{{ course.title }}</h3>
+            <p class="text-sm text-gray-600">{{ course.instructor }}</p>
+          </div>
+        </div>
+
+        <!-- Progress stats with details -->
+        <div class="bg-white p-4 rounded-lg shadow-sm border border-gray-100">
+          <div class="flex items-center justify-between mb-2">
+            <div class="text-sm font-medium text-gray-700">Course Progress</div>
+            <div class="text-indigo-600 font-bold">{{ course.progress }}%</div>
+          </div>
+          <div class="h-2 w-full bg-gray-200 rounded-full mb-3 overflow-hidden">
+            <div
+              class="h-full rounded-full transition-all duration-700 ease-out"
+              :class="progressColor"
+              :style="{ width: `${course.progress}%` }"
+            ></div>
+          </div>
+          <div class="grid grid-cols-3 gap-2 text-center">
+            <div class="bg-gray-50 p-2 rounded">
+              <div class="text-xs text-gray-500">Completed</div>
+              <div class="text-indigo-600 font-bold">
+                {{ course.completedLessons }}
+              </div>
+            </div>
+            <div class="bg-gray-50 p-2 rounded">
+              <div class="text-xs text-gray-500">Remaining</div>
+              <div class="text-indigo-600 font-bold">
+                {{ course.totalLessons - course.completedLessons }}
+              </div>
+            </div>
+            <div class="bg-gray-50 p-2 rounded">
+              <div class="text-xs text-gray-500">Total</div>
+              <div class="text-indigo-600 font-bold">
+                {{ course.totalLessons }}
+              </div>
+            </div>
+          </div>
+        </div>
+
+        <!-- Course description -->
+        <div
+          v-if="course.description"
+          class="bg-white p-4 rounded-lg shadow-sm border border-gray-100"
         >
-          <svg
-            xmlns="http://www.w3.org/2000/svg"
-            class="h-5 w-5"
-            viewBox="0 0 20 20"
-            fill="currentColor"
+          <h4 class="font-medium text-gray-900 mb-2">Description</h4>
+          <p class="text-sm text-gray-600">{{ course.description }}</p>
+        </div>
+
+        <!-- Next lesson -->
+        <div class="bg-white p-4 rounded-lg shadow-sm border border-gray-100">
+          <h4 class="font-medium text-gray-900 mb-2">Next Lesson</h4>
+          <p class="text-sm text-indigo-600 font-medium mb-4">
+            {{ course.nextLesson }}
+          </p>
+          <button
+            v-if="course.progress < 100"
+            @click="handleContinue"
+            class="w-full bg-gradient-to-r from-indigo-600 to-indigo-700 hover:from-indigo-700 hover:to-indigo-800 text-white py-2.5 px-4 rounded-lg transition-all duration-300 flex items-center justify-center font-medium text-sm"
           >
-            <path
-              fill-rule="evenodd"
-              d="M14.707 12.707a1 1 0 01-1.414 0L10 9.414l-3.293 3.293a1 1 0 01-1.414-1.414l4-4a1 1 0 011.414 0l4 4a1 1 0 010 1.414z"
-              clip-rule="evenodd"
-            />
-          </svg>
-        </button>
-      </div>
+            <svg
+              xmlns="http://www.w3.org/2000/svg"
+              class="h-4 w-4 mr-1.5"
+              viewBox="0 0 20 20"
+              fill="currentColor"
+            >
+              <path
+                fill-rule="evenodd"
+                d="M10 18a8 8 0 100-16 8 8 0 000 16zM9.555 7.168A1 1 0 008 8v4a1 1 0 001.555.832l3-2a1 1 0 000-1.664l-3-2z"
+                clip-rule="evenodd"
+              />
+            </svg>
+            Continue Learning
+          </button>
+        </div>
 
-      <!-- Progress stats with more details -->
-      <div class="bg-white p-3 rounded-lg shadow-sm">
-        <div class="flex items-center justify-between mb-2">
-          <div class="text-sm font-medium text-gray-700">Course Progress</div>
-          <div class="text-indigo-600 font-bold">{{ course.progress }}%</div>
-        </div>
-        <div class="h-2 w-full bg-gray-200 rounded-full mb-3 overflow-hidden">
-          <div
-            class="h-full rounded-full transition-all duration-700 ease-out"
-            :class="progressColor"
-            :style="{ width: `${course.progress}%` }"
-          ></div>
-        </div>
-        <div class="grid grid-cols-3 gap-2 text-center">
-          <div class="bg-indigo-50 p-2 rounded">
-            <div class="text-xs text-gray-500">Completed</div>
-            <div class="text-indigo-600 font-bold">
-              {{ course.completedLessons }}
-            </div>
-          </div>
-          <div class="bg-indigo-50 p-2 rounded">
-            <div class="text-xs text-gray-500">Remaining</div>
-            <div class="text-indigo-600 font-bold">
-              {{ course.totalLessons - course.completedLessons }}
-            </div>
-          </div>
-          <div class="bg-indigo-50 p-2 rounded">
-            <div class="text-xs text-gray-500">Total</div>
-            <div class="text-indigo-600 font-bold">
-              {{ course.totalLessons }}
-            </div>
+        <!-- Tags cloud -->
+        <div class="bg-white p-4 rounded-lg shadow-sm border border-gray-100">
+          <h4 class="font-medium text-gray-900 mb-3">Topics</h4>
+          <div class="flex flex-wrap gap-2">
+            <span
+              v-for="tag in course.tags"
+              :key="tag"
+              class="px-3 py-1 rounded-full text-xs font-medium bg-gray-50 text-gray-700 hover:bg-indigo-50 hover:text-indigo-600 transition-colors"
+            >
+              {{ tag }}
+            </span>
           </div>
         </div>
-      </div>
 
-      <!-- Course description -->
-      <div v-if="course.description" class="text-sm text-gray-600">
-        {{ course.description }}
-      </div>
-
-      <!-- Next lesson details -->
-      <div class="bg-white p-3 rounded-lg shadow-sm">
-        <div class="text-xs uppercase tracking-wide text-gray-500 mb-1">
-          NEXT LESSON
-        </div>
-        <div class="text-base font-medium text-indigo-600 mb-2">
-          {{ course.nextLesson }}
-        </div>
-        <button
-          v-if="course.progress < 100"
-          @click="handleContinue"
-          class="w-full bg-gradient-to-r from-indigo-600 to-indigo-700 hover:from-indigo-700 hover:to-indigo-800 text-white py-2 px-4 rounded-lg transition-all duration-300 flex items-center justify-center font-medium text-sm shadow-sm hover:shadow-md"
-        >
-          <svg
-            xmlns="http://www.w3.org/2000/svg"
-            class="h-4 w-4 mr-1.5"
-            viewBox="0 0 20 20"
-            fill="currentColor"
-          >
-            <path
-              fill-rule="evenodd"
-              d="M10 18a8 8 0 100-16 8 8 0 000 16zM9.555 7.168A1 1 0 008 8v4a1 1 0 001.555.832l3-2a1 1 0 000-1.664l-3-2z"
-              clip-rule="evenodd"
-            />
-          </svg>
-          Continue Learning
-        </button>
-      </div>
-
-      <!-- Tags cloud -->
-      <div class="flex flex-wrap gap-1.5">
-        <span
-          v-for="tag in course.tags"
-          :key="tag"
-          class="px-2.5 py-1 rounded-full text-xs font-medium bg-white border border-gray-200 text-gray-700 hover:bg-indigo-50 hover:text-indigo-600 hover:border-indigo-200 transition-colors shadow-sm"
-        >
-          {{ tag }}
-        </span>
-      </div>
-
-      <!-- Course metadata -->
-      <div class="grid grid-cols-2 gap-2 text-xs text-gray-500">
-        <div>
-          <span class="font-bold">Instructor:</span> {{ course.instructor }}
-        </div>
-        <div>
-          <span class="font-bold">Category:</span> {{ course.category }}
-        </div>
-        <div>
-          <span class="font-bold">Enrolled:</span>
-          {{ course.enrolledDate ? formatDate(course.enrolledDate) : "N/A" }}
-        </div>
-        <div>
-          <span class="font-bold">Last accessed:</span>
-          {{ getTimeAgo(course.lastAccessed) }}
+        <!-- Course metadata -->
+        <div class="bg-white p-4 rounded-lg shadow-sm border border-gray-100">
+          <h4 class="font-medium text-gray-900 mb-3">Course Information</h4>
+          <div class="grid grid-cols-2 gap-3 text-sm">
+            <div>
+              <span class="text-gray-500">Instructor:</span>
+              <div class="font-medium text-gray-900">
+                {{ course.instructor }}
+              </div>
+            </div>
+            <div>
+              <span class="text-gray-500">Category:</span>
+              <div class="font-medium text-gray-900">{{ course.category }}</div>
+            </div>
+            <div>
+              <span class="text-gray-500">Enrolled:</span>
+              <div class="font-medium text-gray-900">
+                {{
+                  course.enrolledDate ? formatDate(course.enrolledDate) : "N/A"
+                }}
+              </div>
+            </div>
+            <div>
+              <span class="text-gray-500">Last accessed:</span>
+              <div class="font-medium text-gray-900">
+                {{ getTimeAgo(course.lastAccessed) }}
+              </div>
+            </div>
+          </div>
         </div>
       </div>
-
-      <!-- Action buttons -->
-      <div class="flex pt-2">
-        <button
-          @click="handleView"
-          class="w-full bg-white border border-indigo-500 text-indigo-600 hover:bg-indigo-50 py-2 px-4 rounded-lg transition-colors flex items-center justify-center font-medium text-sm"
-        >
-          View Full Course
-        </button>
-      </div>
-    </div>
+    </CommonModalsModal>
   </div>
 </template>
 
