@@ -31,9 +31,6 @@ const props = withDefaults(defineProps<Props>(), {
   animationDelay: 0,
 });
 
-// Emits
-const emit = defineEmits(["view", "continue"]);
-
 // State
 const isHovered = ref(false);
 const isVisible = ref(false);
@@ -90,7 +87,7 @@ const formatDate = (dateString: string) => {
 
 // Handle continue learning button click
 const handleContinue = () => {
-  emit("continue", props.course.id);
+  isSidePanelOpen.value = true;
 };
 
 // Handle modal close
