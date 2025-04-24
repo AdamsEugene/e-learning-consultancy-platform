@@ -113,9 +113,9 @@ setTimeout(() => {
         : 'translate-y-8 opacity-0 shadow-none',
       isHovered ? 'shadow-xl translate-y-[-4px]' : 'shadow-sm hover:shadow-md',
     ]"
+    :style="`transition-delay: ${animationDelay}ms;`"
     @mouseenter="isHovered = true"
     @mouseleave="isHovered = false"
-    :style="`transition-delay: ${animationDelay}ms;`"
   >
     <!-- Course image with progress overlay -->
     <div class="relative aspect-video overflow-hidden group">
@@ -251,7 +251,7 @@ setTimeout(() => {
     </div>
 
     <!-- Course content - collapsed view -->
-    <div v-if="!showDetails" class="p-5 flex flex-col group">
+    <div class="p-5 flex flex-col group">
       <!-- Progress bar -->
       <div class="h-1.5 w-full bg-gray-200 rounded-full mb-4 overflow-hidden">
         <div
@@ -290,8 +290,8 @@ setTimeout(() => {
       <div class="flex space-x-2 mt-auto p-5">
         <button
           v-if="course.progress < 100"
-          @click="handleContinue"
           class="flex-1 bg-gradient-to-r from-indigo-600 to-indigo-700 hover:from-indigo-700 hover:to-indigo-800 text-white py-2.5 px-4 rounded-lg transition-all duration-300 flex items-center justify-center font-medium text-sm shadow-sm hover:shadow-md"
+          @click="handleContinue"
         >
           <svg
             xmlns="http://www.w3.org/2000/svg"
@@ -309,8 +309,8 @@ setTimeout(() => {
         </button>
         <button
           v-else
-          @click="handleView"
           class="flex-1 bg-gradient-to-r from-green-600 to-green-700 hover:from-green-700 hover:to-green-800 text-white py-2.5 px-4 rounded-lg transition-all duration-300 flex items-center justify-center font-medium text-sm shadow-sm hover:shadow-md"
+          @click="handleView"
         >
           <svg
             xmlns="http://www.w3.org/2000/svg"
@@ -405,8 +405,8 @@ setTimeout(() => {
           </p>
           <button
             v-if="course.progress < 100"
-            @click="handleContinue"
             class="w-full bg-gradient-to-r from-indigo-600 to-indigo-700 hover:from-indigo-700 hover:to-indigo-800 text-white py-2.5 px-4 rounded-lg transition-all duration-300 flex items-center justify-center font-medium text-sm"
+            @click="handleContinue"
           >
             <svg
               xmlns="http://www.w3.org/2000/svg"
