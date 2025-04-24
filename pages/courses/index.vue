@@ -436,7 +436,7 @@ onMounted(() => {
                 results
               </div>
               <div class="flex items-center">
-                <label for="sort" class="text-gray-700 mr-2">Sort by:</label>
+                <!-- <label for="sort" class="text-gray-700 mr-2">Sort by:</label> -->
                 <select
                   id="sort"
                   v-model="selectedSort"
