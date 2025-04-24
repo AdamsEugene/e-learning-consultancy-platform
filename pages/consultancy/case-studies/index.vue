@@ -785,7 +785,7 @@ useHead({
             </NuxtLink>
             <NuxtLink
               to="/consultancy"
-              class="border-2 border-white text-white font-bold py-3 px-6 rounded-lg hover:bg-white hover:bg-opacity-20 transition-all"
+              class="border-2 border-white text-white  font-bold py-3 px-6 rounded-lg hover:bg-white hover:text-indigo-700 hover:bg-opacity-20 transition-all transform hover:scale-105"
             >
               Explore All Services
             </NuxtLink>
