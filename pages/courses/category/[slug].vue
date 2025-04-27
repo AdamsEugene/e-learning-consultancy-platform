@@ -497,7 +497,7 @@ onMounted(() => {
               <select
                 id="sort-select"
                 v-model="activeSort"
-                class="appearance-none bg-white border border-gray-300 rounded-lg py-2 pl-4 pr-10 focus:outline-none focus:ring-2 focus:ring-indigo-500 focus:border-indigo-500 text-sm"
+                class="appearance-none bg-white border border-gray-300 rounded-lg py-2 pl-4 pr-10 focus:outline-none focus:ring-2  text-sm"
                 @change="changeSort(activeSort)"
               >
                 <option

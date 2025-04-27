@@ -217,7 +217,7 @@ const badgeColors: Record<string, string> = {
             <!-- Course content -->
             <div class="p-6 flex-grow flex flex-col">
               <h3
-                class="text-xl font-bold mb-3 line-clamp-2 hover:text-indigo-600 transition-colors group-hover:text-transparent bg-clip-text bg-gradient-to-r"
+                class="text-xl text-black font-bold mb-3 line-clamp-2 hover:text-indigo-600 hover:cursor-default transition-colors group-hover:text-transparent bg-clip-text bg-gradient-to-r"
                 :class="course.colorClasses.primary"
               >
                 {{ course.title }}

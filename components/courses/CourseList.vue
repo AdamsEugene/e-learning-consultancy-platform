@@ -330,7 +330,7 @@ const getRandomWidth = () => {
             <!-- Course title -->
             <NuxtLink :to="`/courses/${course.id}`">
               <h3
-                class="text-lg font-bold mb-2 leading-tight hover:text-indigo-600 transition-colors duration-300"
+                class="text-lg font-bold mb-2 text-black leading-tight hover:text-indigo-600 transition-colors duration-300"
               >
                 {{ course.title }}
               </h3>

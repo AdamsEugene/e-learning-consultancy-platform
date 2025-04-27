@@ -346,7 +346,7 @@ const getFaqWithDefaults = (faq: FAQ, index: number): FAQ => {
             <input
               type="text"
               placeholder="Search our knowledge base..."
-              class="pl-10 pr-4 py-3 w-full border border-gray-300 rounded-lg focus:ring-2 focus:ring-indigo-500 focus:border-indigo-500 transition-all duration-300 outline-none"
+              class="pl-10 pr-4 py-3 w-full border border-gray-300 text-gray-600 rounded-lg focus:ring-2 focus:ring-indigo-500 focus:border-indigo-500 transition-all duration-300 outline-none"
             />
           </div>
 
