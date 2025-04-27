@@ -184,7 +184,7 @@ onBeforeUnmount(() => {
 
 <template>
   <aside
-    class="fixed top-[65px] left-0 bottom-0 bg-white border-r border-gray-100 shadow-xl  flex flex-col overflow-hidden transition-all duration-300 z-50"
+    class="fixed top-[65px] left-0 bottom-0 bg-white border-r border-gray-100 shadow-xl text-sm flex flex-col overflow-hidden transition-all duration-300 z-50"
     :style="{ width: `${currentWidth}px` }"
   >
     <!-- Resize handle -->
@@ -217,8 +217,8 @@ onBeforeUnmount(() => {
     </button>
 
     <!-- Sidebar header -->
-    <div class="p-6 border-b border-gray-100 bg-white/80 backdrop-blur-md">
-      <h2 class="text-xl font-bold truncate mb-2">
+    <div class="px-6 py-4 border-b border-gray-100 bg-white/80 backdrop-blur-md">
+      <h2 class="text-lg font-bold truncate mb-2">
         {{ currentCourse?.title || "Course Content" }}
       </h2>
       <div class="flex items-center gap-3 text-sm text-gray-600">
@@ -335,7 +335,7 @@ onBeforeUnmount(() => {
 
             <!-- Lesson info -->
             <div class="flex-grow min-w-0">
-              <div class="text-base font-medium truncate text-gray-900 group-hover:text-indigo-700">
+              <div class="text-sm font-medium truncate text-gray-900 group-hover:text-indigo-700">
                 {{ lesson.title }}
               </div>
               <div class="text-xs text-gray-500 flex items-center gap-2 mt-0.5">

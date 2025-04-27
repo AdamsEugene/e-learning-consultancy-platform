@@ -175,7 +175,7 @@ const discussionText = ref("");
     </div>
 
     <!-- Tab content -->
-    <div class="p-6">
+    <div class="p-6 text-sm">
       <!-- Lesson content tab -->
       <div v-if="activeTab === 'content'" v-html="lessonContent" />
 

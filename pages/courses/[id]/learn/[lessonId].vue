@@ -332,7 +332,7 @@ onBeforeUnmount(() => {
           </NuxtLink>
 
           <!-- Course title -->
-          <span class="text-lg font-medium truncate max-w-md hidden md:inline">
+          <span class="text-md font-medium truncate max-w-md hidden md:inline">
             {{ currentCourse?.title }}
           </span>
         </div>
