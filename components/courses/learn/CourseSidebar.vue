@@ -184,7 +184,7 @@ onBeforeUnmount(() => {
 
 <template>
   <aside
-    class="fixed top-[56px] left-0 bottom-0 bg-white border-r border-gray-200 flex flex-col overflow-hidden transition-all duration-300 z-10"
+    class="fixed top-[65px] left-0 bottom-0 bg-white border-r border-gray-200 flex flex-col overflow-hidden transition-all duration-300 z-50"
     :style="{ width: `${currentWidth}px` }"
   >
     <!-- Resize handle -->
@@ -197,8 +197,8 @@ onBeforeUnmount(() => {
     <button
       v-if="isSmallScreen"
       class="absolute top-2 right-2 text-gray-500 hover:text-gray-700 p-1 z-20"
-      @click="$emit('close')"
       aria-label="Close sidebar"
+      @click="$emit('close')"
     >
       <svg
         xmlns="http://www.w3.org/2000/svg"
