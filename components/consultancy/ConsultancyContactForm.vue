@@ -523,7 +523,7 @@ const getErrorMessage = (field: string): string => {
               <select
                 id="serviceType"
                 v-model="formData.serviceType"
-                class="w-full px-4 py-3 border rounded-lg focus:ring-2 focus:ring-indigo-500 focus:border-indigo-500 transition-colors duration-300"
+                class="w-full px-4 py-3 border rounded-lg focus:ring-2 focus:ring-indigo-500 focus:border-indigo-500 transition-colors duration-300 text-gray-500"
                 :class="
                   hasError('serviceType')
                     ? 'border-red-300 bg-red-50'
@@ -531,7 +531,7 @@ const getErrorMessage = (field: string): string => {
                 "
                 @blur="validateForm"
               >
-                <option value="" disabled selected>
+                <option class="text-gray-500" value="" disabled selected>
                   Select the type of service you need
                 </option>
                 <option
@@ -615,7 +615,7 @@ const getErrorMessage = (field: string): string => {
                             : 'bg-white border-gray-300',
                         ]"
                       />
-                      <span class="font-medium">{{ option.label }}</span>
+                      <span class="font-medium text-gray-500">{{ option.label }}</span>
                     </span>
                   </label>
                 </div>
@@ -662,7 +662,7 @@ const getErrorMessage = (field: string): string => {
                             : 'bg-white border-gray-300',
                         ]"
                       />
-                      <span class="font-medium">{{ option.label }}</span>
+                      <span class="font-medium text-gray-500">{{ option.label }}</span>
                     </span>
                   </label>
                 </div>

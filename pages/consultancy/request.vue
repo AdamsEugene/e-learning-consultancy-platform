@@ -392,7 +392,7 @@ useHead({
                 : 'opacity-0 translate-y-12'
             "
           >
-            <h2 class="text-3xl font-bold mb-4">Frequently Asked Questions</h2>
+            <h2 class="text-3xl font-bold mb-4 text-gray-900">Frequently Asked Questions</h2>
             <p class="text-gray-600">
               Find answers to common questions about our consultancy services
               and process.

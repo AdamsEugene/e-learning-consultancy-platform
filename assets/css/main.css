@@ -3,3 +3,7 @@
 button {
     cursor: pointer;
   }
+
+  input, textarea {
+    color: #6a7282;
+  }
