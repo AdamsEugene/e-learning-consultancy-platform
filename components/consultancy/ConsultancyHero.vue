@@ -191,7 +191,7 @@ onMounted(() => {
           <!-- Secondary CTA button -->
           <NuxtLink
             :to="secondaryButtonLink"
-            class="border-2 border-white text-white font-bold py-3 px-8 rounded-lg hover:bg-white hover:bg-opacity-20 transition-all focus:outline-none focus:ring-2 focus:ring-white focus:ring-opacity-50"
+            class="border-2 border-white text-white font-bold py-3 px-8 rounded-lg hover:scale-105 hover:translate-y-1  hover:bg-opacity-20 transition-all focus:outline-none focus:ring-2 focus:ring-white focus:ring-opacity-50"
           >
             {{ secondaryButtonText }}
           </NuxtLink>

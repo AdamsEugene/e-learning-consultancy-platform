@@ -208,7 +208,7 @@ const iconOnlyClasses = computed(() => {
 const variantClasses = computed(() => {
   // Base classes common to all variants
   const baseClasses =
-    "relative overflow-hidden transition-all duration-200 focus:outline-none focus:ring-2";
+    "relative overflow-hidden transition-all duration-200 focus:outline-none";
 
   // Classes for disabled state (override all other states)
   if (props.disabled) {
@@ -224,60 +224,60 @@ const variantClasses = computed(() => {
   switch (props.variant) {
     case "primary":
       if (props.outlined) {
-        return `${baseClasses} bg-transparent text-indigo-600 border border-indigo-600 hover:bg-indigo-50 active:bg-indigo-100 focus:ring-indigo-500`;
+        return `${baseClasses} bg-transparent text-indigo-600 border border-indigo-600 hover:bg-indigo-50 active:bg-indigo-100 focus:outline-none`;
       }
-      return `${baseClasses} bg-indigo-600 text-white hover:bg-indigo-700 active:bg-indigo-800 focus:ring-indigo-500 ${
+      return `${baseClasses} bg-indigo-600 text-white hover:bg-indigo-700 active:bg-indigo-800 ffocus:outline-none ${
         props.elevated ? "shadow-md hover:shadow-lg" : ""
       }`;
 
     case "secondary":
       if (props.outlined) {
-        return `${baseClasses} bg-transparent text-gray-700 border border-gray-300 hover:bg-gray-50 active:bg-gray-100 focus:ring-gray-500`;
+        return `${baseClasses} bg-transparent text-gray-700 border border-gray-300 hover:bg-gray-50 active:bg-gray-100 focus:outline-none`;
       }
-      return `${baseClasses} bg-gray-200 text-gray-800 hover:bg-gray-300 active:bg-gray-400 focus:ring-gray-500 ${
+      return `${baseClasses} bg-gray-200 text-gray-800 hover:bg-gray-300 active:bg-gray-400 focus:outline-none ${
         props.elevated ? "shadow-md hover:shadow-lg" : ""
       }`;
 
     case "tertiary":
-      return `${baseClasses} bg-transparent text-gray-700 hover:bg-gray-100 active:bg-gray-200 focus:ring-gray-500`;
+      return `${baseClasses} bg-transparent text-gray-700 hover:bg-gray-100 active:bg-gray-200 focus:outline-none`;
 
     case "success":
       if (props.outlined) {
-        return `${baseClasses} bg-transparent text-green-600 border border-green-600 hover:bg-green-50 active:bg-green-100 focus:ring-green-500`;
+        return `${baseClasses} bg-transparent text-green-600 border border-green-600 hover:bg-green-50 active:bg-green-100 focus:outline-none`;
       }
-      return `${baseClasses} bg-green-600 text-white hover:bg-green-700 active:bg-green-800 focus:ring-green-500 ${
+      return `${baseClasses} bg-green-600 text-white hover:bg-green-700 active:bg-green-800 focus:outline-none ${
         props.elevated ? "shadow-md hover:shadow-lg" : ""
       }`;
 
     case "danger":
       if (props.outlined) {
-        return `${baseClasses} bg-transparent text-red-600 border border-red-600 hover:bg-red-50 active:bg-red-100 focus:ring-red-500`;
+        return `${baseClasses} bg-transparent text-red-600 border border-red-600 hover:bg-red-50 active:bg-red-100 focus:outline-none`;
       }
-      return `${baseClasses} bg-red-600 text-white hover:bg-red-700 active:bg-red-800 focus:ring-red-500 ${
+      return `${baseClasses} bg-red-600 text-white hover:bg-red-700 active:bg-red-800 focus:outline-none ${
         props.elevated ? "shadow-md hover:shadow-lg" : ""
       }`;
 
     case "warning":
       if (props.outlined) {
-        return `${baseClasses} bg-transparent text-amber-600 border border-amber-600 hover:bg-amber-50 active:bg-amber-100 focus:ring-amber-500`;
+        return `${baseClasses} bg-transparent text-amber-600 border border-amber-600 hover:bg-amber-50 active:bg-amber-100 focus:outline-none`;
       }
-      return `${baseClasses} bg-amber-500 text-white hover:bg-amber-600 active:bg-amber-700 focus:ring-amber-500 ${
+      return `${baseClasses} bg-amber-500 text-white hover:bg-amber-600 active:bg-amber-700 focus:outline-none ${
         props.elevated ? "shadow-md hover:shadow-lg" : ""
       }`;
 
     case "info":
       if (props.outlined) {
-        return `${baseClasses} bg-transparent text-blue-600 border border-blue-600 hover:bg-blue-50 active:bg-blue-100 focus:ring-blue-500`;
+        return `${baseClasses} bg-transparent text-blue-600 border border-blue-600 hover:bg-blue-50 active:bg-blue-100 focus:outline-none`;
       }
-      return `${baseClasses} bg-blue-600 text-white hover:bg-blue-700 active:bg-blue-800 focus:ring-blue-500 ${
+      return `${baseClasses} bg-blue-600 text-white hover:bg-blue-700 active:bg-blue-800 focus:outline-none ${
         props.elevated ? "shadow-md hover:shadow-lg" : ""
       }`;
 
     case "ghost":
-      return `${baseClasses} bg-transparent text-gray-700 hover:bg-gray-100 active:bg-gray-200 focus:ring-gray-500`;
+      return `${baseClasses} bg-transparent text-gray-700 hover:bg-gray-100 active:bg-gray-200 focus:outline-none`;
 
     default:
-      return `${baseClasses} bg-indigo-600 text-white hover:bg-indigo-700 active:bg-indigo-800 focus:ring-indigo-500`;
+      return `${baseClasses} bg-indigo-600 text-white hover:bg-indigo-700 active:bg-indigo-800 focus:outline-none`;
   }
 });
 

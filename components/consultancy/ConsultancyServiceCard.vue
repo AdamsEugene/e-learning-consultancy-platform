@@ -238,7 +238,7 @@ const gradient = computed(() => {
       <li
         v-for="(feature, index) in service.features"
         :key="index"
-        class="flex items-center transition-colors duration-300 cursor-default"
+        class="flex items-center transition-colors duration-300 cursor-default text-gray-500"
         :style="`transition-delay: ${index * 50}ms`"
         :class="isHovered ? `text-${service.color}-900` : ''"
       >
@@ -255,7 +255,7 @@ const gradient = computed(() => {
             clip-rule="evenodd"
           />
         </svg>
-        <span>{{ feature }}</span>
+        <span class="text-gray-600">{{ feature }}</span>
       </li>
     </ul>
 

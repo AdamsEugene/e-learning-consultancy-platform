@@ -497,7 +497,7 @@ onMounted(() => {
               <select
                 id="sort-select"
                 v-model="activeSort"
-                class="appearance-none bg-white border border-gray-300 rounded-lg py-2 pl-4 pr-10 focus:outline-none focus:ring-2 focus:ring-indigo-500 focus:border-indigo-500 text-sm"
+                class="appearance-none bg-white text-gray-900 border border-gray-300 rounded-lg py-2 pl-4 pr-10 focus:outline-none text-sm"
                 @change="changeSort(activeSort)"
               >
                 <option
@@ -728,7 +728,7 @@ onMounted(() => {
             <input
               type="email"
               placeholder="Enter your email address"
-              class="flex-grow px-4 py-3 rounded-lg focus:outline-none focus:ring-2 focus:ring-white/50 border-none shadow-lg"
+              class="flex-grow px-4 py-3 rounded-lg focus:outline-none focus:ring-2 focus:ring-white/50 border-none shadow-lg !text-white !border !border-white"
             />
             <button
               class="sm:px-6 py-3 bg-white text-indigo-600 hover:bg-indigo-50 rounded-lg font-bold transition-all duration-300 transform hover:scale-105 shadow-lg"

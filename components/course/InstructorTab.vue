@@ -12,7 +12,7 @@ defineProps<Props>();
 <!-- eslint-disable vue/html-self-closing -->
 <template>
   <div v-if="activeTab === 'instructor'" class="max-w-3xl">
-    <h2 class="text-2xl font-bold mb-6">Your Instructor</h2>
+    <h2 class="text-2xl font-bold mb-6 text-gray-900">Your Instructor</h2>
 
     <div
       class="flex flex-col md:flex-row md:items-start bg-white rounded-xl shadow-sm border border-gray-200 p-6 mb-8"
@@ -24,7 +24,7 @@ defineProps<Props>();
       />
 
       <div>
-        <h3 class="text-xl font-bold mb-1">
+        <h3 class="text-xl font-bold mb-1 text-gray-900">
           {{ course?.instructor.name }}
         </h3>
         <p class="text-gray-600 mb-3">{{ course?.instructor.title }}</p>
@@ -41,7 +41,7 @@ defineProps<Props>();
                 d="M9.049 2.927c.3-.921 1.603-.921 1.902 0l1.07 3.292a1 1 0 00.95.69h3.462c.969 0 1.371 1.24.588 1.81l-2.8 2.034a1 1 0 00-.364 1.118l1.07 3.292c.3.921-.755 1.688-1.54 1.118l-2.8-2.034a1 1 0 00-1.175 0l-2.8 2.034c-.784.57-1.838-.197-1.539-1.118l1.07-3.292a1 1 0 00-.364-1.118L2.98 8.72c-.783-.57-.38-1.81.588-1.81h3.461a1 1 0 00.951-.69l1.07-3.292z"
               />
             </svg>
-            <span>4.9 Instructor Rating</span>
+            <span class="text-gray-500">4.9 Instructor Rating</span>
           </div>
 
           <div class="flex items-center mr-4">
@@ -55,7 +55,7 @@ defineProps<Props>();
                 d="M13 6a3 3 0 11-6 0 3 3 0 016 0zM18 8a2 2 0 11-4 0 2 2 0 014 0zM14 15a4 4 0 00-8 0v3h8v-3zM6 8a2 2 0 11-4 0 2 2 0 014 0zM16 18v-3a5.972 5.972 0 00-.75-2.906A3.005 3.005 0 0119 15v3h-3zM4.75 12.094A5.973 5.973 0 004 15v3H1v-3a3 3 0 013.75-2.906z"
               />
             </svg>
-            <span>25,000+ Students</span>
+            <span class="text-gray-500">25,000+ Students</span>
           </div>
 
           <div class="flex items-center">
@@ -72,7 +72,7 @@ defineProps<Props>();
                 d="M4 11.794V16l4-1.714a1 1 0 01.788 0L12.78 16v-4.206l-4.128 1.769a1 1 0 01-.788 0L4 11.794z"
               />
             </svg>
-            <span>8 Courses</span>
+            <span class="text-gray-500">8 Courses</span>
           </div>
         </div>
 
@@ -132,7 +132,7 @@ defineProps<Props>();
     </div>
 
     <!-- Instructor courses -->
-    <h3 class="text-xl font-bold mb-4">
+    <h3 class="text-xl font-bold mb-4 text-gray-900">
       Other Courses by {{ course?.instructor.name }}
     </h3>
 
@@ -146,7 +146,7 @@ defineProps<Props>();
           class="w-full h-40 object-cover"
         />
         <div class="p-4 flex-grow">
-          <h4 class="font-bold text-lg mb-2">
+          <h4 class="font-bold text-lg mb-2 text-gray-900">
             Advanced JavaScript: From Fundamentals to Functional JS
           </h4>
           <div class="flex items-center text-sm mb-2">
@@ -160,7 +160,7 @@ defineProps<Props>();
                 d="M9.049 2.927c.3-.921 1.603-.921 1.902 0l1.07 3.292a1 1 0 00.95.69h3.462c.969 0 1.371 1.24.588 1.81l-2.8 2.034a1 1 0 00-.364 1.118l1.07 3.292c.3.921-.755 1.688-1.54 1.118l-2.8-2.034a1 1 0 00-1.175 0l-2.8 2.034c-.784.57-1.838-.197-1.539-1.118l1.07-3.292a1 1 0 00-.364-1.118L2.98 8.72c-.783-.57-.38-1.81.588-1.81h3.461a1 1 0 00.951-.69l1.07-3.292z"
               />
             </svg>
-            <span>4.8 (1,432 ratings)</span>
+            <span class="text-gray-500">4.8 (1,432 ratings)</span>
           </div>
           <p class="text-gray-600 text-sm mb-4">
             Master advanced JavaScript concepts including closures, prototypes,
@@ -196,7 +196,7 @@ defineProps<Props>();
           class="w-full h-40 object-cover"
         />
         <div class="p-4 flex-grow">
-          <h4 class="font-bold text-lg mb-2">
+          <h4 class="font-bold text-lg mb-2 text-gray-900">
             React Native: Build Mobile Apps with JavaScript
           </h4>
           <div class="flex items-center text-sm mb-2">
@@ -210,7 +210,7 @@ defineProps<Props>();
                 d="M9.049 2.927c.3-.921 1.603-.921 1.902 0l1.07 3.292a1 1 0 00.95.69h3.462c.969 0 1.371 1.24.588 1.81l-2.8 2.034a1 1 0 00-.364 1.118l1.07 3.292c.3.921-.755 1.688-1.54 1.118l-2.8-2.034a1 1 0 00-1.175 0l-2.8 2.034c-.784.57-1.838-.197-1.539-1.118l1.07-3.292a1 1 0 00-.364-1.118L2.98 8.72c-.783-.57-.38-1.81.588-1.81h3.461a1 1 0 00.951-.69l1.07-3.292z"
               />
             </svg>
-            <span>4.9 (988 ratings)</span>
+            <span class="text-gray-500">4.9 (988 ratings)</span>
           </div>
           <p class="text-gray-600 text-sm mb-4">
             Learn to create cross-platform mobile applications for iOS and

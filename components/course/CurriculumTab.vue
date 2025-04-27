@@ -37,7 +37,7 @@ const toggleSection = (sectionId: number) => {
 
 <template>
   <div v-if="activeTab === 'curriculum'">
-    <h2 class="text-2xl font-bold mb-6">Course Curriculum</h2>
+    <h2 class="text-2xl font-bold mb-6 text-gray-900">Course Curriculum</h2>
 
     <div class="mb-4">
       <div class="flex justify-between text-sm text-gray-600 mb-2">
