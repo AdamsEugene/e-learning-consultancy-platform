@@ -32,11 +32,11 @@ defineEmits<Emits>();
     class="grid grid-cols-1 lg:grid-cols-3 gap-8"
   >
     <div class="lg:col-span-2">
-      <h2 class="text-2xl font-bold mb-4">About This Course</h2>
+      <h2 class="text-2xl font-bold mb-4 text-gray-900">About This Course</h2>
       <p class="text-gray-700 mb-6">{{ course?.description }}</p>
 
       <div class="mb-8">
-        <h3 class="text-xl font-bold mb-4">What You'll Learn</h3>
+        <h3 class="text-xl font-bold mb-4 text-gray-900">What You'll Learn</h3>
         <div class="grid grid-cols-1 md:grid-cols-2 gap-3">
           <div
             v-for="(objective, idx) in course?.objectives"
@@ -55,13 +55,13 @@ defineEmits<Emits>();
                 clip-rule="evenodd"
               />
             </svg>
-            <span>{{ objective }}</span>
+            <span class="text-gray-500">{{ objective }}</span>
           </div>
         </div>
       </div>
 
       <div class="mb-8">
-        <h3 class="text-xl font-bold mb-4">Requirements</h3>
+        <h3 class="text-xl font-bold mb-4 text-gray-900">Requirements</h3>
         <ul class="space-y-2">
           <li
             v-for="(requirement, idx) in course?.requirements"
@@ -80,13 +80,13 @@ defineEmits<Emits>();
                 clip-rule="evenodd"
               />
             </svg>
-            <span>{{ requirement }}</span>
+            <span class="text-gray-500">{{ requirement }}</span>
           </li>
         </ul>
       </div>
 
       <div>
-        <h3 class="text-xl font-bold mb-4">Course Structure</h3>
+        <h3 class="text-xl font-bold mb-4 text-gray-900">Course Structure</h3>
         <div class="grid grid-cols-2 sm:grid-cols-4 gap-4 mb-6">
           <div class="bg-indigo-50 rounded-lg p-4 text-center">
             <div class="text-2xl font-bold text-indigo-600 mb-1">
@@ -142,7 +142,7 @@ defineEmits<Emits>();
 
     <!-- Course roadmap/journey visualization -->
     <div class="bg-gray-50 rounded-xl p-6 border border-gray-200">
-      <h3 class="text-xl font-bold mb-4">Course Roadmap</h3>
+      <h3 class="text-xl font-bold mb-4 text-gray-900">Course Roadmap</h3>
 
       <!-- Course flow visualization -->
       <div class="mb-6 overflow-hidden relative">
@@ -184,7 +184,7 @@ defineEmits<Emits>();
       <!-- Selected section preview -->
       <div
         v-if="selectedSectionData"
-        class="border border-gray-200 rounded-lg p-4 bg-white"
+        class="border border-gray-200 rounded-lg p-4 bg-white text-gray-900"
       >
         <h4 class="font-semibold text-lg mb-2">
           {{ selectedSectionData.title }}
