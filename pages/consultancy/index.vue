@@ -243,7 +243,7 @@ useHead({
           >
             Our Expertise
           </span>
-          <h2 class="text-3xl md:text-4xl font-bold mb-6">
+          <h2 class="text-3xl md:text-4xl font-bold mb-6 text-gray-900">
             Comprehensive Consultancy Services
           </h2>
           <p class="text-lg text-gray-600">
@@ -289,7 +289,7 @@ useHead({
           >
             Success Stories
           </span>
-          <h2 class="text-3xl md:text-4xl font-bold mb-6">Our Case Studies</h2>
+          <h2 class="text-3xl md:text-4xl font-bold mb-6 text-gray-900">Our Case Studies</h2>
           <p class="text-lg text-gray-600">
             Explore how we've helped businesses across various industries
             achieve their goals through our consultancy services.

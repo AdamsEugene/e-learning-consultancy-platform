@@ -255,7 +255,7 @@ const gradient = computed(() => {
             clip-rule="evenodd"
           />
         </svg>
-        <span>{{ feature }}</span>
+        <span class="text-gray-600">{{ feature }}</span>
       </li>
     </ul>
 

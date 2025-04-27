@@ -440,7 +440,7 @@ onMounted(() => {
                 <select
                   id="sort"
                   v-model="selectedSort"
-                  class="appearance-none bg-white border border-gray-300 rounded-lg py-2 pl-4 pr-10 focus:outline-none focus:ring-2  text-sm"
+                  class="appearance-none bg-white border border-gray-300 rounded-lg py-2 pl-4 pr-10 focus:outline-none  text-gray-900 text-sm"
                   @change="handleSortChange"
                 >
                   <option
