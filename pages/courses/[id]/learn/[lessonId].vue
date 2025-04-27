@@ -21,7 +21,7 @@ const lessonId = computed(() => Number(route.params.lessonId));
 const {
   currentCourse,
   currentLesson,
-  currentSection,
+  // currentSection,
   isLoading,
   hasError,
   markLessonAsCompleted,
@@ -455,94 +455,8 @@ onBeforeUnmount(() => {
 
     <!-- Main lesson content -->
     <div v-else-if="currentLesson" class="flex-grow overflow-y-auto">
-      <div class="container mx-auto px-4 py-6 max-w-4xl">
-        <!-- Lesson title and info -->
-        <div
-          class="bg-white rounded-lg shadow-sm border border-gray-200 p-6 mb-6"
-        >
-          <div class="flex flex-wrap items-center justify-between">
-            <!-- Breadcrumb -->
-            <div class="flex items-center text-sm text-gray-500 mb-2 sm:mb-0">
-              <span>{{ currentSection?.title }}</span>
-              <svg
-                xmlns="http://www.w3.org/2000/svg"
-                class="h-4 w-4 mx-2"
-                fill="none"
-                viewBox="0 0 24 24"
-                stroke="currentColor"
-              >
-                <path
-                  stroke-linecap="round"
-                  stroke-linejoin="round"
-                  stroke-width="2"
-                  d="M9 5l7 7-7 7"
-                />
-              </svg>
-              <span>{{ currentLesson?.title }}</span>
-            </div>
+      <div class="container mx-auto px-4 py-6 max-w-6xl">
 
-            <!-- Completed badge -->
-            <div
-              v-if="isLessonCompleted"
-              class="flex items-center text-sm text-green-600 bg-green-50 px-3 py-1 rounded-full"
-            >
-              <svg
-                xmlns="http://www.w3.org/2000/svg"
-                class="h-5 w-5 mr-1"
-                viewBox="0 0 20 20"
-                fill="currentColor"
-              >
-                <path
-                  fill-rule="evenodd"
-                  d="M10 18a8 8 0 100-16 8 8 0 000 16zm3.707-9.293a1 1 0 00-1.414-1.414L9 10.586 7.707 9.293a1 1 0 00-1.414 1.414l2 2a1 1 0 001.414 0l4-4z"
-                  clip-rule="evenodd"
-                />
-              </svg>
-              Completed
-            </div>
-          </div>
-
-          <h1 class="text-2xl md:text-3xl font-bold mt-3">
-            {{ currentLesson?.title }}
-          </h1>
-
-          <!-- Lesson metadata -->
-          <div class="flex flex-wrap items-center mt-3 text-sm text-gray-600">
-            <div class="flex items-center mr-4">
-              <svg
-                xmlns="http://www.w3.org/2000/svg"
-                class="h-4 w-4 mr-1"
-                viewBox="0 0 20 20"
-                fill="currentColor"
-              >
-                <path
-                  fill-rule="evenodd"
-                  d="M10 18a8 8 0 100-16 8 8 0 000 16zm1-12a1 1 0 10-2 0v4a1 1 0 00.293.707l2.828 2.829a1 1 0 101.415-1.415L11 9.586V6z"
-                  clip-rule="evenodd"
-                />
-              </svg>
-              {{ currentLesson?.duration }}
-            </div>
-            <div class="flex items-center capitalize">
-              <svg
-                xmlns="http://www.w3.org/2000/svg"
-                class="h-4 w-4 mr-1"
-                viewBox="0 0 20 20"
-                fill="currentColor"
-              >
-                <path
-                  d="M9 4.804A7.968 7.968 0 005.5 4c-1.255 0-2.443.29-3.5.804v10A7.969 7.969 0 015.5 14c1.669 0 3.218.51 4.5 1.385A7.962 7.962 0 0114.5 14c1.255 0 2.443.29 3.5.804v-10A7.968 7.968 0 0014.5 4c-1.255 0-2.443.29-3.5.804V12a1 1 0 11-2 0V4.804z"
-                />
-              </svg>
-              {{ currentLesson?.type }}
-            </div>
-          </div>
-
-          <!-- Lesson description -->
-          <p v-if="currentLesson?.description" class="mt-3 text-gray-700">
-            {{ currentLesson.description }}
-          </p>
-        </div>
 
         <!-- Lesson content based on type -->
         <div class="bg-white rounded-lg shadow-sm overflow-hidden mb-6">
