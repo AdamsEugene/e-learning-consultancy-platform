@@ -144,130 +144,64 @@ const statItems = [
       </div>
 
       <div class="grid grid-cols-2 md:grid-cols-4 gap-8">
-        <div v-for="item in statItems" :key="item.key" class="stat-item group">
+        <div v-for="item in statItems" :key="item.key" class="stat-item">
           <div
-            class="relative p-6 rounded-2xl bg-white transition-all duration-500 shadow-lg hover:shadow-xl transform hover:-translate-y-2 border border-gray-100 overflow-hidden animate-fade-in"
-            :class="[
-              item.classes.hoverBg,
-              item.classes.shadow,
-              item.animationDelay,
-            ]"
+            class="bg-white rounded-lg p-6 h-full flex flex-col items-center justify-between transition-all duration-300 hover:shadow-lg border-l-4 border-transparent hover:border-l-4"
+            :class="[item.classes.accent]"
           >
-            <!-- Decorative background gradient that appears on hover -->
-            <div
-              class="absolute inset-0 opacity-0 group-hover:opacity-5 transition-opacity duration-500 pointer-events-none"
-              :class="item.classes.bg"
-            />
-
-            <!-- Animated border on hover -->
-            <div
-              class="absolute inset-0 rounded-2xl ring-1 ring-gray-200 group-hover:ring-4 transition-all duration-500"
-              :class="item.classes.ring"
-            />
-
-            <!-- Top decoration line -->
-            <div
-              class="absolute top-0 left-0 right-0 h-1 rounded-t-xl transition-all duration-500 transform origin-left group-hover:scale-x-100 scale-x-0"
-              :class="item.classes.bg"
-            />
-
-            <!-- Icon with animated pulse effect -->
-            <div class="relative flex justify-center mb-6">
-              <div
-                class="absolute inset-0 animate-ping opacity-30 rounded-full"
-                :class="item.classes.iconBg"
-              />
-              <div
-                class="relative w-16 h-16 rounded-full flex items-center justify-center shadow-md animate-float"
-                :class="item.classes.bg"
+            <div class="w-12 h-12 mb-4 flex items-center justify-center rounded-full" :class="item.classes.iconBg">
+              <svg
+                xmlns="http://www.w3.org/2000/svg"
+                class="h-6 w-6"
+                :class="item.classes.text"
+                fill="none"
+                viewBox="0 0 24 24"
+                stroke="currentColor"
               >
-                <svg
-                  xmlns="http://www.w3.org/2000/svg"
-                  class="h-8 w-8 text-white"
-                  fill="none"
-                  viewBox="0 0 24 24"
-                  stroke="currentColor"
-                >
-                  <!-- User Graduate icon -->
-                  <path
-                    v-if="item.icon === 'user-graduate'"
-                    stroke-linecap="round"
-                    stroke-linejoin="round"
-                    stroke-width="2"
-                    d="M12 14l9-5-9-5-9 5 9 5m0 0l6.16-3.422a12.083 12.083 0 01.665 6.479A11.952 11.952 0 0012 20.055a11.952 11.952 0 00-6.824-2.998 12.078 12.078 0 01.665-6.479L12 14zm-4 6v-7.5l4-2.222"
-                  />
-                  <!-- Books icon -->
-                  <path
-                    v-if="item.icon === 'books'"
-                    stroke-linecap="round"
-                    stroke-linejoin="round"
-                    stroke-width="2"
-                    d="M12 6.253v13m0-13C10.832 5.477 9.246 5 7.5 5S4.168 5.477 3 6.253v13C4.168 18.477 5.754 18 7.5 18s3.332.477 4.5 1.253m0-13C13.168 5.477 14.754 5 16.5 5c1.747 0 3.332.477 4.5 1.253v13C19.832 18.477 18.247 18 16.5 18c-1.746 0-3.332.477-4.5 1.253"
-                  />
-                  <!-- Teacher icon -->
-                  <path
-                    v-if="item.icon === 'chalkboard-teacher'"
-                    stroke-linecap="round"
-                    stroke-linejoin="round"
-                    stroke-width="2"
-                    d="M8 14v3m4-3v3m4-3v3M3 21h18M3 10h18M3 7l9-4 9 4M4 10h16v11H4V10z"
-                  />
-                  <!-- Star icon -->
-                  <path
-                    v-if="item.icon === 'star'"
-                    stroke-linecap="round"
-                    stroke-linejoin="round"
-                    stroke-width="2"
-                    d="M11.049 2.927c.3-.921 1.603-.921 1.902 0l1.519 4.674a1 1 0 00.95.69h4.915c.969 0 1.371 1.24.588 1.81l-3.976 2.888a1 1 0 00-.363 1.118l1.518 4.674c.3.922-.755 1.688-1.538 1.118l-3.976-2.888a1 1 0 00-1.176 0l-3.976 2.888c-.783.57-1.838-.197-1.538-1.118l1.518-4.674a1 1 0 00-.363-1.118l-3.976-2.888c-.784-.57-.38-1.81.588-1.81h4.914a1 1 0 00.951-.69l1.519-4.674z"
-                  />
-                </svg>
-              </div>
+                <!-- User Graduate icon -->
+                <path
+                  v-if="item.icon === 'user-graduate'"
+                  stroke-linecap="round"
+                  stroke-linejoin="round"
+                  stroke-width="2"
+                  d="M12 14l9-5-9-5-9 5 9 5m0 0l6.16-3.422a12.083 12.083 0 01.665 6.479A11.952 11.952 0 0012 20.055a11.952 11.952 0 00-6.824-2.998 12.078 12.078 0 01.665-6.479L12 14zm-4 6v-7.5l4-2.222"
+                />
+                <!-- Books icon -->
+                <path
+                  v-if="item.icon === 'books'"
+                  stroke-linecap="round"
+                  stroke-linejoin="round"
+                  stroke-width="2"
+                  d="M12 6.253v13m0-13C10.832 5.477 9.246 5 7.5 5S4.168 5.477 3 6.253v13C4.168 18.477 5.754 18 7.5 18s3.332.477 4.5 1.253m0-13C13.168 5.477 14.754 5 16.5 5c1.747 0 3.332.477 4.5 1.253v13C19.832 18.477 18.247 18 16.5 18c-1.746 0-3.332.477-4.5 1.253"
+                />
+                <!-- Teacher icon -->
+                <path
+                  v-if="item.icon === 'chalkboard-teacher'"
+                  stroke-linecap="round"
+                  stroke-linejoin="round"
+                  stroke-width="2"
+                  d="M8 14v3m4-3v3m4-3v3M3 21h18M3 10h18M3 7l9-4 9 4M4 10h16v11H4V10z"
+                />
+                <!-- Star icon -->
+                <path
+                  v-if="item.icon === 'star'"
+                  stroke-linecap="round"
+                  stroke-linejoin="round"
+                  stroke-width="2"
+                  d="M11.049 2.927c.3-.921 1.603-.921 1.902 0l1.519 4.674a1 1 0 00.95.69h4.915c.969 0 1.371 1.24.588 1.81l-3.976 2.888a1 1 0 00-.363 1.118l1.518 4.674c.3.922-.755 1.688-1.538 1.118l-3.976-2.888a1 1 0 00-1.176 0l-3.976 2.888c-.783.57-1.838-.197-1.538-1.118l1.518-4.674a1 1 0 00-.363-1.118l-3.976-2.888c-.784-.57-.38-1.81.588-1.81h4.914a1 1 0 00.951-.69l1.519-4.674z"
+                />
+              </svg>
             </div>
-
-            <div class="text-center z-10 relative">
-              <!-- Counter with animated reveal -->
-              <div class="counter-wrapper overflow-hidden">
-                <div
-                  class="text-4xl md:text-5xl font-bold mb-3 transition-all duration-500 counter-value"
-                  :class="[item.classes.text, item.classes.hoverText]"
-                >
-                  <span>{{
-                    stats[item.key as keyof typeof stats].toLocaleString()
-                  }}</span>
-                  <span>{{ item.suffix }}</span>
-                </div>
+            
+            <div class="text-center w-full">
+              <div class="text-4xl font-bold mb-1" :class="item.classes.text">
+                {{ stats[item.key as keyof typeof stats].toLocaleString() }}{{ item.suffix }}
               </div>
-
-              <div
-                class="font-medium text-lg text-gray-800 mb-2 transition-all duration-300 group-hover:font-semibold"
-              >
+              <div class="font-medium text-gray-800 mb-1">
                 {{ item.label }}
               </div>
-
-              <div
-                class="text-sm text-gray-500 transition-all duration-300 group-hover:text-gray-700"
-              >
+              <div class="text-xs text-gray-500">
                 {{ item.description }}
-              </div>
-            </div>
-
-            <!-- Bottom wave decoration -->
-            <div class="absolute bottom-0 left-0 right-0 h-4 overflow-hidden">
-              <div
-                class="w-full h-16 transform translate-y-8 group-hover:translate-y-4 transition-transform duration-700"
-              >
-                <svg
-                  viewBox="0 0 100 10"
-                  preserveAspectRatio="none"
-                  class="w-full h-full"
-                  :class="item.classes.text"
-                >
-                  <path
-                    d="M0 10 Q 30 5 50 8 Q 70 11 100 6 L 100 15 L 0 15 Z"
-                    fill="currentColor"
-                    opacity="0.1"
-                  />
-                </svg>
               </div>
             </div>
           </div>
@@ -276,7 +210,7 @@ const statItems = [
 
       <!-- Enhanced context section with timeline -->
       <div
-        class="mt-16 text-center max-w-3xl mx-auto bg-white p-8 rounded-2xl shadow-xl border border-gray-100 transform hover:shadow-2xl transition-all duration-500"
+        class="mt-16 text-center max-w-3xl mx-auto bg-white px-8 pt-4 pb-10 rounded-2xl shadow-xl border border-gray-100 transform hover:shadow-2xl transition-all duration-500"
       >
         <p class="text-gray-600 mb-6 leading-relaxed">
           Our platform continues to grow with thousands of new students joining
@@ -285,35 +219,42 @@ const statItems = [
           in their careers.
         </p>
 
-        <!-- Growth timeline visualization -->
-        <div class="mt-8 flex items-center justify-center space-x-2">
-          <div class="h-2 w-2 rounded-full bg-indigo-600" />
-          <div class="h-0.5 w-10 bg-gray-300" />
-          <div class="flex flex-col items-center">
-            <div class="h-4 w-4 rounded-full bg-indigo-600 mb-1" />
-            <span class="text-xs text-gray-500">2021</span>
-          </div>
-          <div class="h-0.5 w-10 bg-gray-300" />
-          <div class="flex flex-col items-center">
-            <div class="h-4 w-4 rounded-full bg-indigo-600 mb-1" />
-            <span class="text-xs text-gray-500">2022</span>
-          </div>
-          <div class="h-0.5 w-10 bg-gray-300" />
-          <div class="flex flex-col items-center">
-            <div class="h-4 w-4 rounded-full bg-indigo-600 mb-1" />
-            <span class="text-xs text-gray-500">2023</span>
-          </div>
-          <div class="h-0.5 w-10 bg-gray-300" />
-          <div class="flex flex-col items-center">
-            <div
-              class="h-6 w-6 rounded-full bg-indigo-600 mb-1 animate-pulse flex items-center justify-center"
-            >
-              <span class="text-xs text-white font-bold">NOW</span>
+        <!-- Clean modern timeline with progressive animation -->
+        <div class="mt-10 max-w-md mx-auto">
+          <div class="relative flex items-center justify-between">
+            <!-- Animated progress line -->
+            <div class="absolute left-0 right-0 h-1 bg-indigo-50"></div>
+            <div class="absolute left-0 h-1 bg-indigo-500 timeline-progress-animate"></div>
+            
+            <!-- Timeline points with sequential animation -->
+            <div class="relative flex flex-col items-center timeline-point-animate delay-0">
+              <div class="z-10 flex items-center justify-center w-8 h-8 rounded-full bg-indigo-100 transition-all duration-500">
+                <span class="text-xs font-medium text-indigo-600">21</span>
+              </div>
+              <span class="absolute top-10 text-xs text-gray-500">2021</span>
             </div>
-            <span class="text-xs text-gray-500">2024</span>
+            
+            <div class="relative flex flex-col items-center timeline-point-animate delay-500">
+              <div class="z-10 flex items-center justify-center w-8 h-8 rounded-full bg-indigo-100 transition-all duration-500">
+                <span class="text-xs font-medium text-indigo-600">22</span>
+              </div>
+              <span class="absolute top-10 text-xs text-gray-500">2022</span>
+            </div>
+            
+            <div class="relative flex flex-col items-center timeline-point-animate delay-1000">
+              <div class="z-10 flex items-center justify-center w-8 h-8 rounded-full bg-indigo-100 transition-all duration-500">
+                <span class="text-xs font-medium text-indigo-600">23</span>
+              </div>
+              <span class="absolute top-10 text-xs text-gray-500">2023</span>
+            </div>
+            
+            <div class="relative flex flex-col items-center timeline-point-animate delay-1500">
+              <div class="z-10 flex items-center justify-center w-10 h-10 rounded-full bg-indigo-600 animate-pulse-delayed">
+                <span class="text-xs font-bold text-white">NOW</span>
+              </div>
+              <span class="absolute top-12 text-xs text-gray-500">2024</span>
+            </div>
           </div>
-          <div class="h-0.5 w-10 bg-gray-300" />
-          <div class="h-2 w-2 rounded-full bg-gray-300" />
         </div>
       </div>
     </div>
@@ -568,5 +509,82 @@ const statItems = [
 
 .delay-300 {
   animation-delay: 300ms;
+}
+
+/* Add these animations to the <style> section */
+@keyframes timelineProgress {
+  0% {
+    width: 0%;
+  }
+  25% {
+    width: 33%;
+  }
+  50% {
+    width: 66%;
+  }
+  75% {
+    width: 100%;
+  }
+  100% {
+    width: 100%;
+  }
+}
+
+@keyframes timelinePointAppear {
+  0% {
+    opacity: 0;
+    transform: scale(0);
+  }
+  80% {
+    opacity: 1;
+    transform: scale(1.2);
+  }
+  100% {
+    opacity: 1;
+    transform: scale(1);
+  }
+}
+
+@keyframes pulseDelayed {
+  0%, 50% {
+    opacity: 1;
+  }
+  75% {
+    opacity: 0.5;
+  }
+  100% {
+    opacity: 1;
+  }
+}
+
+.timeline-progress-animate {
+  animation: timelineProgress 2s ease-out forwards;
+}
+
+.timeline-point-animate > div {
+  opacity: 0;
+  transform: scale(0);
+  animation: timelinePointAppear 0.5s ease-out forwards;
+}
+
+.delay-0 > div {
+  animation-delay: 0.2s;
+}
+
+.delay-500 > div {
+  animation-delay: 0.7s;
+}
+
+.delay-1000 > div {
+  animation-delay: 1.2s;
+}
+
+.delay-1500 > div {
+  animation-delay: 1.7s;
+}
+
+.animate-pulse-delayed {
+  animation: pulseDelayed 2s cubic-bezier(0.4, 0, 0.6, 1) infinite;
+  animation-delay: 1.7s;
 }
 </style>

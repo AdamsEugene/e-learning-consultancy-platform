@@ -324,7 +324,7 @@ useHead({
       <div class="container mx-auto px-4 relative z-10">
         <div class="max-w-3xl mx-auto text-center">
           <div
-            class="inline-block mb-4 px-4 py-1 rounded-full bg-white bg-opacity-20 backdrop-blur-sm transform transition-all duration-1000"
+            class="inline-block mb-4 px-4 py-1 rounded-full bg-white text-black bg-opacity-20 backdrop-blur-sm transform transition-all duration-1000"
             :class="
               isPageVisible
                 ? 'opacity-100 translate-y-0'
@@ -785,7 +785,7 @@ useHead({
             </NuxtLink>
             <NuxtLink
               to="/consultancy"
-              class="border-2 border-white text-white font-bold py-3 px-6 rounded-lg hover:bg-white hover:bg-opacity-20 transition-all"
+              class="border-2 border-white text-white  font-bold py-3 px-6 rounded-lg hover:bg-white hover:text-indigo-700 hover:bg-opacity-20 transition-all transform hover:scale-105"
             >
               Explore All Services
             </NuxtLink>

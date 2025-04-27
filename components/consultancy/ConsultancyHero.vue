@@ -142,7 +142,7 @@ onMounted(() => {
       <div class="max-w-3xl mx-auto text-center text-white">
         <!-- Subtitle with animated entrance -->
         <div
-          class="inline-block mb-4 px-4 py-1 rounded-full bg-white bg-opacity-20 backdrop-blur-sm transform transition-all duration-1000"
+          class="inline-block mb-4 px-4 py-1 rounded-full bg-white text-black bg-opacity-20 backdrop-blur-sm transform transition-all duration-1000"
           :class="
             isVisible ? 'opacity-100 translate-y-0' : 'opacity-0 translate-y-8'
           "

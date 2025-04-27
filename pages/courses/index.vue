@@ -279,7 +279,7 @@ onMounted(() => {
                 v-model="searchQuery"
                 type="text"
                 placeholder="Search for courses, skills, or topics..."
-                class="w-full py-4 px-5 pr-12 rounded-lg border-none shadow-lg text-gray-900 focus:ring-2 focus:ring-indigo-400"
+                class="w-full py-4 px-5 pr-12 rounded-lg border shadow-lg text-white"
               />
               <button
                 type="submit"
@@ -436,7 +436,7 @@ onMounted(() => {
                 results
               </div>
               <div class="flex items-center">
-                <label for="sort" class="text-gray-700 mr-2">Sort by:</label>
+                <!-- <label for="sort" class="text-gray-700 mr-2">Sort by:</label> -->
                 <select
                   id="sort"
                   v-model="selectedSort"

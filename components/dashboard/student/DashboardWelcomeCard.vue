@@ -52,7 +52,7 @@ const today = new Date().toLocaleDateString("en-US", {
         <!-- Quick action buttons -->
         <div class="flex space-x-3">
           <button
-            class="bg-white bg-opacity-20 backdrop-blur-sm hover:bg-opacity-30 text-white px-4 py-2 rounded-lg transition-all duration-200 transform hover:scale-105 focus:outline-none focus:ring-2 focus:ring-white focus:ring-opacity-50 flex items-center"
+            class="bg-white text-indigo-700 px-4 py-2 rounded-lg shadow-md transition-all duration-200 transform hover:scale-105 focus:outline-none focus:ring-2 focus:ring-white flex items-center font-medium"
           >
             <svg
               xmlns="http://www.w3.org/2000/svg"
@@ -87,51 +87,59 @@ const today = new Date().toLocaleDateString("en-US", {
       </div>
 
       <!-- Stats section -->
-      <div class="grid grid-cols-2 md:grid-cols-4 gap-4 mt-6">
+      <div class="grid grid-cols-2 md:grid-cols-4 gap-5 mt-8">
         <!-- Streak -->
         <div
-          class="bg-white bg-opacity-20 backdrop-blur-sm rounded-lg p-4 text-center transform transition-all duration-200 hover:scale-105 hover:bg-opacity-30"
+          class="bg-opacity-20 backdrop-blur-sm rounded-xl p-5 text-center transform transition-all duration-300 hover:scale-105 hover:bg-opacity-30 shadow-md hover:shadow-lg border border-white border-opacity-10"
         >
+          <div class="mb-2">
+            <span class="text-2xl">🔥</span>
+          </div>
           <div
-            class="text-2xl font-bold text-white flex justify-center items-center"
+            class="text-3xl font-bold text-white flex justify-center items-center"
           >
             {{ streak }}
-            <span class="ml-2 text-lg">🔥</span>
           </div>
-          <div class="text-indigo-100 text-sm mt-1">Day Streak</div>
+          <div class="text-indigo-100 text-sm mt-2 font-medium">Day Streak</div>
         </div>
 
         <!-- Enrolled Courses -->
         <div
-          class="bg-white bg-opacity-20 backdrop-blur-sm rounded-lg p-4 text-center transform transition-all duration-200 hover:scale-105 hover:bg-opacity-30"
+          class="bg-opacity-20 backdrop-blur-sm rounded-xl p-5 text-center transform transition-all duration-300 hover:scale-105 hover:bg-opacity-30 shadow-md hover:shadow-lg border border-white border-opacity-10"
         >
-          <div class="text-2xl font-bold text-white">
+          <div class="mb-2">
+            <span class="text-2xl">📚</span>
+          </div>
+          <div class="text-3xl font-bold text-white">
             {{ enrolledCourses }}
           </div>
-          <div class="text-indigo-100 text-sm mt-1">Courses Enrolled</div>
+          <div class="text-indigo-100 text-sm mt-2 font-medium">Courses Enrolled</div>
         </div>
 
         <!-- Hours Learned -->
         <div
-          class="bg-white bg-opacity-20 backdrop-blur-sm rounded-lg p-4 text-center transform transition-all duration-200 hover:scale-105 hover:bg-opacity-30"
+          class="bg-opacity-20 backdrop-blur-sm rounded-xl p-5 text-center transform transition-all duration-300 hover:scale-105 hover:bg-opacity-30 shadow-md hover:shadow-lg border border-white border-opacity-10"
         >
-          <div class="text-2xl font-bold text-white">
+          <div class="mb-2">
+            <span class="text-2xl">⏱️</span>
+          </div>
+          <div class="text-3xl font-bold text-white">
             {{ hoursLearned }}
           </div>
-          <div class="text-indigo-100 text-sm mt-1">Hours Learned</div>
+          <div class="text-indigo-100 text-sm mt-2 font-medium">Hours Learned</div>
         </div>
 
         <!-- Total Points -->
         <div
-          class="bg-white bg-opacity-20 backdrop-blur-sm rounded-lg p-4 text-center transform transition-all duration-200 hover:scale-105 hover:bg-opacity-30"
+          class="bg-opacity-20 backdrop-blur-sm rounded-xl p-5 text-center transform transition-all duration-300 hover:scale-105 hover:bg-opacity-30 shadow-md hover:shadow-lg border border-white border-opacity-10"
         >
-          <div
-            class="text-2xl font-bold text-white flex justify-center items-center"
-          >
-            {{ totalPoints }}
-            <span class="ml-2 text-lg">⭐</span>
+          <div class="mb-2">
+            <span class="text-2xl">⭐</span>
           </div>
-          <div class="text-indigo-100 text-sm mt-1">Total Points</div>
+          <div class="text-3xl font-bold text-white">
+            {{ totalPoints }}
+          </div>
+          <div class="text-indigo-100 text-sm mt-2 font-medium">Total Points</div>
         </div>
       </div>
     </div>

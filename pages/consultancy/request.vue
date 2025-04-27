@@ -87,6 +87,11 @@ const visibleSections = ref<string[]>([]);
 // Set up intersection observer for animation on scroll
 onMounted(() => {
   isPageLoaded.value = true;
+  
+  // Add benefits section to visible sections by default
+  visibleSections.value = ["benefits-section"];
+  
+  console.log("Initial visible sections:", visibleSections.value);
 
   if (typeof window !== "undefined" && "IntersectionObserver" in window) {
     const options = {
@@ -99,16 +104,18 @@ onMounted(() => {
       entries.forEach((entry) => {
         if (entry.isIntersecting) {
           const sectionId = entry.target.id;
+          console.log("Intersection detected for:", sectionId);
           if (sectionId && !visibleSections.value.includes(sectionId)) {
             visibleSections.value.push(sectionId);
+            console.log("Updated visible sections:", visibleSections.value);
           }
         }
       });
     }, options);
 
     // Observe each section
-    document.querySelectorAll("section[id]").forEach((section) => {
-      observer.observe(section);
+    document.querySelectorAll("[id]").forEach((element) => {
+      observer.observe(element);
     });
   } else {
     // Fallback for browsers without IntersectionObserver

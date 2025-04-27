@@ -1,49 +1,102 @@
 <!-- components/courses/learn/CourseSidebar.vue -->
 <script setup lang="ts">
-import type { Course, CourseLesson, CourseSection } from "~/types/courseTemp";
+import { ref, onMounted, onBeforeUnmount, watch } from "vue";
+import {
+  useSharedLesson,
+  type CourseLesson,
+} from "~/composables/useSharedLesson";
 
-interface Props {
-  course?: Course | null;
-  currentLesson?: CourseLesson | null;
-  courseProgress?: number;
-  isSmallScreen?: boolean;
-  defaultWidth?: number;
-  minWidth?: number;
-  maxWidth?: number;
-}
-
-// Props
-const props = withDefaults(defineProps<Props>(), {
-  course: null,
-  currentLesson: null,
-  courseProgress: 0,
-  isSmallScreen: false,
-  defaultWidth: 320,
-  minWidth: 250,
-  maxWidth: 500,
+const props = defineProps({
+  courseId: {
+    type: Number,
+    required: true,
+  },
+  currentLessonId: {
+    type: Number,
+    required: true,
+  },
+  isSmallScreen: {
+    type: Boolean,
+    default: false,
+  },
+  defaultWidth: {
+    type: Number,
+    default: 320,
+  },
 });
 
-// Emits
-const emit = defineEmits(["navigate", "close"]);
+const emit = defineEmits(["close", "resize", "navigate"]);
 
-// Sidebar width state
-const sidebarWidth = ref(props.defaultWidth);
-const sidebarRef = ref<HTMLElement | null>(null);
+// Get shared lesson state
+const {
+  currentCourse,
+  isLoading,
+  hasError,
+  setCurrentLesson,
+  getCourseProgress,
+  getCourseById,
+  findLessonById,
+  fetchCourseData,
+} = useSharedLesson();
 
-// Expanded sections tracking
-const expandedSections = ref(new Set());
+// Local state
+const expandedSections = ref<Set<number>>(new Set());
+const isDragging = ref(false);
+const startWidth = ref(props.defaultWidth);
+const currentWidth = ref(props.defaultWidth);
+const previousCourseId = ref<number | null>(null);
 
-// Initialize with current section expanded
-if (props.currentLesson && props.course) {
-  for (const section of props.course.sections) {
-    if (
-      section.lessons.some((lesson) => lesson.id === props.currentLesson?.id)
-    ) {
-      expandedSections.value.add(section.id);
-      break;
+// Handling course data loading
+const loadCourseData = async () => {
+  // Check if we already have the course data in cache or loaded
+  if (currentCourse.value?.id === props.courseId && !hasError.value) {
+    findCurrentLessonSection();
+    const currentLesson = findLessonById(props.currentLessonId);
+    if (currentLesson) {
+      setCurrentLesson(currentLesson);
+    }
+    return;
+  }
+
+  // Check if the course exists in our cached data
+  const cachedCourse = getCourseById(props.courseId);
+  if (cachedCourse) {
+    const lessonToSelect = findLessonById(props.currentLessonId);
+    if (lessonToSelect) {
+      setCurrentLesson(lessonToSelect);
+    }
+    findCurrentLessonSection();
+    return;
+  }
+
+  // Fetch course data from the composable
+  const courseData = await fetchCourseData(props.courseId);
+
+  if (courseData) {
+    previousCourseId.value = props.courseId;
+    findCurrentLessonSection();
+
+    // Set current lesson
+    const currentLesson = findLessonById(props.currentLessonId);
+    if (currentLesson) {
+      setCurrentLesson(currentLesson);
     }
   }
-}
+};
+
+// Find section containing current lesson and expand it
+const findCurrentLessonSection = () => {
+  if (!currentCourse.value) return;
+
+  for (const section of currentCourse.value.sections) {
+    for (const lesson of section.lessons) {
+      if (lesson.id === props.currentLessonId) {
+        expandedSections.value.add(section.id);
+        return;
+      }
+    }
+  }
+};
 
 // Toggle section expansion
 const toggleSection = (sectionId: number) => {
@@ -54,154 +107,201 @@ const toggleSection = (sectionId: number) => {
   }
 };
 
-// Navigate to lesson
+// Navigate to a lesson
 const navigateToLesson = (lesson: CourseLesson) => {
+  // Set the lesson in shared state
+  setCurrentLesson(lesson);
+  // Emit navigate event for the router
   emit("navigate", lesson);
 };
 
-// Close sidebar (mobile only)
-const closeSidebar = () => {
-  emit("close");
+// Resize handling
+const handleMouseDown = (_e: MouseEvent) => {
+  isDragging.value = true;
+  startWidth.value = currentWidth.value;
+  document.addEventListener("mousemove", handleMouseMove);
+  document.addEventListener("mouseup", handleMouseUp);
+  document.body.style.userSelect = "none"; // Prevent text selection during resize
 };
 
-// Calculate section progress
-const getSectionProgress = (section: CourseSection) => {
-  const totalLessons = section.lessons.length;
-  if (totalLessons === 0) return 0;
+const handleMouseMove = (e: MouseEvent) => {
+  if (!isDragging.value) return;
 
-  const completedLessons = section.lessons.filter(
-    (lesson) => lesson.isCompleted
-  ).length;
-  return Math.round((completedLessons / totalLessons) * 100);
+  // Calculate new width based on mouse position
+  const newWidth = Math.max(240, Math.min(480, e.clientX)); // Min 240px, max 480px
+  currentWidth.value = newWidth;
+
+  // Emit resize event
+  emit("resize", { width: newWidth, height: window.innerHeight });
 };
+
+const handleMouseUp = () => {
+  isDragging.value = false;
+  document.removeEventListener("mousemove", handleMouseMove);
+  document.removeEventListener("mouseup", handleMouseUp);
+  document.body.style.userSelect = ""; // Re-enable text selection
+};
+
+// Watch for courseId changes
+watch(
+  () => props.courseId,
+  (newCourseId, oldCourseId) => {
+    if (newCourseId !== oldCourseId) {
+      loadCourseData();
+    }
+  }
+);
+
+// Watch for lessonId changes
+watch(
+  () => props.currentLessonId,
+  (newLessonId) => {
+    // If we already have course data, just update the current lesson and expanded sections
+    if (currentCourse.value) {
+      findCurrentLessonSection();
+      const currentLesson = findLessonById(newLessonId);
+      if (currentLesson) {
+        setCurrentLesson(currentLesson);
+      }
+    }
+  }
+);
+
+// Lifecycle
+onMounted(() => {
+  loadCourseData();
+});
+
+// Clean up event listeners
+onBeforeUnmount(() => {
+  if (isDragging.value) {
+    document.removeEventListener("mousemove", handleMouseMove);
+    document.removeEventListener("mouseup", handleMouseUp);
+    document.body.style.userSelect = "";
+  }
+});
 </script>
 
-<!-- eslint-disable vue/html-self-closing -->
 <template>
-  <div
-    ref="sidebarRef"
-    class="bg-white border-r border-gray-200 overflow-y-auto flex-shrink-0 transition-all duration-300 h-full relative"
-    :class="[
-      isSmallScreen ? 'fixed inset-0 z-30 w-4/5 max-w-sm' : 'sticky top-0',
-    ]"
-    :style="!isSmallScreen ? `width: ${sidebarWidth}px` : ''"
+  <aside
+    class="fixed top-[56px] left-0 bottom-0 bg-white border-r border-gray-200 flex flex-col overflow-hidden transition-all duration-300 z-10"
+    :style="{ width: `${currentWidth}px` }"
   >
-    <!-- Sidebar header with close button for mobile -->
+    <!-- Resize handle -->
     <div
-      class="p-4 border-b border-gray-200 sticky top-0 bg-white z-10 flex justify-between items-center"
+      class="absolute top-0 right-0 w-2 h-full cursor-ew-resize bg-transparent hover:bg-indigo-100 z-10"
+      @mousedown="handleMouseDown"
+    ></div>
+
+    <!-- Close button for mobile view -->
+    <button
+      v-if="isSmallScreen"
+      class="absolute top-2 right-2 text-gray-500 hover:text-gray-700 p-1 z-20"
+      @click="$emit('close')"
+      aria-label="Close sidebar"
     >
-      <h2 class="text-lg font-bold">Course Content</h2>
-      <UiButton
-        v-if="isSmallScreen"
-        variant="ghost"
-        state="default"
-        size="sm"
-        icon-only
-        aria-label="Close menu"
-        @click="closeSidebar"
+      <svg
+        xmlns="http://www.w3.org/2000/svg"
+        class="h-6 w-6"
+        fill="none"
+        viewBox="0 0 24 24"
+        stroke="currentColor"
       >
-        <svg
-          xmlns="http://www.w3.org/2000/svg"
-          class="h-5 w-5"
-          fill="none"
-          viewBox="0 0 24 24"
-          stroke="currentColor"
-        >
-          <path
-            stroke-linecap="round"
-            stroke-linejoin="round"
-            stroke-width="2"
-            d="M6 18L18 6M6 6l12 12"
-          />
-        </svg>
-      </UiButton>
-    </div>
-
-    <!-- Course progress bar -->
-    <div class="px-4 py-3 border-b border-gray-200 bg-gray-50">
-      <div class="flex justify-between text-sm text-gray-600 mb-1">
-        <span>Course Progress</span>
-        <span>{{ courseProgress }}%</span>
-      </div>
-      <div class="w-full bg-gray-200 rounded-full h-2.5 overflow-hidden">
-        <div
-          class="h-full bg-green-500 transition-all duration-500"
-          :style="{ width: `${courseProgress}%` }"
+        <path
+          stroke-linecap="round"
+          stroke-linejoin="round"
+          stroke-width="2"
+          d="M6 18L18 6M6 6l12 12"
         />
+      </svg>
+    </button>
+
+    <!-- Sidebar header -->
+    <div class="p-4 border-b border-gray-200">
+      <h2 class="text-lg font-semibold truncate">
+        {{ currentCourse?.title || "Course Content" }}
+      </h2>
+      <div class="flex items-center mt-2 text-sm text-gray-600">
+        <span class="mr-2">{{ getCourseProgress() }}% complete</span>
+        <div class="flex-grow bg-gray-200 rounded-full h-2 overflow-hidden">
+          <div
+            class="h-full bg-green-500 transition-all duration-300"
+            :style="{ width: `${getCourseProgress()}%` }"
+          ></div>
+        </div>
       </div>
     </div>
 
-    <!-- Course instructor (if available) -->
+    <!-- Loading state -->
     <div
-      v-if="course?.instructor"
-      class="p-4 border-b border-gray-200 flex items-center"
+      v-if="isLoading"
+      class="flex-grow flex items-center justify-center p-4"
     >
-      <img
-        :src="course.instructor.avatar"
-        :alt="course.instructor.name"
-        class="w-10 h-10 rounded-full mr-3 object-cover"
-      />
-      <div>
-        <div class="font-medium">{{ course.instructor.name }}</div>
-        <div class="text-xs text-gray-500">{{ course.instructor.title }}</div>
-      </div>
+      <div
+        class="animate-spin rounded-full h-8 w-8 border-t-2 border-b-2 border-indigo-600"
+      ></div>
     </div>
 
-    <!-- Sections and lessons -->
-    <div class="py-2">
-      <div v-for="section in course?.sections" :key="section.id" class="mb-2">
+    <!-- Error state -->
+    <div v-else-if="hasError" class="p-4 text-center text-red-500">
+      Failed to load course content.
+      <button
+        class="block mx-auto mt-2 text-indigo-600 hover:underline"
+        @click="loadCourseData"
+      >
+        Retry
+      </button>
+    </div>
+
+    <!-- Course content -->
+    <div v-else class="flex-grow overflow-y-auto py-2">
+      <div
+        v-for="section in currentCourse?.sections"
+        :key="section.id"
+        class="mb-2"
+      >
         <!-- Section header -->
-        <div
-          class="px-4 py-3 hover:bg-gray-50 cursor-pointer flex items-center justify-between"
+        <button
+          class="w-full px-4 py-2 flex items-center justify-between text-left hover:bg-gray-50 transition-colors"
           @click="toggleSection(section.id)"
         >
-          <div class="flex-1">
-            <div class="font-medium flex items-center">
-              <svg
-                xmlns="http://www.w3.org/2000/svg"
-                class="h-4 w-4 mr-2 transition-transform duration-200"
-                :class="
-                  expandedSections.has(section.id) ? 'transform rotate-90' : ''
-                "
-                viewBox="0 0 20 20"
-                fill="currentColor"
-              >
-                <path
-                  fill-rule="evenodd"
-                  d="M7.293 14.707a1 1 0 010-1.414L10.586 10 7.293 6.707a1 1 0 011.414-1.414l4 4a1 1 0 010 1.414l-4 4a1 1 0 01-1.414 0z"
-                  clip-rule="evenodd"
-                />
-              </svg>
-              {{ section.title }}
-            </div>
-            <div class="flex items-center mt-1 text-xs text-gray-500">
-              <span>{{ section.lessons.length }} lessons</span>
-              <span class="mx-2">•</span>
-              <span>{{ getSectionProgress(section) }}% complete</span>
-            </div>
-          </div>
-        </div>
+          <span class="font-medium">{{ section.title }}</span>
+          <svg
+            xmlns="http://www.w3.org/2000/svg"
+            class="h-5 w-5 transition-transform"
+            :class="{
+              'transform rotate-180': expandedSections.has(section.id),
+            }"
+            fill="none"
+            viewBox="0 0 24 24"
+            stroke="currentColor"
+          >
+            <path
+              stroke-linecap="round"
+              stroke-linejoin="round"
+              stroke-width="2"
+              d="M19 9l-7 7-7-7"
+            />
+          </svg>
+        </button>
 
-        <!-- Lessons list (collapsible) -->
-        <div
-          v-if="expandedSections.has(section.id)"
-          class="space-y-1 pl-4 pr-2 mt-1 mb-3 overflow-hidden transition-all duration-300"
-        >
-          <UiButton
+        <!-- Section lessons -->
+        <div v-if="expandedSections.has(section.id)" class="overflow-hidden">
+          <div
             v-for="lesson in section.lessons"
             :key="lesson.id"
-            class="w-full px-3 py-2 rounded-lg flex items-center text-left transition-colors relative group"
-            :class="[
-              lesson.id === currentLesson?.id
-                ? 'bg-indigo-600 text-white'
-                : 'text-gray-700 hover:bg-gray-100',
-            ]"
-            variant="ghost"
-            state="default"
+            class="px-4 py-2 border-l-4 transition-colors ml-4 cursor-pointer flex items-center"
+            :class="{
+              'border-indigo-600 bg-indigo-50': lesson.id === currentLessonId,
+              'border-transparent hover:border-gray-300 hover:bg-gray-50':
+                lesson.id !== currentLessonId,
+              'text-gray-400':
+                lesson.isCompleted && lesson.id !== currentLessonId,
+            }"
             @click="navigateToLesson(lesson)"
           >
-            <!-- Lesson completion status -->
-            <div class="mr-3 flex-shrink-0">
+            <!-- Lesson completion indicator -->
+            <div class="mr-2 flex-shrink-0">
               <svg
                 v-if="lesson.isCompleted"
                 xmlns="http://www.w3.org/2000/svg"
@@ -216,99 +316,38 @@ const getSectionProgress = (section: CourseSection) => {
                 />
               </svg>
               <svg
-                v-else
+                v-else-if="lesson.id === currentLessonId"
                 xmlns="http://www.w3.org/2000/svg"
-                class="h-5 w-5"
-                :class="
-                  lesson.id === currentLesson?.id
-                    ? 'text-white'
-                    : 'text-gray-400'
-                "
+                class="h-5 w-5 text-indigo-600"
                 viewBox="0 0 20 20"
                 fill="currentColor"
               >
                 <path
                   fill-rule="evenodd"
-                  d="M10 18a8 8 0 100-16 8 8 0 000 16zm1-11a1 1 0 10-2 0v2H7a1 1 0 100 2h2v2a1 1 0 102 0v-2h2a1 1 0 100-2h-2V7z"
+                  d="M10 18a8 8 0 100-16 8 8 0 000 16zM9.555 7.168A1 1 0 008 8v4a1 1 0 001.555.832l3-2a1 1 0 000-1.664l-3-2z"
                   clip-rule="evenodd"
                 />
               </svg>
+              <div
+                v-else
+                class="h-5 w-5 border-2 border-gray-300 rounded-full"
+              ></div>
             </div>
 
             <!-- Lesson info -->
-            <div class="flex-grow min-w-0">
-              <div
-                class="font-medium truncate"
-                :class="{ 'text-white': lesson.id === currentLesson?.id }"
-              >
-                {{ lesson.title }}
-              </div>
-              <div
-                class="flex items-center text-xs"
-                :class="
-                  lesson.id === currentLesson?.id
-                    ? 'text-indigo-200'
-                    : 'text-gray-500'
-                "
-              >
-                <!-- Lesson type icon -->
-                <svg
-                  v-if="lesson.type === 'video'"
-                  xmlns="http://www.w3.org/2000/svg"
-                  class="h-3 w-3 mr-1"
-                  viewBox="0 0 20 20"
-                  fill="currentColor"
-                >
-                  <path
-                    d="M2 6a2 2 0 012-2h6a2 2 0 012 2v8a2 2 0 01-2 2H4a2 2 0 01-2-2V6zM14.553 7.106A1 1 0 0014 8v4a1 1 0 00.553.894l2 1A1 1 0 0018 13V7a1 1 0 00-1.447-.894l-2 1z"
-                  />
-                </svg>
-                <svg
-                  v-else-if="lesson.type === 'quiz'"
-                  xmlns="http://www.w3.org/2000/svg"
-                  class="h-3 w-3 mr-1"
-                  viewBox="0 0 20 20"
-                  fill="currentColor"
-                >
-                  <path d="M9 2a1 1 0 000 2h2a1 1 0 100-2H9z" />
-                  <path
-                    fill-rule="evenodd"
-                    d="M4 5a2 2 0 012-2 3 3 0 003 3h2a3 3 0 003-3 2 2 0 012 2v11a2 2 0 01-2 2H6a2 2 0 01-2-2V5zm3 4a1 1 0 000 2h.01a1 1 0 100-2H7zm3 0a1 1 0 000 2h3a1 1 0 100-2h-3zm-3 4a1 1 0 100 2h.01a1 1 0 100-2H7zm3 0a1 1 0 100 2h3a1 1 0 100-2h-3z"
-                    clip-rule="evenodd"
-                  />
-                </svg>
-                <svg
-                  v-else-if="lesson.type === 'assignment'"
-                  xmlns="http://www.w3.org/2000/svg"
-                  class="h-3 w-3 mr-1"
-                  viewBox="0 0 20 20"
-                  fill="currentColor"
-                >
-                  <path
-                    d="M9 4.804A7.968 7.968 0 005.5 4c-1.255 0-2.443.29-3.5.804v10A7.969 7.969 0 015.5 14c1.669 0 3.218.51 4.5 1.385A7.962 7.962 0 0114.5 14c1.255 0 2.443.29 3.5.804v-10A7.968 7.968 0 0014.5 4c-1.255 0-2.443.29-3.5.804V12a1 1 0 11-2 0V4.804z"
-                  />
-                </svg>
-
-                <!-- Lesson type and duration -->
-                <span>
-                  {{
-                    lesson.type.charAt(0).toUpperCase() + lesson.type.slice(1)
-                  }}
-                  • {{ lesson.duration }}
-                </span>
+            <div class="flex-grow">
+              <div class="text-sm font-medium truncate">{{ lesson.title }}</div>
+              <div class="text-xs text-gray-500 flex items-center">
+                <span class="capitalize">{{ lesson.type }}</span>
+                <span class="mx-1">•</span>
+                <span>{{ lesson.duration }}</span>
               </div>
             </div>
-
-            <!-- Active lesson indicator -->
-            <div
-              v-if="lesson.id === currentLesson?.id"
-              class="absolute -left-4 top-1/2 transform -translate-y-1/2 w-1 h-8 bg-indigo-600 rounded-r"
-            />
-          </UiButton>
+          </div>
         </div>
       </div>
     </div>
-  </div>
+  </aside>
 </template>
 
 <style scoped>
