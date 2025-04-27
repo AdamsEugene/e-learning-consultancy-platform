@@ -184,7 +184,7 @@ onBeforeUnmount(() => {
 
 <template>
   <aside
-    class="fixed top-[65px] left-0 bottom-0 bg-white border-r border-gray-200 flex flex-col overflow-hidden transition-all duration-300 z-50"
+    class="fixed top-[65px] left-0 bottom-0 bg-white border-r border-gray-100 shadow-xl  flex flex-col overflow-hidden transition-all duration-300 z-50"
     :style="{ width: `${currentWidth}px` }"
   >
     <!-- Resize handle -->
@@ -196,7 +196,7 @@ onBeforeUnmount(() => {
     <!-- Close button for mobile view -->
     <button
       v-if="isSmallScreen"
-      class="absolute top-2 right-2 text-gray-500 hover:text-gray-700 p-1 z-20"
+      class="absolute top-2 right-2 text-gray-400 hover:text-indigo-600 p-1 z-20"
       aria-label="Close sidebar"
       @click="$emit('close')"
     >
@@ -217,15 +217,15 @@ onBeforeUnmount(() => {
     </button>
 
     <!-- Sidebar header -->
-    <div class="p-4 border-b border-gray-200">
-      <h2 class="text-lg font-semibold truncate">
+    <div class="p-6 border-b border-gray-100 bg-white/80 backdrop-blur-md">
+      <h2 class="text-xl font-bold truncate mb-2">
         {{ currentCourse?.title || "Course Content" }}
       </h2>
-      <div class="flex items-center mt-2 text-sm text-gray-600">
-        <span class="mr-2">{{ getCourseProgress() }}% complete</span>
-        <div class="flex-grow bg-gray-200 rounded-full h-2 overflow-hidden">
+      <div class="flex items-center gap-3 text-sm text-gray-600">
+        <span class="font-medium">{{ getCourseProgress() }}% complete</span>
+        <div class="flex-1 h-2 bg-gray-200 rounded-full overflow-hidden">
           <div
-            class="h-full bg-green-500 transition-all duration-300"
+            class="h-full bg-green-500 rounded-full transition-all duration-300"
             :style="{ width: `${getCourseProgress()}%` }"
           ></div>
         </div>
@@ -254,23 +254,23 @@ onBeforeUnmount(() => {
     </div>
 
     <!-- Course content -->
-    <div v-else class="flex-grow overflow-y-auto py-2">
+    <div v-else class="flex-grow overflow-y-auto py-4 px-2">
       <div
         v-for="section in currentCourse?.sections"
         :key="section.id"
-        class="mb-2"
+        class="mb-6"
       >
         <!-- Section header -->
         <button
-          class="w-full px-4 py-2 flex items-center justify-between text-left hover:bg-gray-50 transition-colors"
+          class="w-full px-3 py-2 flex items-center justify-between text-left font-semibold text-gray-800 bg-gray-50 rounded-lg hover:bg-indigo-50 transition-colors mb-2 shadow-sm"
           @click="toggleSection(section.id)"
         >
-          <span class="font-medium">{{ section.title }}</span>
+          <span>{{ section.title }}</span>
           <svg
             xmlns="http://www.w3.org/2000/svg"
             class="h-5 w-5 transition-transform"
             :class="{
-              'transform rotate-180': expandedSections.has(section.id),
+              'rotate-180': expandedSections.has(section.id),
             }"
             fill="none"
             viewBox="0 0 24 24"
@@ -290,18 +290,16 @@ onBeforeUnmount(() => {
           <div
             v-for="lesson in section.lessons"
             :key="lesson.id"
-            class="px-4 py-2 border-l-4 transition-colors ml-4 cursor-pointer flex items-center"
+            class="px-4 py-3 my-1 rounded-xl cursor-pointer flex items-center gap-3 group transition-all border-2"
             :class="{
-              'border-indigo-600 bg-indigo-50': lesson.id === currentLessonId,
-              'border-transparent hover:border-gray-300 hover:bg-gray-50':
-                lesson.id !== currentLessonId,
-              'text-gray-400':
-                lesson.isCompleted && lesson.id !== currentLessonId,
+              'border-indigo-500 bg-indigo-50 shadow-md': lesson.id === currentLessonId,
+              'border-transparent hover:border-indigo-200 hover:bg-gray-50': lesson.id !== currentLessonId,
+              'opacity-60': lesson.isCompleted && lesson.id !== currentLessonId,
             }"
             @click="navigateToLesson(lesson)"
           >
             <!-- Lesson completion indicator -->
-            <div class="mr-2 flex-shrink-0">
+            <div class="flex-shrink-0">
               <svg
                 v-if="lesson.isCompleted"
                 xmlns="http://www.w3.org/2000/svg"
@@ -309,24 +307,25 @@ onBeforeUnmount(() => {
                 viewBox="0 0 20 20"
                 fill="currentColor"
               >
+                <circle cx="10" cy="10" r="8" fill="#22c55e" />
                 <path
-                  fill-rule="evenodd"
-                  d="M10 18a8 8 0 100-16 8 8 0 000 16zm3.707-9.293a1 1 0 00-1.414-1.414L9 10.586 7.707 9.293a1 1 0 00-1.414 1.414l2 2a1 1 0 001.414 0l4-4z"
-                  clip-rule="evenodd"
+                  d="M7.5 10.5l2 2 3-3"
+                  stroke="#fff"
+                  stroke-width="1.5"
+                  stroke-linecap="round"
+                  stroke-linejoin="round"
+                  fill="none"
                 />
               </svg>
               <svg
                 v-else-if="lesson.id === currentLessonId"
                 xmlns="http://www.w3.org/2000/svg"
-                class="h-5 w-5 text-indigo-600"
+                class="h-5 w-5 text-indigo-500"
                 viewBox="0 0 20 20"
                 fill="currentColor"
               >
-                <path
-                  fill-rule="evenodd"
-                  d="M10 18a8 8 0 100-16 8 8 0 000 16zM9.555 7.168A1 1 0 008 8v4a1 1 0 001.555.832l3-2a1 1 0 000-1.664l-3-2z"
-                  clip-rule="evenodd"
-                />
+                <circle cx="10" cy="10" r="8" fill="#6366f1" />
+                <polygon points="8,7 14,10 8,13" fill="#fff" />
               </svg>
               <div
                 v-else
@@ -335,16 +334,19 @@ onBeforeUnmount(() => {
             </div>
 
             <!-- Lesson info -->
-            <div class="flex-grow">
-              <div class="text-sm font-medium truncate">{{ lesson.title }}</div>
-              <div class="text-xs text-gray-500 flex items-center">
+            <div class="flex-grow min-w-0">
+              <div class="text-base font-medium truncate text-gray-900 group-hover:text-indigo-700">
+                {{ lesson.title }}
+              </div>
+              <div class="text-xs text-gray-500 flex items-center gap-2 mt-0.5">
                 <span class="capitalize">{{ lesson.type }}</span>
-                <span class="mx-1">•</span>
+                <span>•</span>
                 <span>{{ lesson.duration }}</span>
               </div>
             </div>
           </div>
         </div>
+        <div class="border-b border-gray-100 mt-4"></div>
       </div>
     </div>
   </aside>
@@ -353,20 +355,21 @@ onBeforeUnmount(() => {
 <style scoped>
 /* Custom scrollbar styles */
 ::-webkit-scrollbar {
-  width: 5px;
-  height: 5px;
+  width: 6px;
+  height: 6px;
 }
 
 ::-webkit-scrollbar-track {
-  background: #f1f5f9; /* gray-100 */
+  background: #f1f5f9;
 }
 
 ::-webkit-scrollbar-thumb {
-  background: #cbd5e1; /* gray-300 */
+  background: #cbd5e1;
   border-radius: 4px;
 }
 
 ::-webkit-scrollbar-thumb:hover {
-  background: #6366f1; /* indigo-500 */
+  background: #6366f1;
 }
 </style>
+
