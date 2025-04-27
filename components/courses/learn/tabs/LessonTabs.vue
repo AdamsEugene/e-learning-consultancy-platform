@@ -92,7 +92,7 @@ const discussionText = ref("");
 <template>
   <div class="bg-white rounded-lg shadow-sm overflow-hidden mb-6">
     <!-- Tab navigation -->
-    <div class="px-4 py-3">
+    <div class="px-4 py-3 border-b border-gray-200">
       <div class="flex overflow-x-auto scrollbar-hide">
         <div class="flex space-x-3">
           <UiButton
@@ -101,7 +101,7 @@ const discussionText = ref("");
             variant="ghost"
             state="default"
             size="md"
-            class="relative px-5 py-2.5 text-sm font-medium transition-all duration-200 rounded-lg flex items-center whitespace-nowrap"
+            class="relative px-5 py-2.5 text-sm font-medium transition-colors duration-150 rounded-lg flex items-center whitespace-nowrap focus:outline-none"
             :class="[
               activeTab === tab.id
                 ? 'bg-gradient-to-r from-indigo-500 to-indigo-600 text-white shadow-lg shadow-indigo-200'
