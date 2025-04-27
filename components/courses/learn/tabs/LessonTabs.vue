@@ -98,8 +98,8 @@ const discussionText = ref("");
           <UiButton
             v-for="tab in tabs"
             :key="tab.id"
-            variant="ghost"
-            state="default"
+            variant="secondary"
+            state="hover"
             size="md"
             class="relative px-5 py-2.5 text-sm font-medium transition-colors duration-150 rounded-lg flex items-center whitespace-nowrap focus:outline-none"
             :class="[
