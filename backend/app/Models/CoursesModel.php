@@ -33,6 +33,7 @@ class CoursesModel extends Model
         "totalLessons",
         "originalPrice",
         "price",
+        "viewsCount",
         "what_you_will_learn",
         "requirements",
         "features",
@@ -103,7 +104,7 @@ class CoursesModel extends Model
             }
 
             // search by course type, category id and level
-            foreach (['course_type', 'category_id', 'subcategory_id', 'level', 'rating', 'status'] as $key) {
+            foreach (['course_type', 'category_id', 'subcategory_id', 'level', 'rating', 'status', 'is_featured'] as $key) {
                 if (!empty($data[$key])) {
                     if(is_array($data[$key])) {
                         $query->whereIn("{$this->table}.{$key}", $data[$key]);

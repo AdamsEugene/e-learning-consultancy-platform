@@ -132,6 +132,8 @@ function formatCourseResponse($courses = [], $minified = false, $single = false)
             }
         }
 
+        $value['is_featured'] = $value['is_featured'] == 'yes' ? true : false;
+
         $result[] = $value;
     }
 

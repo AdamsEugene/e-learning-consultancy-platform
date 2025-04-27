@@ -115,10 +115,12 @@ $databases = [
         title_slug VARCHAR(255) NOT NULL,
         rating INTEGER DEFAULT 0,
         reviewCount INTEGER DEFAULT 0,
+        viewsCount INTEGER DEFAULT 0,
         enrollmentCount INTEGER DEFAULT 0,
         image TEXT DEFAULT '',
         thumbnail TEXT DEFAULT '',
         tags TEXT DEFAULT '',
+        is_featured TEXT DEFAULT 'no',
         level VARCHAR(255) DEFAULT '',
         category_id INTEGER DEFAULT 0,
         subcategory_id INTEGER DEFAULT 0,
@@ -239,7 +241,7 @@ $databases = [
 ];
 
 $alterTables = [
-    // "ALTER TABLE users ADD COLUMN coursesCount INTEGER DEFAULT 0;",
+    // "ALTER TABLE courses ADD COLUMN viewsCount INTEGER DEFAULT 0;"
 ];
 
 function createDatabaseStructure() {

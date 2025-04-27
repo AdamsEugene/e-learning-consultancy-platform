@@ -35,7 +35,7 @@ class Courses extends LoadController {
         }
 
         // loop through the payload and get the courses by the created by
-        foreach(['created_by', 'status'] as $key) {
+        foreach(['created_by', 'status', 'is_featured'] as $key) {
             if(!empty($this->payload[$key])) {
                 $this->payload['data'][$key] = $this->payload[$key];
             }
@@ -77,6 +77,12 @@ class Courses extends LoadController {
         $instructors = empty($course['id']) || $this->minified ? [] : $this->instructorsModel->getRecords(100, 0, ['course_id' => $course['id']]);
         $reviews = empty($course['id']) || $this->minified ? [] : $this->reviewsModel->getRecordByCourseId(100, 0, ['record_id' => $course['id'], 'entityType' => 'Course']);
         $sections = empty($course['id']) ? [] : $this->coursesModel->getSections(['course_id' => $course['id']]);
+
+        // update the views count
+        $this->coursesModel->updateRecord($course['id'], ['viewsCount' => $course['viewsCount'] + 1]);
+
+        // update the views count
+        $course['viewsCount'] = $course['viewsCount'] + 1;
 
         // return response
         return Routing::success([
