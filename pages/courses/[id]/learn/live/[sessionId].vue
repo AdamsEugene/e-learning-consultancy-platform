@@ -112,7 +112,7 @@ onBeforeUnmount(() => {
     <!-- Session Information (shown before joining) -->
     <div v-else-if="showInfo" class="container mx-auto px-4 py-12">
       <div
-        class="relative max-w-2xl  mt-12 mx-auto bg-gradient-to-br from-indigo-100 via-white to-indigo-50 rounded-3xl shadow-2xl border border-indigo-100 overflow-visible"
+        class="relative max-w-2xl mt-12 mx-auto bg-gradient-to-br from-indigo-100 via-white to-indigo-50 rounded-3xl shadow-2xl border border-indigo-100 overflow-visible"
       >
         <!-- Floating Avatar -->
         <div class="absolute -top-16 left-1/2 transform -translate-x-1/2 z-10">
@@ -340,33 +340,38 @@ onBeforeUnmount(() => {
 
             <!-- Sidebar -->
             <div class="w-full lg:w-80 flex-shrink-0">
-              <div class="bg-white rounded-lg shadow-sm h-full">
-                <!-- Tabs -->
-                <div class="border-b border-gray-200">
-                  <nav class="flex -mb-px">
-                    <button
-                      v-for="tab in [
-                        'chat',
-                        'participants',
-                        'polls',
-                        'resources',
-                      ]"
-                      :key="tab"
-                      class="flex-1 py-3 px-4 text-center text-sm font-medium"
-                      :class="[
-                        activeTab === tab
-                          ? 'text-indigo-600 border-b-2 border-indigo-600'
-                          : 'text-gray-500 hover:text-gray-700 hover:border-gray-300',
-                      ]"
-                      @click="activeTab = tab as any"
-                    >
-                      {{ tab.charAt(0).toUpperCase() + tab.slice(1) }}
-                    </button>
-                  </nav>
-                </div>
+              <div
+                class="bg-white rounded-2xl shadow-lg h-full flex flex-col overflow-hidden"
+              >
+                <!-- Modern Vertical Tabs -->
+                <nav class="flex flex-row lg:flex-col bg-gray-50 p-2 gap-2">
+                  <button
+                    v-for="tab in [
+                      { key: 'chat', label: 'Chat', icon: '💬' },
+                      {
+                        key: 'participants',
+                        label: 'Participants',
+                        icon: '👥',
+                      },
+                      { key: 'polls', label: 'Polls', icon: '📊' },
+                      { key: 'resources', label: 'Resources', icon: '📁' },
+                    ]"
+                    :key="tab.key"
+                    class="flex items-center gap-3 px-4 py-2 rounded-xl transition-all font-medium text-sm w-full focus:outline-none"
+                    :class="
+                      activeTab === tab.key
+                        ? 'bg-indigo-50 text-indigo-700 border-l-4 border-indigo-500 shadow'
+                        : 'text-gray-600 hover:bg-gray-100'
+                    "
+                    @click="activeTab = tab.key"
+                  >
+                    <span class="text-lg">{{ tab.icon }}</span>
+                    <span>{{ tab.label }}</span>
+                  </button>
+                </nav>
 
                 <!-- Tab Content -->
-                <div class="p-4 h-[calc(100%-3rem)] overflow-y-auto">
+                <div class="flex-1 p-4 overflow-y-auto">
                   <!-- Chat Tab -->
                   <div v-if="activeTab === 'chat'" class="h-full flex flex-col">
                     <div class="flex-1 overflow-y-auto space-y-4">
