@@ -11,6 +11,7 @@ class CoursesValidation {
                 "offset" => "permit_empty|integer",
                 "search" => "permit_empty|string|max_length[255]",
                 "data" => "permit_empty|is_array",
+                "is_featured" => "permit_empty|string|in_list[yes,no]",
                 "status" => "permit_empty|string|in_list[Published,Draft,Archived,Under Review,Unpublished]",
             ]
         ],

@@ -223,6 +223,7 @@ $databases = [
         lesson_id INTEGER DEFAULT 0,
         user_id INTEGER DEFAULT 0,
         content TEXT DEFAULT '',
+        note_hash TEXT DEFAULT '',
         created_at DATETIME DEFAULT CURRENT_TIMESTAMP,
         updated_at DATETIME DEFAULT CURRENT_TIMESTAMP
     );
@@ -241,12 +242,13 @@ $databases = [
 ];
 
 $alterTables = [
-    // "ALTER TABLE courses ADD COLUMN viewsCount INTEGER DEFAULT 0;"
+    // "ALTER TABLE lesson_notes ADD COLUMN note_hash TEXT DEFAULT '';"
 ];
 
 function createDatabaseStructure() {
     global $databases, $alterTables;
     $db = \Config\Database::connect();
+    // $db->query("drop table if exists lesson_notes");
     foreach(array_merge($databases, $alterTables) as $query) {
         try {
             if(empty($query)) continue;

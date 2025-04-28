@@ -177,6 +177,14 @@ class Api extends BaseController
             }
         }
 
+        if(empty($payload['offset'])) {
+            $payload['offset'] = 0;
+        }
+
+        if(empty($payload['limit'])) {
+            $payload['limit'] = $this->defaultLimit;
+        }
+
         // convert the and deviceType to integers
         foreach(['deviceType', 'accountId', 'userId', 'courseId', 'categoryId', 'instructorId', 'studentId'] as $key) {
             if(isset($payload[$key])) {

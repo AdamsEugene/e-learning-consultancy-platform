@@ -14,6 +14,8 @@ use App\Models\InstructorsModel;
 use App\Models\ReviewsModel;
 use App\Models\WishlistModel;
 use App\Models\EnrollmentsModel;
+use App\Models\NotesModel;
+use App\Models\DiscussionsModel;
 use App\Controllers\Analytics\Analytics;
 
 class LoadController extends BaseController
@@ -32,6 +34,8 @@ class LoadController extends BaseController
     protected $wishlistModel;
     protected $enrollmentsModel;
     protected $analyticsObject;
+    protected $notesModel;
+    protected $discussionsModel;
 
     public function __construct($model = [])
     {
@@ -71,7 +75,9 @@ class LoadController extends BaseController
             'instructors' => InstructorsModel::class,
             'wishlist' => WishlistModel::class,
             'reviews' => ReviewsModel::class,
-            'enrollments' => EnrollmentsModel::class
+            'enrollments' => EnrollmentsModel::class,
+            'notes' => NotesModel::class,
+            'discussions' => DiscussionsModel::class,
         ];
         
         // Loop through the requested models and initialize them
