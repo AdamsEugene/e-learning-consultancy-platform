@@ -112,13 +112,13 @@ onBeforeUnmount(() => {
     <!-- Session Information (shown before joining) -->
     <div v-else-if="showInfo" class="container mx-auto px-4 py-12">
       <div
-        class="relative max-w-2xl mx-auto bg-gradient-to-br from-indigo-100 via-white to-indigo-50 rounded-3xl shadow-2xl border border-indigo-100 overflow-visible"
+        class="relative max-w-2xl  mt-12 mx-auto bg-gradient-to-br from-indigo-100 via-white to-indigo-50 rounded-3xl shadow-2xl border border-indigo-100 overflow-visible"
       >
         <!-- Floating Avatar -->
         <div class="absolute -top-16 left-1/2 transform -translate-x-1/2 z-10">
           <img
             class="h-32 w-32 rounded-full border-4 border-white shadow-xl object-cover bg-white"
-            src="/images/instructors/i1.jpg"
+            src="https://blog.accredian.com/wp-content/uploads/2019/04/Python-logo.jpg"
             alt="Live Session"
           />
         </div>
