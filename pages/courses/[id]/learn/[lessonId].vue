@@ -363,7 +363,7 @@ onBeforeUnmount(() => {
           >
             <svg
               xmlns="http://www.w3.org/2000/svg"
-              class="h-5 w-5"
+              class="h-6 w-6"
               fill="none"
               viewBox="0 0 24 24"
               stroke="currentColor"
@@ -373,11 +373,11 @@ onBeforeUnmount(() => {
                 stroke-linejoin="round"
                 stroke-width="2"
                 d="M11 5H6a2 2 0 00-2 2v11a2 2 0 002 2h11a2 2 0 002-2v-5m-1.414-9.414a2 2 0 112.828 2.828L11.828 15H9v-2.828l8.586-8.586z"
-              />
+              />  
             </svg>
             <span
               v-if="notes.length > 0"
-              class="absolute -top-1 -right-1 flex items-center justify-center w-4 h-4 text-xs bg-indigo-600 text-white rounded-full"
+              class="relative -top-[5px] -left-[18px] !z-50 flex items-center justify-center w-4 h-4 text-xs bg-indigo-600 text-white rounded-full"
             >
               {{ notes.length }}
             </span>
@@ -456,8 +456,6 @@ onBeforeUnmount(() => {
     <!-- Main lesson content -->
     <div v-else-if="currentLesson" class="flex-grow overflow-y-auto">
       <div class="container mx-auto px-4 py-6 max-w-6xl">
-
-
         <!-- Lesson content based on type -->
         <div class="bg-white rounded-lg shadow-sm overflow-hidden mb-6">
           <!-- Video player -->
