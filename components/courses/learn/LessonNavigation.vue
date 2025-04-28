@@ -33,20 +33,20 @@ const markComplete = () => {
 </script>
 
 <template>
-  <div class="flex justify-between items-center mb-8">
+  <div class="flex justify-between items-center mb-8 gap-4">
     <!-- Previous button -->
     <UiButton
       v-if="previousLesson"
-      variant="ghost"
+      variant="secondary"
       state="default"
       size="md"
-      class="group flex items-center"
+      class="group min-w-[180px]"
       @click="navigateToPrevious"
     >
       <template #prefix>
         <svg
           xmlns="http://www.w3.org/2000/svg"
-          class="h-5 w-5 mr-2 transition-transform transform group-hover:-translate-x-1"
+          class="h-5 w-5 mr-2 group-hover:-translate-x-1 transition-transform"
           viewBox="0 0 20 20"
           fill="currentColor"
         >
@@ -57,24 +57,35 @@ const markComplete = () => {
           />
         </svg>
       </template>
-      <div>
-        <div class="text-xs text-gray-500 mb-1">Previous</div>
-        <div class="font-medium truncate max-w-[150px]">
+      <div class="flex items-center">
+        <svg
+          xmlns="http://www.w3.org/2000/svg"
+          class="h-5 w-5 mr-2"
+          viewBox="0 0 24 24"
+          fill="none"
+          stroke="currentColor"
+          stroke-width="2"
+          stroke-linecap="round"
+          stroke-linejoin="round"
+        >
+          <path d="M15 18l-6-6 6-6" />
+        </svg>
+        <div class="font-medium truncate">
           {{ previousLesson.title }}
         </div>
       </div>
     </UiButton>
-    <div v-else class="w-36" />
+    <div v-else class="min-w-[180px]" />
 
-    <!-- Middle complete button (only shown if lesson is not completed) -->
-    <div class="flex-1 flex justify-center px-2">
+    <!-- Middle complete button -->
+    <div class="flex-1 flex justify-center">
       <transition name="fade" mode="out-in">
         <UiButton
           v-if="!isCompleted"
           variant="primary"
           state="default"
           size="md"
-          class="transition-all duration-200 transform hover:scale-105"
+          class="min-w-[200px]"
           @click="markComplete"
         >
           <template #prefix>
@@ -102,19 +113,30 @@ const markComplete = () => {
       variant="primary"
       state="default"
       size="md"
-      class="group flex items-center"
+      class="group min-w-[180px]"
       @click="navigateToNext"
     >
-      <div class="text-right">
-        <div class="text-xs text-indigo-200 mb-1">Next</div>
-        <div class="font-medium truncate max-w-[150px]">
+    <div class="flex items-center">
+        <svg
+          xmlns="http://www.w3.org/2000/svg"
+          class="h-5 w-5 mr-2"
+          viewBox="0 0 24 24"
+          fill="none"
+          stroke="currentColor"
+          stroke-width="2"
+          stroke-linecap="round"
+          stroke-linejoin="round"
+        >
+          <path d="M15 18l-6-6 6-6" />
+        </svg>
+        <div class="font-medium truncate">
           {{ nextLesson.title }}
         </div>
       </div>
       <template #suffix>
         <svg
           xmlns="http://www.w3.org/2000/svg"
-          class="h-5 w-5 ml-2 transition-transform transform group-hover:translate-x-1"
+          class="h-5 w-5 ml-2 group-hover:translate-x-1 transition-transform"
           viewBox="0 0 20 20"
           fill="currentColor"
         >
@@ -126,7 +148,7 @@ const markComplete = () => {
         </svg>
       </template>
     </UiButton>
-    <div v-else class="w-36" />
+    <div v-else class="min-w-[180px]" />
   </div>
 </template>
 
