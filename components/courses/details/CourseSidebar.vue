@@ -52,10 +52,12 @@ const enrollInCourse = () => {
 // Handle wishlist actions
 const toggleWishlist = () => {
   const courseInWishlist = wishlist.value.find((c) => c.id === props.course.id);
-  if (!courseInWishlist) {
+  if (courseInWishlist) {
+    wishlist.value = wishlist.value.filter((c) => c.id !== props.course.id);
+  } else {
     wishlist.value.push(props.course);
+    isWishlistOpen.value = true;
   }
-  isWishlistOpen.value = true;
 };
 
 const removeFromWishlist = (courseId: number) => {
