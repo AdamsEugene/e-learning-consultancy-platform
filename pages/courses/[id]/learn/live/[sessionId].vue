@@ -324,7 +324,7 @@ onBeforeUnmount(() => {
 
       <!-- Main Content Area -->
       <div class="flex-1 overflow-hidden">
-        <div class="h-full max-w-7xl mx-auto px-4 sm:px-6 lg:px-8">
+        <div class="h-full  mx-auto px-4 sm:px-6 lg:px-8">
           <div class="h-full flex flex-col lg:flex-row gap-6 py-6">
             <!-- Video Section -->
             <div class="flex-1 min-h-0">
@@ -339,7 +339,7 @@ onBeforeUnmount(() => {
             </div>
 
             <!-- Sidebar -->
-            <div class="w-full lg:w-80 flex-shrink-0">
+            <div class="w-full lg:w-[22%] flex-shrink-0">
               <div
                 class="bg-white rounded-2xl shadow-lg h-full flex flex-col overflow-hidden"
               >
@@ -363,7 +363,7 @@ onBeforeUnmount(() => {
                         ? 'bg-indigo-50 text-indigo-700 border-l-4 border-indigo-500 shadow'
                         : 'text-gray-600 hover:bg-gray-100'
                     "
-                    @click="activeTab = tab.key"
+                    @click="activeTab = tab.key as 'chat' | 'participants' | 'polls' | 'resources'"
                   >
                     <span class="text-lg">{{ tab.icon }}</span>
                     <span>{{ tab.label }}</span>
@@ -374,34 +374,53 @@ onBeforeUnmount(() => {
                 <div class="flex-1 p-4 overflow-y-auto">
                   <!-- Chat Tab -->
                   <div v-if="activeTab === 'chat'" class="h-full flex flex-col">
-                    <div class="flex-1 overflow-y-auto space-y-4">
+                    <div class="flex-1 overflow-y-auto space-y-3">
                       <div
                         v-for="message in chatMessages"
                         :key="message.id"
-                        class="flex items-start space-x-3"
+                        class="flex items-start"
                       >
                         <img
                           :src="message.userAvatar"
                           :alt="message.userName"
-                          class="h-8 w-8 rounded-full"
+                          class="h-9 w-9 rounded-full border-2 border-white shadow"
                         />
-                        <div class="flex-1">
-                          <div class="flex items-center space-x-2">
-                            <span
-                              class="font-medium"
-                              :class="
-                                message.isInstructor
-                                  ? 'text-indigo-600'
-                                  : 'text-gray-900'
-                              "
+                        <div class="ml-3 flex-1">
+                          <div
+                            class="rounded-xl px-4 py-2 shadow-sm bg-gray-100"
+                            :class="
+                              message.isInstructor
+                                ? 'border-l-4 border-indigo-500 bg-indigo-50'
+                                : 'border-l-4 border-transparent'
+                            "
+                          >
+                            <div class="flex items-center gap-2 mb-1">
+                              <span
+                                class="font-semibold"
+                                :class="
+                                  message.isInstructor
+                                    ? 'text-indigo-700'
+                                    : 'text-gray-900'
+                                "
+                              >
+                                {{ message.userName }}
+                              </span>
+                              <span class="text-xs text-gray-400">
+                                {{ formatTime(message.timestamp) }}
+                              </span>
+                              <span
+                                v-if="message.isInstructor"
+                                class="ml-2 text-xs font-medium text-indigo-500 bg-indigo-100 px-2 py-0.5 rounded"
+                              >
+                                Instructor
+                              </span>
+                            </div>
+                            <p
+                              class="text-gray-700 text-sm leading-relaxed break-words"
                             >
-                              {{ message.userName }}
-                            </span>
-                            <span class="text-xs text-gray-500">
-                              {{ formatTime(message.timestamp) }}
-                            </span>
+                              {{ message.message }}
+                            </p>
                           </div>
-                          <p class="text-gray-600">{{ message.message }}</p>
                         </div>
                       </div>
                     </div>
@@ -438,7 +457,7 @@ onBeforeUnmount(() => {
                         class="h-8 w-8 rounded-full"
                       />
                       <div class="flex-1">
-                        <span class="font-medium text-gray-900">{{
+                        <span class="font-medium text-sm text-gray-900">{{
                           participant.name
                         }}</span>
                         <span
