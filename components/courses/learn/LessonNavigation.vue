@@ -85,23 +85,9 @@ const markComplete = () => {
           variant="primary"
           state="default"
           size="md"
-          class="min-w-[200px]"
+          class=""
           @click="markComplete"
         >
-          <template #prefix>
-            <svg
-              xmlns="http://www.w3.org/2000/svg"
-              class="h-5 w-5 mr-2"
-              viewBox="0 0 20 20"
-              fill="currentColor"
-            >
-              <path
-                fill-rule="evenodd"
-                d="M10 18a8 8 0 100-16 8 8 0 000 16zm3.707-9.293a1 1 0 00-1.414-1.414L9 10.586 7.707 9.293a1 1 0 00-1.414 1.414l2 2a1 1 0 001.414 0l4-4z"
-                clip-rule="evenodd"
-              />
-            </svg>
-          </template>
           Mark as Complete
         </UiButton>
       </transition>
@@ -110,16 +96,19 @@ const markComplete = () => {
     <!-- Next button -->
     <UiButton
       v-if="nextLesson"
-      variant="primary"
+      variant="secondary"
       state="default"
       size="md"
       class="group min-w-[180px]"
       @click="navigateToNext"
     >
-    <div class="flex items-center">
+      <div class="flex items-center">
+        <div class="font-medium truncate">
+          {{ nextLesson.title }}
+        </div>
         <svg
           xmlns="http://www.w3.org/2000/svg"
-          class="h-5 w-5 mr-2"
+          class="h-5 w-5 ml-2"
           viewBox="0 0 24 24"
           fill="none"
           stroke="currentColor"
@@ -127,26 +116,9 @@ const markComplete = () => {
           stroke-linecap="round"
           stroke-linejoin="round"
         >
-          <path d="M15 18l-6-6 6-6" />
+          <path d="M9 6l6 6-6 6" />
         </svg>
-        <div class="font-medium truncate">
-          {{ nextLesson.title }}
-        </div>
       </div>
-      <template #suffix>
-        <svg
-          xmlns="http://www.w3.org/2000/svg"
-          class="h-5 w-5 ml-2 group-hover:translate-x-1 transition-transform"
-          viewBox="0 0 20 20"
-          fill="currentColor"
-        >
-          <path
-            fill-rule="evenodd"
-            d="M7.293 14.707a1 1 0 010-1.414L10.586 10 7.293 6.707a1 1 0 011.414-1.414l4 4a1 1 0 010 1.414l-4 4a1 1 0 01-1.414 0z"
-            clip-rule="evenodd"
-          />
-        </svg>
-      </template>
     </UiButton>
     <div v-else class="min-w-[180px]" />
   </div>
