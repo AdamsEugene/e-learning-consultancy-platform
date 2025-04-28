@@ -1,15 +1,19 @@
 <!-- components/courses/CourseSidebar.vue -->
 <script setup lang="ts">
-import type { Course } from "~/types/course";
+import type { ExtendedCourse } from "~/composables/useCourseDetails";
 
 interface Props {
-  course: Course;
+  course: ExtendedCourse;
 }
 
 const props = defineProps<Props>();
 const emit = defineEmits<{
   (e: "enroll"): void;
 }>();
+
+// Wishlist state
+const isWishlistOpen = ref(false);
+const wishlist = ref<ExtendedCourse[]>([]);
 
 // Calculate discount percentage
 const discountPercentage = computed(() => {
@@ -44,6 +48,27 @@ const formattedOriginalPrice = computed(() => {
 const enrollInCourse = () => {
   emit("enroll");
 };
+
+// Handle wishlist actions
+const toggleWishlist = () => {
+  const courseInWishlist = wishlist.value.find((c) => c.id === props.course.id);
+  if (!courseInWishlist) {
+    wishlist.value.push(props.course);
+  }
+  isWishlistOpen.value = true;
+};
+
+const removeFromWishlist = (courseId: number) => {
+  wishlist.value = wishlist.value.filter((course) => course.id !== courseId);
+  if (wishlist.value.length === 0) {
+    isWishlistOpen.value = false;
+  }
+};
+
+// Check if course is in wishlist
+const isInWishlist = computed(() => {
+  return wishlist.value.some((course) => course.id === props.course.id);
+});
 </script>
 
 <!-- eslint-disable vue/html-self-closing -->
@@ -99,9 +124,25 @@ const enrollInCourse = () => {
           </NuxtLink>
 
           <button
-            class="w-full border border-gray-300 text-gray-700 hover:bg-gray-50 py-3 px-4 rounded-lg font-medium transition-colors"
+            class="w-full border border-gray-300 text-gray-700 hover:bg-gray-50 py-3 px-4 rounded-lg font-medium transition-colors flex items-center justify-center"
+            @click="toggleWishlist"
           >
-            Add to Wishlist
+            <svg
+              xmlns="http://www.w3.org/2000/svg"
+              class="h-5 w-5 mr-2"
+              :class="{ 'text-red-500 fill-current': isInWishlist }"
+              fill="none"
+              viewBox="0 0 24 24"
+              stroke="currentColor"
+            >
+              <path
+                stroke-linecap="round"
+                stroke-linejoin="round"
+                stroke-width="2"
+                d="M4.318 6.318a4.5 4.5 0 000 6.364L12 20.364l7.682-7.682a4.5 4.5 0 00-6.364-6.364L12 7.636l-1.318-1.318a4.5 4.5 0 00-6.364 0z"
+              />
+            </svg>
+            {{ isInWishlist ? "In Wishlist" : "Add to Wishlist" }}
           </button>
         </div>
 
@@ -197,5 +238,13 @@ const enrollInCourse = () => {
         </div>
       </div>
     </div>
+
+    <!-- Wishlist Panel -->
+    <WishlistPanel
+      :is-open="isWishlistOpen"
+      :wishlist="wishlist"
+      @update:is-open="isWishlistOpen = $event"
+      @remove="removeFromWishlist"
+    />
   </div>
 </template>
