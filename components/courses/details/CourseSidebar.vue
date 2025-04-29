@@ -1,6 +1,7 @@
 <!-- components/courses/CourseSidebar.vue -->
 <script setup lang="ts">
 import type { ExtendedCourse } from "~/composables/useCourseDetails";
+import WishlistPanel from "./WishlistPanel.vue";
 
 interface Props {
   course: ExtendedCourse;

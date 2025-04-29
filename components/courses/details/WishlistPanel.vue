@@ -28,6 +28,7 @@ const removeCourse = (courseId: number) => {
     title="My Wishlist"
     position="right"
     width="400px"
+    :z-index="100"
     @update:model-value="emit('update:is-open', $event)"
     class="max-w-md"
   >
