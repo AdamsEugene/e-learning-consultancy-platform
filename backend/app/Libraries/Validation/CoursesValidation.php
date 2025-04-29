@@ -38,6 +38,10 @@ class CoursesValidation {
                 "course_duration" => "permit_empty|integer",
                 "what_you_will_learn" => "permit_empty",
                 "requirements" => "permit_empty",
+                "language" => "permit_empty|string|max_length[255]",
+                "allow_discussion" => "permit_empty|string|in_list[yes,no]",
+                "certification" => "permit_empty|string|in_list[yes,no]",
+                "visibility" => "permit_empty|string|in_list[Public,Private,Password Protected]",
             ]
         ],
         'statuses:course_id' => [
@@ -79,6 +83,10 @@ class CoursesValidation {
                 "what_you_will_learn" => "permit_empty",
                 "requirements" => "permit_empty",
                 "status" => "permit_empty|string|in_list[Published,Draft,Archived,Under Review,Unpublished]",
+                "language" => "permit_empty|string|max_length[255]",
+                "allow_discussion" => "permit_empty|string|in_list[yes,no]",
+                "certification" => "permit_empty|string|in_list[yes,no]",
+                "visibility" => "permit_empty|string|in_list[Public,Private,Password Protected]",
             ]
         ],
         'enroll:course_id' => [

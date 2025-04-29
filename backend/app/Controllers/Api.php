@@ -62,8 +62,10 @@ class Api extends BaseController
         $jsonData = !empty($this->requestPayload) ? [] : (!empty($this->request) && method_exists($this->request, 'getJSON') ? $this->request->getJSON(true) : []);
         $payload = !empty($this->requestPayload) ? $this->requestPayload : ($_GET + $_POST + $jsonData);
 
-        if(isset($payload['search'])) {
-            $payload['search'] = urldecode(trim($payload['search']));
+        // get the files list
+        if(!empty($this->request)) {
+            $filesList = $this->request->getFiles();
+            $payload = array_merge($payload, $filesList);
         }
 
         // set the parsed method

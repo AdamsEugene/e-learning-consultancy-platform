@@ -128,6 +128,10 @@ $databases = [
         originalPrice INTEGER DEFAULT 0,
         price INTEGER DEFAULT 0,
         features TEXT DEFAULT '',
+        language VARCHAR(255) DEFAULT 'English',
+        visibility VARCHAR(255) DEFAULT 'Public',
+        allow_discussion VARCHAR(255) DEFAULT 'yes',
+        certification VARCHAR(255) DEFAULT 'no',
         description TEXT DEFAULT '',
         course_duration INTEGER DEFAULT 0,
         what_you_will_learn TEXT DEFAULT '',
@@ -243,7 +247,10 @@ $databases = [
 ];
 
 $alterTables = [
-    "ALTER TABLE lesson_discussions ADD COLUMN discussion_hash TEXT DEFAULT '';",
+    "ALTER TABLE courses ADD COLUMN language TEXT DEFAULT 'English';",
+    "ALTER TABLE courses ADD COLUMN visibility TEXT DEFAULT 'Public';",
+    "ALTER TABLE courses ADD COLUMN allow_discussion TEXT DEFAULT 'yes';",
+    "ALTER TABLE courses ADD COLUMN certification TEXT DEFAULT 'no';"
 ];
 
 function createDatabaseStructure() {
