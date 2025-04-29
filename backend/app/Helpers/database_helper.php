@@ -211,6 +211,7 @@ $databases = [
         votes INTEGER DEFAULT 0,
         parent_id INTEGER DEFAULT 0,
         content TEXT DEFAULT '',
+        discussion_hash TEXT DEFAULT '',
         created_at DATETIME DEFAULT CURRENT_TIMESTAMP,
         updated_at DATETIME DEFAULT CURRENT_TIMESTAMP
     );
@@ -242,7 +243,7 @@ $databases = [
 ];
 
 $alterTables = [
-    // "ALTER TABLE lesson_notes ADD COLUMN note_hash TEXT DEFAULT '';"
+    "ALTER TABLE lesson_discussions ADD COLUMN discussion_hash TEXT DEFAULT '';",
 ];
 
 function createDatabaseStructure() {

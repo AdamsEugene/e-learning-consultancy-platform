@@ -12,7 +12,7 @@ class DiscussionsModel extends Model {
     protected $primaryKey = 'id';
     protected $coursesTable;
     protected $userTable;
-    protected $allowedFields = ['user_id', 'course_id', 'lesson_id', 'votes', 'parent_id', 'content', 'created_at', 'updated_at'];
+    protected $allowedFields = ['user_id', 'course_id', 'lesson_id', 'discussion_hash', 'votes', 'parent_id', 'content', 'created_at', 'updated_at'];
 
     public function __construct() {
         parent::__construct();
@@ -35,19 +35,30 @@ class DiscussionsModel extends Model {
 
         try {
 
-            $query = $this->select('*');
+            // get the table name
+            $query = $this->db->table("{$this->table} a")->select("a.*,
+                (SELECT JSON_OBJECT(
+                    'id', u.id, 'firstname', u.firstname, 'lastname', u.lastname, 'email', u.email
+                ) FROM {$this->userTable} u WHERE u.id = a.user_id LIMIT 1
+            ) as created_by");
 
+            // loop through the data
             foreach($data as $key => $value) {
                 if(is_array($value)) {
-                    $query->whereIn($key, $value);
+                    $query->whereIn("a.{$key}", $value);
                 } else {
-                    $query->where($key, $value);
+                    $query->where("a.{$key}", $value);
                 }
             }
 
-            return $query->orderBy('created_at', 'DESC')->limit($limit, $offset)->get()->getResultArray();
+            // get the results
+            return $query->orderBy('parent_id', 'ASC')
+                        ->orderBy('created_at', 'DESC')
+                        ->limit($limit, $offset)->get()->getResultArray();
 
-        } catch(DatabaseException $e) {}
+        } catch(DatabaseException $e) {
+            return [];
+        }
         
     }
 
@@ -61,19 +72,26 @@ class DiscussionsModel extends Model {
 
         try {
 
-            $query = $this->select('*')->where('id', $id);
+            $query = $this->db->table("{$this->table} a")->select("a.*,
+                (SELECT JSON_OBJECT(
+                    'id', u.id, 'firstname', u.firstname, 'lastname', u.lastname, 'email', u.email
+                ) FROM {$this->userTable} u WHERE u.id = a.user_id LIMIT 1
+            ) as created_by")->where('id', $id);
 
+            // loop through the data
             foreach($data as $key => $value) {
                 if(is_array($value)) {
-                    $query->whereIn($key, $value);
+                    $query->whereIn("a.{$key}", $value);
                 } else {
-                    $query->where($key, $value);
+                    $query->where("a.{$key}", $value);
                 }
             }
 
             return $query->get()->getRowArray();
 
-        } catch(DatabaseException $e) {}
+        } catch(DatabaseException $e) {
+            return [];
+        }
 
     }
 

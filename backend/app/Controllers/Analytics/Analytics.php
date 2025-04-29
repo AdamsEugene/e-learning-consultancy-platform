@@ -18,6 +18,9 @@ class Analytics extends BaseController {
 
         $analyticsModel = new AnalyticsModel();
 
+        // convert the record to a string
+        $record = ucwords($record);
+
         // check if the record exists
         $recordItem = $analyticsModel->getByRecordType($record);
 

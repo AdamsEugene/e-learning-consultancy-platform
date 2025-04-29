@@ -112,7 +112,11 @@ class Notes extends LoadController {
 
 
         // check if the note already exists
-        $note = $this->notesModel->getRecords(['note_hash' => $payload['note_hash'], 'lesson_id' => $payload['lesson_id']]);
+        $note = $this->notesModel->getRecords([
+            'note_hash' => $payload['note_hash'], 
+            'lesson_id' => $payload['lesson_id'],
+            'user_id' => $payload['user_id']
+        ]);
         if(!empty($note)) {
             return Routing::updated('Note already exists', $note[0]);
         }
@@ -123,6 +127,9 @@ class Notes extends LoadController {
         // Get the note
         $this->payload['note_id'] = $noteId;
         $this->payload['user_id'] = $this->currentUser['user_id'];
+
+        // log the count
+        $this->analyticsObject->logCount('Notes');
 
         return Routing::created([
             'data' => 'Note created successfully',
@@ -174,8 +181,17 @@ class Notes extends LoadController {
             $where['user_id'] = $this->payload['user_id'];
         }
 
+        // confirm if the note exists
+        $note = $this->notesModel->getRecord($this->payload['note_id'], $where);
+        if(empty($note)) {
+            return Routing::notFound();
+        }
+
         // Delete the note
         $this->notesModel->deleteRecord($this->payload['note_id'], $where);
+
+        // log the count
+        $this->analyticsObject->logCount('Notes', 'decrement');
 
         // Return the note
         return Routing::success('Note deleted successfully');

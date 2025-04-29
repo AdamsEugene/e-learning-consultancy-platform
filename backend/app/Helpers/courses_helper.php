@@ -103,6 +103,54 @@ function validateCourseSections($sections = [], $allSections = [], $allLessons =
 }
 
 /**
+ * Format the discussions
+ * 
+ * @param array $discussions
+ * @return array
+ */
+function formatDiscussions($discussions = []) {
+
+    // return empty array if no discussions
+    if(empty($discussions)) return [];
+    
+    $regroupByParent = [];
+
+    // loop through the discussions
+    foreach($discussions as $key => $value) {
+        // format the created by
+        $value['created_by'] = json_decode($value['created_by'], true);
+
+        foreach(['course_id', 'lesson_id', 'user_id', 'upvotes', 'downvotes', 'discussion_hash'] as $field) {
+            if(isset($value[$field])) {
+                unset($value[$field]);
+            }
+        }
+        
+        // set the parent comment and attach the children as a property
+        if(!isset($regroupByParent[$value['id']]) && $value['parent_id'] == 0) {
+            $regroupByParent[$value['id']] = $value;
+        } else {
+
+            if($value['parent_id'] == 0) {
+                $regroupByParent[$value['parent_id']] = $value;
+            }
+
+            $regroupByParent[$value['parent_id']]['comments'][] = $value;
+        }
+
+    }
+
+    // finally get the values of the regrouped by parent
+    $result = array_values($regroupByParent);
+
+    if(count($result) == 1 && empty($result[0]['created_at'])) {
+        $result = $result[0]['comments'][0];
+    }
+
+    return $result;
+}
+
+/**
  * Format the course response
  * 
  * @param array $course
