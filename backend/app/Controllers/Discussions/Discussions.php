@@ -177,7 +177,7 @@ class Discussions extends LoadController {
         $this->discussionsModel->updateRecord($this->payload['discussion_id'], $payload, $where);
 
         // Return the discussion
-        return Routing::updated('Discussion updated successfully', $this->view()['data']);
+        return Routing::updated('Discussion updated successfully', $this->view()['data'][0]);
 
     }
 
