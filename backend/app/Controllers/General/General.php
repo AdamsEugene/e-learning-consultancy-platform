@@ -11,7 +11,8 @@ class General extends LoadController {
         $result = [
             'levels' => getLevels(),
             'eventTypes' => getEventTypes(),
-            'industries' => getIndustries()
+            'industries' => getIndustries(),
+            'classTypes' => getClassTypes()
         ];
         return Routing::success($result);
     }

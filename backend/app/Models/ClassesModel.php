@@ -10,8 +10,14 @@ class ClassesModel extends Model
     protected $userTable;
     protected $table;
     protected $classAttendeesTable;
-    protected $courseTable;
-    protected $allowedFields = ['course_id', 'title', 'description', 'class_type', 'class_date', 'class_time', 'class_duration', 'class_link', 'class_password', 'materials', 'students_list', 'user_id', 'status', 'created_at', 'updated_at', 'created_by'];
+    protected $coursesTable;
+    protected $allowedFields = [
+        'course_id', 'title', 'description', 'class_type', 'class_date', 'start_time', 'end_time', 
+        'class_duration', 'class_link', 'class_password', 'materials', 'students_list',
+        'user_id', 'status', 'created_at', 'updated_at', 'created_by', 'meeting_type', 
+        'maximum_participants', 'is_recurring', 'recurring_interval', 'recurring_end_date',
+        'notify_participants'
+    ];
 
     public function __construct() {
         parent::__construct();
@@ -39,10 +45,10 @@ class ClassesModel extends Model
                                 'id', u.id, 'firstname', u.firstname, 'lastname', u.lastname, 'email', u.email, 'phone', u.phone, 'image', u.image
                             ) FROM {$this->userTable} u WHERE u.id = a.user_id LIMIT 1) as user,
                             (SELECT JSON_OBJECT(
-                                'id', c.id, 'title', c.title, 'slug',  c.slug, 'subtitle', c.subtitle, 
+                                'id', c.id, 'title', c.title, 'slug',  c.title_slug, 'subtitle', c.subtitle, 
                                 'course_duration', c.course_duration, 'description', c.description, 
                                 'language', c.language, 'visibility', c.visibility, 'allow_discussion', c.allow_discussion
-                            ) FROM {$this->courseTable} c WHERE c.id = a.course_id LIMIT 1) as course");
+                            ) FROM {$this->coursesTable} c WHERE c.id = a.course_id LIMIT 1) as course");
 
             foreach($data as $key => $value) {
                 if(is_array($value)) {
@@ -77,10 +83,10 @@ class ClassesModel extends Model
                         'id', u.id, 'firstname', u.firstname, 'lastname', u.lastname, 'email', u.email, 'phone', u.phone, 'image', u.image
                     ) FROM {$this->userTable} u WHERE u.id = a.user_id LIMIT 1) as user,
                     (SELECT JSON_OBJECT(
-                        'id', c.id, 'title', c.title, 'slug',  c.slug, 'subtitle', c.subtitle, 
+                        'id', c.id, 'title', c.title, 'slug',  c.title_slug, 'subtitle', c.subtitle, 
                         'course_duration', c.course_duration, 'description', c.description, 
                         'language', c.language, 'visibility', c.visibility, 'allow_discussion', c.allow_discussion
-                    ) FROM {$this->courseTable} c WHERE c.id = a.course_id LIMIT 1) as course");
+                    ) FROM {$this->coursesTable} c WHERE c.id = a.course_id LIMIT 1) as course");
 
             // append the class id to the query
             $query->where("a.id", $id);
@@ -163,6 +169,7 @@ class ClassesModel extends Model
             $this->db->table($this->table)->insert($data);
             return $this->db->insertID();
         } catch(DatabaseException $e) {
+            print $e->getMessage();
             return false;
         }
     }

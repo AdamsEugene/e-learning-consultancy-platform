@@ -18,6 +18,8 @@ use App\Models\NotesModel;
 use App\Models\DiscussionsModel;
 use App\Controllers\Analytics\Analytics;
 
+use App\Models\ClassesModel;
+
 class LoadController extends BaseController
 {
     public $restrictedDomain = ['e-learning.com', 'e-learning.com'];
@@ -36,7 +38,7 @@ class LoadController extends BaseController
     protected $analyticsObject;
     protected $notesModel;
     protected $discussionsModel;
-
+    protected $classesModel;
     public function __construct($model = [])
     {
         // initialize the models
@@ -78,6 +80,7 @@ class LoadController extends BaseController
             'enrollments' => EnrollmentsModel::class,
             'notes' => NotesModel::class,
             'discussions' => DiscussionsModel::class,
+            'classes' => ClassesModel::class,
         ];
         
         // Loop through the requested models and initialize them

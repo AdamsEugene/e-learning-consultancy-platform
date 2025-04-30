@@ -79,6 +79,31 @@ class EnrollmentsModel extends Model {
     }
 
     /**
+     * Get the students list for a course
+     * 
+     * @param int $courseId
+     * @param array $studentsList
+     * @param string $column
+     * @return array
+     */
+    public function getQueryList($where, $studentsList = [], $column = '*') {
+        try {
+            
+            $query = $this->db->table($this->table)
+                    ->select($column)
+                    ->where($where);
+
+            if(!empty($studentsList)) {
+                $query->whereIn('user_id', $studentsList);
+            }
+
+            return $query->get()->getResultArray();
+        } catch(DatabaseException $e) {
+            return [];
+        }
+    }
+
+    /**
      * Create a record
      * 
      * @param array $data
@@ -86,7 +111,8 @@ class EnrollmentsModel extends Model {
      */
     public function createRecord($data) {
         try {
-            return $this->db->table($this->table)->insert($data);
+            $this->insert($data);
+            return $this->getInsertID();
         } catch(DatabaseException $e) {
             return false;
         }

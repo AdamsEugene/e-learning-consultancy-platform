@@ -194,6 +194,17 @@ function is_instructor($currentUser) {
 }
 
 /**
+ * Is admin or instructor
+ * 
+ * @param array $currentUser
+ * 
+ * @return bool
+ */
+function is_admin_or_instructor($currentUser) {
+    return is_admin($currentUser) || is_instructor($currentUser);
+}
+
+/**
  * Is admin
  * 
  * @param array $currentUser

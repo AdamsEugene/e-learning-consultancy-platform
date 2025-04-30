@@ -50,6 +50,22 @@ function getEventTypes() {
 }
 
 /**
+ * Get the class types
+ * 
+ * @return array
+ */
+function getClassTypes() {
+    return [
+        "lecture" => "Lecture",
+        "workshop" => "Workshop",
+        "qa" => "Q&A Session",
+        "review" => "Review Session",
+        "office_hours" => "Office Hours",
+        "assessment" => "Assessment"
+    ];
+}
+
+/**
  * Get the industries
  * 
  * @return array

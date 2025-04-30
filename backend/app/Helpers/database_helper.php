@@ -251,11 +251,18 @@ $databases = [
         course_id INTEGER DEFAULT 0,
         class_type VARCHAR(255) DEFAULT 'Live',
         class_date DATETIME DEFAULT '',
-        class_time DATETIME DEFAULT '',
+        start_time DATETIME DEFAULT '',
+        end_time DATETIME DEFAULT '',
         class_duration INTEGER DEFAULT 0,
         class_link TEXT DEFAULT '',
         class_password TEXT DEFAULT '',
+        is_recurring TEXT DEFAULT 'no',
+        notify_participants TEXT DEFAULT 'no',
+        maximum_participants INTEGER DEFAULT 0,
+        meeting_type TEXT DEFAULT '',
         materials TEXT DEFAULT '',
+        recurring_interval TEXT DEFAULT '',
+        recurring_end_date DATETIME DEFAULT '',
         students_list TEXT DEFAULT '',
         user_id INTEGER DEFAULT 0,
         created_by INTEGER DEFAULT 0,
@@ -362,10 +369,14 @@ $databases = [
 ];
 
 $alterTables = [
-    "ALTER TABLE notifications ADD COLUMN section TEXT DEFAULT '';",
-    "ALTER TABLE notifications ADD COLUMN created_by INTEGER DEFAULT 0;",
-    "ALTER TABLE resources ADD COLUMN created_by INTEGER DEFAULT 0;",
-    "ALTER TABLE classes ADD COLUMN created_by INTEGER DEFAULT 0;"
+    // "ALTER TABLE classes ADD COLUMN start_time TEXT DEFAULT '';",
+    // "ALTER TABLE classes ADD COLUMN end_time TEXT DEFAULT '';",
+    // "ALTER TABLE classes ADD COLUMN meeting_type TEXT DEFAULT '';",
+    // "ALTER TABLE classes ADD COLUMN is_recurring TEXT DEFAULT 'no';",
+    // "ALTER TABLE classes ADD COLUMN recurring_interval TEXT DEFAULT '';",
+    // "ALTER TABLE classes ADD COLUMN recurring_end_date DATETIME DEFAULT '';",
+    // "ALTER TABLE classes ADD COLUMN notify_participants TEXT DEFAULT 'no';",
+    // "ALTER TABLE classes ADD COLUMN maximum_participants INTEGER DEFAULT 0;"
 ];
 
 function createDatabaseStructure() {
