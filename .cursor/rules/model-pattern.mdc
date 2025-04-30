@@ -1,0 +1,39 @@
+---
+description:
+globs:
+alwaysApply: false
+---
+# Model Pattern Guide
+
+Models in this application follow a specific pattern as shown in [backend/app/Models/ClassesModel.php](mdc:backend/app/Models/ClassesModel.php).
+
+## Model Structure
+- Models extend a base model class
+- Database table configuration is done in constructor
+- Tables are defined in `DbTables` class
+- Models use standard CRUD method names:
+  - `getRecords()` - Fetch multiple records
+  - `getRecord()` - Fetch single record
+  - `createRecord()` - Insert new record
+  - `updateRecord()` - Update existing record
+  - `deleteRecord()` - Delete record
+
+## Table Configuration
+```php
+public function __construct() {
+    parent::__construct();
+    $this->table = DbTables::$classesTable;
+    foreach(DbTables::initTables() as $key) {
+        if (property_exists($this, $key)) {
+            $this->{$key} = DbTables::${$key};
+        }
+    }
+}
+```
+
+## Best Practices
+- Always use model methods for database operations
+- Include proper where clauses for data isolation
+- Use prepared statements for all queries
+- Implement proper error handling
+- Return standardized data structures

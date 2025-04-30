@@ -1,0 +1,35 @@
+---
+description:
+globs:
+alwaysApply: false
+---
+# Controller Pattern Guide
+
+Controllers in this application follow a specific pattern as demonstrated in [backend/app/Controllers/Notes/Notes.php](mdc:backend/app/Controllers/Notes/Notes.php).
+
+## Controller Structure
+- Controllers extend `LoadController`
+- Standard CRUD operations are implemented as methods:
+  - `list()` - Get list of records with pagination
+  - `view()` - View single record
+  - `create()` - Create new record
+  - `update()` - Update existing record
+  - `delete()` - Delete record
+
+## Access Control
+- Controllers implement user-based access control
+- Admin users can access all records
+- Regular users can only access their own records
+- Access control is handled via `is_admin()` checks
+
+## Response Format
+- All responses use the `Routing` class methods:
+  - `Routing::success()` - Successful response
+  - `Routing::created()` - Resource created
+  - `Routing::updated()` - Resource updated
+  - `Routing::notFound()` - Resource not found
+
+## Payload Handling
+- Request payload is accessed via `$this->payload`
+- User data is accessed via `$this->currentUser`
+- Input validation and sanitization should be performed before processing
