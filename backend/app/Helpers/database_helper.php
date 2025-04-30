@@ -258,6 +258,7 @@ $databases = [
         materials TEXT DEFAULT '',
         students_list TEXT DEFAULT '',
         user_id INTEGER DEFAULT 0,
+        created_by INTEGER DEFAULT 0,
         status VARCHAR(255) DEFAULT 'Pending',
         created_at DATETIME DEFAULT CURRENT_TIMESTAMP,
         updated_at DATETIME DEFAULT CURRENT_TIMESTAMP
@@ -265,7 +266,8 @@ $databases = [
     CREATE INDEX IF NOT EXISTS idx_classes_course_id ON classes (course_id);
     CREATE INDEX IF NOT EXISTS idx_classes_class_type ON classes (class_type);
     CREATE INDEX IF NOT EXISTS idx_classes_status ON classes (status);
-    CREATE INDEX IF NOT EXISTS idx_classes_user_id ON classes (user_id);",
+    CREATE INDEX IF NOT EXISTS idx_classes_user_id ON classes (user_id);
+    CREATE INDEX IF NOT EXISTS idx_classes_created_by ON classes (created_by);",
     "CREATE TABLE IF NOT EXISTS class_attendees (
         id INTEGER PRIMARY KEY AUTOINCREMENT,
         class_id INTEGER DEFAULT 0,
@@ -283,6 +285,8 @@ $databases = [
         description TEXT DEFAULT '',
         link TEXT DEFAULT '',
         read TEXT DEFAULT 'no',
+        section TEXT DEFAULT '',
+        created_by INTEGER DEFAULT 0,
         created_at DATETIME DEFAULT CURRENT_TIMESTAMP,
         updated_at DATETIME DEFAULT CURRENT_TIMESTAMP
     );
@@ -347,19 +351,21 @@ $databases = [
         file_path TEXT DEFAULT '',
         file_type TEXT DEFAULT '',
         file_size INTEGER DEFAULT 0,
+        created_by INTEGER DEFAULT 0,
         created_at DATETIME DEFAULT CURRENT_TIMESTAMP,
         updated_at DATETIME DEFAULT CURRENT_TIMESTAMP
     );
     CREATE INDEX IF NOT EXISTS idx_resources_record_id ON resources (record_id);
     CREATE INDEX IF NOT EXISTS idx_resources_record_type ON resources (record_type);
-    CREATE INDEX IF NOT EXISTS idx_resources_user_id ON resources (user_id);",
+    CREATE INDEX IF NOT EXISTS idx_resources_user_id ON resources (user_id);
+    CREATE INDEX IF NOT EXISTS idx_resources_created_by ON resources (created_by);",
 ];
 
 $alterTables = [
-    "ALTER TABLE courses ADD COLUMN language TEXT DEFAULT 'English';",
-    "ALTER TABLE courses ADD COLUMN visibility TEXT DEFAULT 'Public';",
-    "ALTER TABLE courses ADD COLUMN allow_discussion TEXT DEFAULT 'yes';",
-    "ALTER TABLE courses ADD COLUMN certification TEXT DEFAULT 'no';"
+    "ALTER TABLE notifications ADD COLUMN section TEXT DEFAULT '';",
+    "ALTER TABLE notifications ADD COLUMN created_by INTEGER DEFAULT 0;",
+    "ALTER TABLE resources ADD COLUMN created_by INTEGER DEFAULT 0;",
+    "ALTER TABLE classes ADD COLUMN created_by INTEGER DEFAULT 0;"
 ];
 
 function createDatabaseStructure() {

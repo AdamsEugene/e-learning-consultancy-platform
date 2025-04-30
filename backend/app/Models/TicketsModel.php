@@ -20,7 +20,7 @@ class TicketsModel extends Model {
     public function __construct() {
         parent::__construct();
         
-        $this->table = DbTables::$ticketTable;
+        $this->table = DbTables::$ticketsTable;
         foreach(DbTables::initTables() as $key) {
             if (property_exists($this, $key)) {
                 $this->{$key} = DbTables::${$key};

@@ -22,7 +22,10 @@ class DbTables {
     public static $assignmentSubmissionsTable = 'assignment_submissions';
     public static $assignmentSubmissionFilesTable = 'assignment_submission_files';
     public static $resourcesTable = 'resources';
-    
+
+    public static $ticketsTable = 'tickets';
+    public static $webhookTable = 'webhooks';
+
     public static $notificationsTable = 'notifications';
     public static $activitiesTable = 'activities';
 
@@ -65,7 +68,9 @@ class DbTables {
             'coursesTable', 'coursesInstructorsTable', 'coursesTagsTable', 'coursesReviewsTable', 'wishlistTable',
             'coursesEnrollmentsTable', 'altUserTable', 'couponTable', 'promoCodeTable', 'dashboardTable', 
             'userDashboardTable', 'subscriptionTable', 'educationTable', 'settingsTable', 'ipBlockingTable', 
-            'paymentsTable', 'paymentsTokenTable', 'shareableLinksTable', 'feedbackTable', 'invoiceTable'
+            'paymentsTable', 'paymentsTokenTable', 'shareableLinksTable', 'feedbackTable', 'invoiceTable',
+            'ticketsTable', 'notificationsTable', 'activitiesTable', 'discussionsTable', 'notesTable',
+            'resourcesTable', 'assignmentSubmissionsTable', 'assignmentSubmissionFilesTable', 'webhookTable'
         ];
     }
 }

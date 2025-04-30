@@ -12,7 +12,7 @@ class ResourcesModel extends Model {
     protected $courseTable;
     protected $assignmentTable;
     protected $primaryKey = 'id';
-    protected $allowedFields = ['record_id', 'record_type', 'user_id', 'file_name', 'file_path', 'file_type', 'file_size', 'created_at', 'updated_at'];
+    protected $allowedFields = ['record_id', 'record_type', 'user_id', 'file_name', 'file_path', 'file_type', 'file_size', 'created_at', 'updated_at', 'created_by'];
 
     public function __construct() {
         parent::__construct();

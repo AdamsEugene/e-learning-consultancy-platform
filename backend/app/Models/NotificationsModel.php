@@ -9,7 +9,7 @@ class NotificationsModel extends Model
 
     protected $userTable;
     protected $table;
-    protected $allowedFields = ['user_id', 'title', 'description', 'link', 'read', 'created_at', 'updated_at'];
+    protected $allowedFields = ['user_id', 'title', 'section', 'description', 'link', 'read', 'created_at', 'updated_at', 'created_by'];
 
     public function __construct() {
         parent::__construct();

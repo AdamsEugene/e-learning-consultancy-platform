@@ -11,7 +11,7 @@ class ClassesModel extends Model
     protected $table;
     protected $classAttendeesTable;
     protected $courseTable;
-    protected $allowedFields = ['course_id', 'title', 'description', 'class_type', 'class_date', 'class_time', 'class_duration', 'class_link', 'class_password', 'materials', 'students_list', 'user_id', 'status'];
+    protected $allowedFields = ['course_id', 'title', 'description', 'class_type', 'class_date', 'class_time', 'class_duration', 'class_link', 'class_password', 'materials', 'students_list', 'user_id', 'status', 'created_at', 'updated_at', 'created_by'];
 
     public function __construct() {
         parent::__construct();
