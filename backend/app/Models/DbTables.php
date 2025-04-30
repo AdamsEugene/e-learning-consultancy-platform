@@ -16,6 +16,16 @@ class DbTables {
     public static $wishlistTable = 'wishlist';
     public static $contentTable = 'courses_content';
 
+    public static $classesTable = 'classes';
+    public static $classAttendeesTable = 'class_attendees';
+    public static $assignmentsTable = 'assignments';
+    public static $assignmentSubmissionsTable = 'assignment_submissions';
+    public static $assignmentSubmissionFilesTable = 'assignment_submission_files';
+    public static $resourcesTable = 'resources';
+    
+    public static $notificationsTable = 'notifications';
+    public static $activitiesTable = 'activities';
+
     public static $discussionsTable = 'lesson_discussions';
     public static $notesTable = 'lesson_notes';
 

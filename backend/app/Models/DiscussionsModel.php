@@ -8,6 +8,7 @@ use CodeIgniter\Database\Exceptions\DatabaseException;
 
 class DiscussionsModel extends Model {
 
+    public $isAdmin = false;
     protected $table;
     protected $primaryKey = 'id';
     protected $coursesTable;
@@ -38,7 +39,7 @@ class DiscussionsModel extends Model {
             // get the table name
             $query = $this->db->table("{$this->table} a")->select("a.*,
                 (SELECT JSON_OBJECT(
-                    'id', u.id, 'firstname', u.firstname, 'lastname', u.lastname, 'email', u.email
+                    'id', u.id, 'firstname', u.firstname, 'lastname', u.lastname, 'email', u.email, 'phone', u.phone, 'image', u.image
                 ) FROM {$this->userTable} u WHERE u.id = a.user_id LIMIT 1
             ) as created_by");
 
@@ -74,7 +75,7 @@ class DiscussionsModel extends Model {
 
             $query = $this->db->table("{$this->table} a")->select("a.*,
                 (SELECT JSON_OBJECT(
-                    'id', u.id, 'firstname', u.firstname, 'lastname', u.lastname, 'email', u.email
+                    'id', u.id, 'firstname', u.firstname, 'lastname', u.lastname, 'email', u.email, 'phone', u.phone, 'image', u.image
                 ) FROM {$this->userTable} u WHERE u.id = a.user_id LIMIT 1
             ) as created_by")->where('id', $id);
 

@@ -80,7 +80,7 @@ class CoursesModel extends Model
             // get query
             $query = $this->select("{$this->table}.*, 
                 (SELECT JSON_OBJECT(
-                    'id', u.id, 'firstname', u.firstname, 'lastname', u.lastname, 'email', u.email
+                    'id', u.id, 'firstname', u.firstname, 'lastname', u.lastname, 'email', u.email, 'phone', u.phone, 'image', u.image
                 ) FROM {$this->userTable} u WHERE u.id = {$this->table}.created_by LIMIT 1) as created_by,
                 c.name as category_name, c.name_slug as category_slug")
                 ->join("{$this->categoriesTable} c", "c.id = {$this->table}.category_id", 'left');

@@ -57,7 +57,7 @@ class ReviewsModel extends Model {
                         )
                     END AS entity,
                  (SELECT JSON_OBJECT(
-                    'id', u.id, 'firstname', u.firstname, 'lastname', u.lastname, 'email', u.email
+                    'id', u.id, 'firstname', u.firstname, 'lastname', u.lastname, 'email', u.email, 'phone', u.phone, 'image', u.image
                 ) FROM {$this->userTable} u WHERE u.id = {$this->table}.user_id LIMIT 1) as user")
                  ->join('courses c', "c.id = {$this->table}.record_id AND {$this->table}.entityType = 'Course'", 'left')
                  ->join('users u', "u.id = {$this->table}.record_id AND {$this->table}.entityType = 'Instructor'", 'left');

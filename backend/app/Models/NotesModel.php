@@ -8,6 +8,8 @@ use CodeIgniter\Database\Exceptions\DatabaseException;
 
 class NotesModel extends Model {
 
+    public $isAdmin = false;
+    
     protected $table;
     protected $primaryKey = 'id';
     protected $coursesTable;
