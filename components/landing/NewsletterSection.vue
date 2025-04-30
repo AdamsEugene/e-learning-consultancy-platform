@@ -153,7 +153,7 @@ const submitForm = () => {
                   v-model="email"
                   type="email"
                   placeholder="Enter your email address"
-                  class="pl-10 w-full py-3 px-4 rounded-lg focus:outline-none focus:ring-2 focus:ring-indigo-500 border border-gray-300 transition-all duration-300 bg-white"
+                  class="pl-10 w-full py-3 px-4 rounded-lg focus:outline-none focus:ring-2 focus:ring-indigo-500 border border-gray-300 transition-all duration-300 bg-white text-gray-600"
                   :class="{ 'border-red-500 focus:ring-red-500': isError }"
                 />
 

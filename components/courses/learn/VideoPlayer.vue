@@ -260,10 +260,11 @@ watch(
   >
     <!-- Video element -->
     <video
-      ref="videoRef"
+    ref="videoRef"
+      style="height: 500px"
       :src="videoUrl"
       :poster="poster"
-      class="w-full h-auto"
+      class="w-full"
       preload="metadata"
       @timeupdate="onTimeUpdate"
       @loadedmetadata="onLoadedMetadata"

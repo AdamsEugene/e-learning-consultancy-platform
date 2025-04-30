@@ -12,23 +12,23 @@ interface ExtendedCourseLesson extends CourseLesson {
   isPreview?: boolean;
 }
 
-interface ExtendedCourseSection extends CourseSection {
+export interface ExtendedCourseSection extends CourseSection {
   totalDuration: string;
   lessons: ExtendedCourseLesson[];
 }
 
-interface ExtendedCourseInstructor extends CourseInstructor {
+export interface ExtendedCourseInstructor extends CourseInstructor {
   role: string;
 }
 
-interface ExtendedCourseReview extends CourseReview {
+export interface ExtendedCourseReview extends CourseReview {
   user: {
     name: string;
     avatar: string;
   };
 }
 
-interface ExtendedCourse extends Course {
+export interface ExtendedCourse extends Course {
   subtitle: string;
   subCategory: string;
   originalPrice: number;

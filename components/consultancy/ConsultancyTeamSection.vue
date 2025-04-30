@@ -160,7 +160,7 @@ onMounted(() => {
         >
           {{ subtitle }}
         </span>
-        <h2 class="text-3xl md:text-4xl font-bold mb-6">{{ title }}</h2>
+        <h2 class="text-3xl md:text-4xl font-bold mb-6 text-gray-900">{{ title }}</h2>
         <p class="text-lg text-gray-600">{{ description }}</p>
       </div>
 

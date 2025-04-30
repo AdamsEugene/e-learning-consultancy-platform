@@ -110,61 +110,61 @@ onBeforeUnmount(() => {
     </div>
 
     <!-- Session Information (shown before joining) -->
-    <div v-else-if="showInfo" class="container mx-auto px-4 py-8">
+    <div v-else-if="showInfo" class="container mx-auto px-4 py-12">
       <div
-        class="max-w-4xl mx-auto bg-white rounded-xl shadow-md overflow-hidden"
+        class="relative max-w-2xl mt-12 mx-auto bg-gradient-to-br from-indigo-100 via-white to-indigo-50 rounded-3xl shadow-2xl border border-indigo-100 overflow-visible"
       >
-        <div class="md:flex">
-          <div class="md:flex-shrink-0">
-            <img
-              class="h-48 w-full object-cover md:w-48"
-              src="/images/instructors/i1.jpg"
-              alt="Live Session"
-            />
-          </div>
-          <div class="p-8">
-            <div class="flex items-center">
-              <div
-                class="uppercase tracking-wide text-sm text-indigo-500 font-semibold"
+        <!-- Floating Avatar -->
+        <div class="absolute -top-16 left-1/2 transform -translate-x-1/2 z-10">
+          <img
+            class="h-32 w-32 rounded-full border-4 border-white shadow-xl object-cover bg-white"
+            src="https://blog.accredian.com/wp-content/uploads/2019/04/Python-logo.jpg"
+            alt="Live Session"
+          />
+        </div>
+        <div class="pt-20 pb-8 px-8">
+          <div class="flex flex-col items-center text-center">
+            <div class="flex items-center gap-2 mb-2">
+              <span
+                class="uppercase tracking-widest text-xs text-indigo-600 font-bold bg-indigo-50 px-3 py-1 rounded-full shadow"
               >
                 Live Session
-              </div>
-              <div
+              </span>
+              <span
                 v-if="isLive"
-                class="ml-2 flex items-center text-green-600 bg-green-100 px-2 py-0.5 rounded-full text-xs font-medium"
+                class="flex items-center text-green-600 bg-green-100 px-2 py-0.5 rounded-full text-xs font-semibold ml-2"
               >
                 <span
                   class="animate-pulse inline-block h-2 w-2 rounded-full bg-green-600 mr-1"
                 />
                 Live Now
-              </div>
+              </span>
             </div>
-            <h1 class="mt-1 text-2xl font-bold text-gray-900">
+            <h1 class="text-3xl font-extrabold text-gray-900 mb-2 drop-shadow">
               {{ session?.title }}
             </h1>
-            <p class="mt-2 text-gray-600">{{ session?.description }}</p>
-
-            <div class="mt-4 flex items-center">
+            <p class="text-gray-700 mb-4 max-w-xl">
+              {{ session?.description }}
+            </p>
+            <div class="flex items-center justify-center mb-6">
               <img
-                class="h-10 w-10 rounded-full mr-2"
+                class="h-12 w-12 rounded-full border-2 border-indigo-200 mr-3"
                 :src="session?.instructorAvatar"
                 alt="Instructor"
               />
-              <div>
-                <p class="text-sm font-medium text-gray-900">
+              <div class="text-left">
+                <p class="text-base font-semibold text-gray-900">
                   {{ session?.instructorName }}
                 </p>
-                <p class="text-sm text-gray-500">Instructor</p>
+                <p class="text-xs text-gray-500">Instructor</p>
               </div>
             </div>
-
-            <div
-              class="mt-4 flex flex-col sm:flex-row sm:items-center space-y-2 sm:space-y-0 sm:space-x-4"
-            >
-              <div class="flex items-center">
+            <div class="flex flex-wrap justify-center gap-4 mb-6">
+              <div
+                class="flex items-center text-sm bg-white/80 px-4 py-2 rounded-xl shadow"
+              >
                 <svg
-                  xmlns="http://www.w3.org/2000/svg"
-                  class="h-5 w-5 text-gray-400 mr-1"
+                  class="h-5 w-5 text-indigo-400 mr-1"
                   fill="none"
                   viewBox="0 0 24 24"
                   stroke="currentColor"
@@ -176,14 +176,13 @@ onBeforeUnmount(() => {
                     d="M8 7V3m8 4V3m-9 8h10M5 21h14a2 2 0 002-2V7a2 2 0 00-2-2H5a2 2 0 00-2 2v12a2 2 0 002 2z"
                   />
                 </svg>
-                <span class="text-gray-600">{{
-                  formatSessionDate(session?.startTime || "")
-                }}</span>
+                <span>{{ formatSessionDate(session?.startTime || "") }}</span>
               </div>
-              <div class="flex items-center">
+              <div
+                class="flex items-center text-sm bg-white/80 px-4 py-2 rounded-xl shadow"
+              >
                 <svg
-                  xmlns="http://www.w3.org/2000/svg"
-                  class="h-5 w-5 text-gray-400 mr-1"
+                  class="h-5 w-5 text-indigo-400 mr-1"
                   fill="none"
                   viewBox="0 0 24 24"
                   stroke="currentColor"
@@ -195,17 +194,17 @@ onBeforeUnmount(() => {
                     d="M12 8v4l3 3m6-3a9 9 0 11-18 0 9 9 0 0118 0z"
                   />
                 </svg>
-                <span class="text-gray-600">
+                <span>
                   {{ formatSessionTime(session?.startTime || "") }} -
                   {{ formatSessionTime(session?.endTime || "") }}
                 </span>
               </div>
             </div>
-
-            <div class="flex items-center mt-6">
-              <span class="text-gray-600 mr-2"
-                >{{ session?.attendees }} people attending</span
-              >
+            <div class="flex items-center justify-center mt-2 mb-4">
+              <span class="text-gray-600 mr-3 text-sm font-medium">
+                {{ session?.attendees }} attending
+              </span>
+              <!-- Buttons (unchanged) -->
               <UiButton
                 v-if="canJoin && !connecting"
                 color="primary"
@@ -229,7 +228,6 @@ onBeforeUnmount(() => {
                 </template>
                 Join Live Session
               </UiButton>
-
               <UiButton v-else-if="connecting" color="primary" disabled>
                 <template #prefix>
                   <svg
@@ -249,7 +247,6 @@ onBeforeUnmount(() => {
                 </template>
                 Connecting...
               </UiButton>
-
               <UiButton
                 v-else-if="hasEnded"
                 color="secondary"
@@ -279,10 +276,9 @@ onBeforeUnmount(() => {
                 </template>
                 Watch Recording
               </UiButton>
-
               <div
                 v-else-if="!isLive"
-                class="bg-gray-100 text-gray-600 px-4 py-2 rounded-lg font-medium inline-flex items-center"
+                class="bg-gray-100 text-gray-600 px-4 py-2 rounded-lg font-medium inline-flex items-center ml-2"
               >
                 <svg
                   xmlns="http://www.w3.org/2000/svg"
@@ -328,7 +324,7 @@ onBeforeUnmount(() => {
 
       <!-- Main Content Area -->
       <div class="flex-1 overflow-hidden">
-        <div class="h-full max-w-7xl mx-auto px-4 sm:px-6 lg:px-8">
+        <div class="h-full  mx-auto px-4 sm:px-6 lg:px-8">
           <div class="h-full flex flex-col lg:flex-row gap-6 py-6">
             <!-- Video Section -->
             <div class="flex-1 min-h-0">
@@ -343,64 +339,88 @@ onBeforeUnmount(() => {
             </div>
 
             <!-- Sidebar -->
-            <div class="w-full lg:w-80 flex-shrink-0">
-              <div class="bg-white rounded-lg shadow-sm h-full">
-                <!-- Tabs -->
-                <div class="border-b border-gray-200">
-                  <nav class="flex -mb-px">
-                    <button
-                      v-for="tab in [
-                        'chat',
-                        'participants',
-                        'polls',
-                        'resources',
-                      ]"
-                      :key="tab"
-                      class="flex-1 py-3 px-4 text-center text-sm font-medium"
-                      :class="[
-                        activeTab === tab
-                          ? 'text-indigo-600 border-b-2 border-indigo-600'
-                          : 'text-gray-500 hover:text-gray-700 hover:border-gray-300',
-                      ]"
-                      @click="activeTab = tab as any"
-                    >
-                      {{ tab.charAt(0).toUpperCase() + tab.slice(1) }}
-                    </button>
-                  </nav>
-                </div>
+            <div class="w-full lg:w-[22%] flex-shrink-0">
+              <div
+                class="bg-white rounded-2xl shadow-lg h-full flex flex-col overflow-hidden"
+              >
+                <!-- Modern Vertical Tabs -->
+                <nav class="flex flex-row lg:flex-col bg-gray-50 p-2 gap-2">
+                  <button
+                    v-for="tab in [
+                      { key: 'chat', label: 'Chat', icon: '💬' },
+                      {
+                        key: 'participants',
+                        label: 'Participants',
+                        icon: '👥',
+                      },
+                      { key: 'polls', label: 'Polls', icon: '📊' },
+                      { key: 'resources', label: 'Resources', icon: '📁' },
+                    ]"
+                    :key="tab.key"
+                    class="flex items-center gap-3 px-4 py-2 rounded-xl transition-all font-medium text-sm w-full focus:outline-none"
+                    :class="
+                      activeTab === tab.key
+                        ? 'bg-indigo-50 text-indigo-700 border-l-4 border-indigo-500 shadow'
+                        : 'text-gray-600 hover:bg-gray-100'
+                    "
+                    @click="activeTab = tab.key as 'chat' | 'participants' | 'polls' | 'resources'"
+                  >
+                    <span class="text-lg">{{ tab.icon }}</span>
+                    <span>{{ tab.label }}</span>
+                  </button>
+                </nav>
 
                 <!-- Tab Content -->
-                <div class="p-4 h-[calc(100%-3rem)] overflow-y-auto">
+                <div class="flex-1 p-4 overflow-y-auto">
                   <!-- Chat Tab -->
                   <div v-if="activeTab === 'chat'" class="h-full flex flex-col">
-                    <div class="flex-1 overflow-y-auto space-y-4">
+                    <div class="flex-1 overflow-y-auto space-y-3">
                       <div
                         v-for="message in chatMessages"
                         :key="message.id"
-                        class="flex items-start space-x-3"
+                        class="flex items-start"
                       >
                         <img
                           :src="message.userAvatar"
                           :alt="message.userName"
-                          class="h-8 w-8 rounded-full"
+                          class="h-9 w-9 rounded-full border-2 border-white shadow"
                         />
-                        <div class="flex-1">
-                          <div class="flex items-center space-x-2">
-                            <span
-                              class="font-medium"
-                              :class="
-                                message.isInstructor
-                                  ? 'text-indigo-600'
-                                  : 'text-gray-900'
-                              "
+                        <div class="ml-3 flex-1">
+                          <div
+                            class="rounded-xl px-4 py-2 shadow-sm bg-gray-100"
+                            :class="
+                              message.isInstructor
+                                ? 'border-l-4 border-indigo-500 bg-indigo-50'
+                                : 'border-l-4 border-transparent'
+                            "
+                          >
+                            <div class="flex items-center gap-2 mb-1">
+                              <span
+                                class="font-semibold"
+                                :class="
+                                  message.isInstructor
+                                    ? 'text-indigo-700'
+                                    : 'text-gray-900'
+                                "
+                              >
+                                {{ message.userName }}
+                              </span>
+                              <span class="text-xs text-gray-400">
+                                {{ formatTime(message.timestamp) }}
+                              </span>
+                              <span
+                                v-if="message.isInstructor"
+                                class="ml-2 text-xs font-medium text-indigo-500 bg-indigo-100 px-2 py-0.5 rounded"
+                              >
+                                Instructor
+                              </span>
+                            </div>
+                            <p
+                              class="text-gray-700 text-sm leading-relaxed break-words"
                             >
-                              {{ message.userName }}
-                            </span>
-                            <span class="text-xs text-gray-500">
-                              {{ formatTime(message.timestamp) }}
-                            </span>
+                              {{ message.message }}
+                            </p>
                           </div>
-                          <p class="text-gray-600">{{ message.message }}</p>
                         </div>
                       </div>
                     </div>
@@ -437,7 +457,7 @@ onBeforeUnmount(() => {
                         class="h-8 w-8 rounded-full"
                       />
                       <div class="flex-1">
-                        <span class="font-medium text-gray-900">{{
+                        <span class="font-medium text-sm text-gray-900">{{
                           participant.name
                         }}</span>
                         <span

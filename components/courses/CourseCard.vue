@@ -304,7 +304,7 @@ const getBadgeStyle = (badge: string) => {
       <!-- Course title -->
       <NuxtLink :to="`/courses/${id}`">
         <h3
-          class="text-lg font-bold mb-3 leading-tight line-clamp-2 transition-colors duration-300 hover:text-indigo-600"
+          class="text-lg font-bold mb-3 leading-tight line-clamp-2 transition-colors duration-300 hover:text-indigo-600 text-black"
         >
           {{ title }}
         </h3>

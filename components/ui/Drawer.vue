@@ -10,6 +10,7 @@ interface Props {
   resizable?: boolean;
   minWidth?: string;
   maxWidth?: string;
+  transparentBackdrop?: boolean;
 }
 
 const props = withDefaults(defineProps<Props>(), {
@@ -22,6 +23,7 @@ const props = withDefaults(defineProps<Props>(), {
   resizable: false,
   minWidth: "300px",
   maxWidth: "800px",
+  transparentBackdrop: false,
 });
 
 const emit = defineEmits<{
@@ -155,7 +157,12 @@ onUnmounted(() => {
     <Transition name="drawer-fade">
       <div
         v-if="isOpen"
-        class="fixed inset-0 backdrop-blur-sm bg-black/30 z-40 transition-all"
+        class="fixed inset-0 z-40 transition-all"
+        :class="[
+          transparentBackdrop 
+            ? 'bg-transparent' 
+            : 'backdrop-blur-sm bg-black/30'
+        ]"
         :style="{ zIndex: zIndex }"
         @click="closeOnClickOutside && closeDrawer()"
       >

@@ -335,7 +335,7 @@ useHead({
           </div>
 
           <h1
-            class="text-4xl md:text-5xl font-bold mb-6 transform transition-all duration-1000"
+            class="text-4xl md:text-5xl font-bold mb-6 transform transition-all duration-1000 "
             :class="
               isPageVisible
                 ? 'opacity-100 translate-y-0'

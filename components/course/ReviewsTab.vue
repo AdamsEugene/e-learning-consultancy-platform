@@ -105,7 +105,7 @@ defineProps<Props>();
 
       <!-- Reviews list -->
       <div class="flex-grow">
-        <h2 class="text-2xl font-bold mb-6">Student Reviews</h2>
+        <h2 class="text-2xl font-bold mb-6 text-gray-900">Student Reviews</h2>
 
         <div class="mb-6">
           <div class="relative">
@@ -145,7 +145,7 @@ defineProps<Props>();
                 class="w-12 h-12 rounded-full mr-4"
               />
               <div>
-                <div class="font-medium">
+                <div class="font-medium text-gray-900">
                   {{
                     i === 1
                       ? "Michael Chen"

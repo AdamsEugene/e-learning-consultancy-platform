@@ -227,7 +227,7 @@ const getColorClasses = computed(() => {
     <div
       v-show="isOpen"
       :id="`filter-section-${filterType}`"
-      class="ml-2 border-l-2 pl-4 transition-all duration-300"
+      class="ml-2 border-l-2 pl-4 transition-all duration-300 text-gray-900"
       :class="[
         getColorClasses.border,
         maxHeight ? 'max-h-48 overflow-y-auto' : '',
