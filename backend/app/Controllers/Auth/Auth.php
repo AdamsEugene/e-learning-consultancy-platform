@@ -223,7 +223,7 @@ class Auth extends LoadController {
     private function generateTokenAuth($user, $description = '') {
         
         // hours to expire
-        $hours = 360;
+        $hours = 720;
 
         $rawToken = generateTokenAuth();
         $hashTokenAuth = hash(configs('algo'), $rawToken . configs('salt'));

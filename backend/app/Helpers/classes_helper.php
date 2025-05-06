@@ -1,6 +1,6 @@
 <?php
 
-function formatClassesResponse($classes) {
+function formatClassesResponse($classes, $single = false) {
     
     if(empty($classes)) {
         return [];
@@ -18,5 +18,5 @@ function formatClassesResponse($classes) {
         $result[] = $class;
     }
 
-    return $result;
+    return $single ? $result[0] : $result;
 }
