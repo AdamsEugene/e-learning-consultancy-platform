@@ -1,4 +1,5 @@
 <script setup lang="ts">
+
 // Set page metadata
 definePageMeta({
   layout: "public",
@@ -27,6 +28,10 @@ const isSubmitting = ref(false);
 const submitSuccess = ref(false);
 const submitError = ref(false);
 
+// Animation state
+const isPageLoaded = ref(false);
+const visibleSections = ref<string[]>([]);
+
 // Handle form submission
 const handleSubmit = async (e: Event) => {
   e.preventDefault();
@@ -45,10 +50,51 @@ const handleSubmit = async (e: Event) => {
     };
   } catch (error) {
     submitError.value = true;
+    console.error(error);
   } finally {
     isSubmitting.value = false;
   }
 };
+
+// Set up intersection observer for animation on scroll
+onMounted(() => {
+  isPageLoaded.value = true;
+
+  // Add initial visible sections
+  visibleSections.value = ["hero-section"];
+
+  if (typeof window !== "undefined" && "IntersectionObserver" in window) {
+    const options = {
+      root: null,
+      rootMargin: "0px",
+      threshold: 0.1,
+    };
+
+    const observer = new IntersectionObserver((entries) => {
+      entries.forEach((entry) => {
+        if (entry.isIntersecting) {
+          const sectionId = entry.target.id;
+          if (sectionId && !visibleSections.value.includes(sectionId)) {
+            visibleSections.value.push(sectionId);
+          }
+        }
+      });
+    }, options);
+
+    // Observe each section
+    document.querySelectorAll("[id]").forEach((element) => {
+      observer.observe(element);
+    });
+  } else {
+    // Fallback for browsers without IntersectionObserver
+    visibleSections.value = [
+      "hero-section",
+      "contact-methods-section",
+      "form-section",
+      "offices-section",
+    ];
+  }
+});
 
 // Office locations
 const offices = [
@@ -100,20 +146,46 @@ const contactMethods = [
     <!-- Main Content -->
     <main class="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8 py-12">
       <!-- Hero Section -->
-      <div class="text-center mb-12">
-        <h1 class="text-3xl font-bold text-gray-900 mb-4">Contact Us</h1>
-        <p class="text-xl text-gray-600 max-w-3xl mx-auto">
+      <div id="hero-section" class="text-center mb-12">
+        <h1
+          class="text-3xl font-bold text-gray-900 mb-4 transform transition-all duration-1000"
+          :class="
+            isPageLoaded
+              ? 'opacity-100 translate-y-0'
+              : 'opacity-0 translate-y-8'
+          "
+        >
+          Contact Us
+        </h1>
+        <p
+          class="text-xl text-gray-600 max-w-3xl mx-auto transform transition-all duration-1000"
+          :class="
+            isPageLoaded
+              ? 'opacity-100 translate-y-0'
+              : 'opacity-0 translate-y-8'
+          "
+          style="transition-delay: 200ms"
+        >
           Have questions? We're here to help. Choose the best way to reach us
           below.
         </p>
       </div>
 
       <!-- Contact Methods -->
-      <div class="grid grid-cols-1 md:grid-cols-3 gap-6 mb-12">
+      <div
+        id="contact-methods-section"
+        class="grid grid-cols-1 md:grid-cols-3 gap-6 mb-12 transform transition-all duration-1000"
+        :class="
+          visibleSections.includes('contact-methods-section')
+            ? 'opacity-100 translate-y-0'
+            : 'opacity-0 translate-y-8'
+        "
+      >
         <div
           v-for="(method, index) in contactMethods"
           :key="index"
-          class="bg-white rounded-lg shadow-md p-6 text-center"
+          class="bg-white rounded-lg shadow-md p-6 text-center transform transition-all duration-500"
+          :style="`transition-delay: ${index * 100}ms`"
         >
           <div class="flex justify-center mb-4">
             <div class="bg-indigo-100 rounded-full p-3">
@@ -149,11 +221,19 @@ const contactMethods = [
       <!-- Contact Form and Office Locations -->
       <div class="grid grid-cols-1 lg:grid-cols-2 gap-12">
         <!-- Contact Form -->
-        <div class="bg-white rounded-lg shadow-md p-6">
+        <div
+          id="form-section"
+          class="bg-white rounded-lg shadow-md p-6 transform transition-all duration-1000"
+          :class="
+            visibleSections.includes('form-section')
+              ? 'opacity-100 translate-y-0'
+              : 'opacity-0 translate-y-12'
+          "
+        >
           <h2 class="text-2xl font-bold text-gray-900 mb-6">
             Send us a Message
           </h2>
-          <form @submit="handleSubmit" class="space-y-6">
+          <form class="space-y-6" @submit="handleSubmit">
             <div>
               <label
                 for="name"
@@ -233,13 +313,23 @@ const contactMethods = [
         </div>
 
         <!-- Office Locations -->
-        <div>
+        <div
+          id="offices-section"
+          class="transform transition-all duration-1000"
+          :class="
+            visibleSections.includes('offices-section')
+              ? 'opacity-100 translate-y-0'
+              : 'opacity-0 translate-y-12'
+          "
+          style="transition-delay: 200ms"
+        >
           <h2 class="text-2xl font-bold text-gray-900 mb-6">Our Offices</h2>
           <div class="space-y-6">
             <div
               v-for="(office, index) in offices"
               :key="index"
-              class="bg-white rounded-lg shadow-md p-6"
+              class="bg-white rounded-lg shadow-md p-6 transform transition-all duration-500"
+              :style="`transition-delay: ${200 + index * 100}ms`"
             >
               <h3 class="text-lg font-medium text-gray-900 mb-2">
                 {{ office.city }}
@@ -293,3 +383,17 @@ const contactMethods = [
     </main>
   </div>
 </template>
+
+<style scoped>
+/* Animation for section reveals */
+@keyframes fadeUpIn {
+  from {
+    opacity: 0;
+    transform: translateY(20px);
+  }
+  to {
+    opacity: 1;
+    transform: translateY(0);
+  }
+}
+</style>
