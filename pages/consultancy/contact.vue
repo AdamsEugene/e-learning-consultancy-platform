@@ -620,9 +620,9 @@ const contactInfo = {
                           Attachments (optional)
                         </label>
                         <input
-                          type="file"
                           id="attachments"
                           ref="fileInput"
+                          type="file"
                           class="w-full px-4 py-3 border border-gray-300 rounded-lg focus:ring-2 focus:ring-indigo-500 focus:border-indigo-500 transition-all duration-300 hover:border-indigo-300"
                           multiple
                           @change="handleFileUpload"
